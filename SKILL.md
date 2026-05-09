@@ -1,7 +1,7 @@
 ---
 name: arc-ready
 description: "Take a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, and adversarial hardening. The full arc, mechanically enforced, in one skill. Triggers on 'kickoff,' 'I have an idea,' 'walk me through idea to launch,' 'orchestrate the whole arc,' 'help me ship it end-to-end,' 'new project from scratch,' 'write a PRD,' 'product spec,' 'design the architecture,' 'system design,' 'monolith or microservices,' 'C4 diagram,' 'ADR,' 'build a roadmap,' 'milestone plan,' 'quarterly plan,' 'sequence the work,' 'Now-Next-Later,' 'Shape Up cycle,' 'what stack should I use,' 'pick a database,' 'which framework,' 'set up a repo,' 'add CI,' 'GitHub Actions,' 'configure linting,' 'add a README,' 'dashboard,' 'admin panel,' 'internal tool,' 'back office,' 'CRUD app,' 'deploy this,' 'CI/CD pipeline,' 'promote to staging,' 'zero-downtime migration,' 'expand-contract,' 'rollback,' 'canary,' 'blue/green,' 'add monitoring,' 'define an SLO,' 'alerts when X,' 'write a runbook,' 'structured logging,' 'distributed tracing,' 'error budget policy,' 'launch my product,' 'build a landing page,' 'Product Hunt,' 'Show HN,' 'waitlist,' 'OG card,' 'launch-day SEO,' 'press kit,' 'adversarial review,' 'pen-test prep,' 'OWASP walkthrough,' 'SOC 2 / HIPAA / PCI-DSS / GDPR gap check,' 'responsible disclosure,' 'bug bounty,' 'post-incident hardening,' 'security review before launch.' Refuses scope leak (one tier doing another tier's work), AI-slop output (PRDs/architectures/roadmaps/launches that read the same across any product), hollow output (sections filled, decisions absent), feature-factory output (un-prioritized feature lists), paper SLOs (numbers with no error budget), paper canaries (deploy mechanics absent under canary labels), AI-slop landings (substitution-test failures), scanner-only security (Snyk-passed-but-front-door-exploitable), rubber-stamp orchestration (advancing without artifact verification), and ghost handoff (a tier consuming an absent upstream artifact). Greenfield projects use Mode A (full arc); existing-codebase work uses Mode B (specific tiers); audit work uses Mode C (retroactive review); multi-repo collections use Mode D (suite-layout patterns). Successor to and consolidation of the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready). Full trigger list and mode-routing table in README."
-version: 0.1.0
+version: 0.1.1
 updated: 2026-05-09
 changelog: CHANGELOG.md
 tier: arc
@@ -778,11 +778,11 @@ When the agent starts, it inventories existing arc artifacts and adjusts the dis
 | `.prd-ready/PRD.md` | Skip Tier 1.1; verify import; advance to 1.2 | `1.1: imported` in PROGRESS.md |
 | `.architecture-ready/ARCH.md` | Skip 1.2; verify; advance | `1.2: imported` |
 | `.roadmap-ready/ROADMAP.md` | Skip 1.3; verify; advance | `1.3: imported` |
-| `.stack-ready/DECISION.md` | Skip 1.4; verify; advance | `1.4: imported` |
-| Repo scaffolding presence (README.md, .github/workflows/*.yml, .repo-ready/SECURITY.md) | Skip 2.1; verify scaffolding; advance | `2.1: imported` |
+| `.stack-ready/STACK.md` or `.stack-ready/DECISION.md` | Skip 1.4; verify; advance | `1.4: imported` |
+| Repo scaffolding presence (README.md, .github/workflows/*.yml, .repo-ready/SCAFFOLD.md) | Skip 2.1; verify scaffolding; advance | `2.1: imported` |
 | `.production-ready/STATE.md` | Skip 2.2; verify | `2.2: imported` |
-| `.deploy-ready/STATE.md` | Skip 3.1; verify | `3.1: imported` |
-| `.observe-ready/STATE.md` | Skip 3.2; verify | `3.2: imported` |
+| `.deploy-ready/DEPLOY.md` or `.deploy-ready/STATE.md` | Skip 3.1; verify | `3.1: imported` |
+| `.observe-ready/OBSERVE.md` or `.observe-ready/STATE.md` | Skip 3.2; verify | `3.2: imported` |
 | `.launch-ready/STATE.md` | Skip 3.3; verify | `3.3: imported` |
 | `.harden-ready/FINDINGS.md` | Skip 3.4; verify | `3.4: imported` |
 
@@ -798,11 +798,11 @@ arc-ready produces the arc artifacts at canonical `.<tier>-ready/` paths. Downst
 | Product Requirements | `.prd-ready/PRD.md` (+ HANDOFF.md, AUDIT.md) | Tier 1.1 |
 | Architecture | `.architecture-ready/ARCH.md` (+ HANDOFF.md, adr/NNN-*.md) | Tier 1.2 |
 | Roadmap | `.roadmap-ready/ROADMAP.md` (+ HANDOFF.md, retrospectives/) | Tier 1.3 |
-| Stack decision | `.stack-ready/DECISION.md` (or STACK.md) | Tier 1.4 |
-| Repo scaffold report | `.repo-ready/AUDIT-REPORT.md`, plus the scaffolded files at repo root | Tier 2.1 |
+| Stack decision | `.stack-ready/STACK.md` (or `DECISION.md`; `.stack-ready/STATE.md` for ongoing work) | Tier 1.4 |
+| Repo scaffold report | `.repo-ready/SCAFFOLD.md` (or `AUDIT-REPORT.md` for Mode B audits), plus the scaffolded files at repo root | Tier 2.1 |
 | Production state | `.production-ready/STATE.md` | Tier 2.2 |
-| Deploy state | `.deploy-ready/STATE.md` (+ runbook/, calendar/) | Tier 3.1 |
-| Observe state | `.observe-ready/STATE.md` (+ runbook/, dashboards/) | Tier 3.2 |
+| Deploy plan and state | `.deploy-ready/DEPLOY.md` (current ship), `.deploy-ready/PLAN.md` (next ship), `.deploy-ready/TOPOLOGY.md` (environments), `.deploy-ready/STATE.md` (resume state) | Tier 3.1 |
+| Observe state and SLOs | `.observe-ready/OBSERVE.md` (overview), `.observe-ready/SLOs.md` (per-journey SLOs), `.observe-ready/INDEPENDENCE.md` (telemetry-decoupling test), `.observe-ready/STATE.md` (resume state) | Tier 3.2 |
 | Launch state | `.launch-ready/STATE.md` (+ runbook/, copy/) | Tier 3.3 |
 | Hardening findings | `.harden-ready/FINDINGS.md` (+ remediation/) | Tier 3.4 |
 | Cross-tool agent brief | `AGENTS.md` at project root (+ symlink `CLAUDE.md` -> `AGENTS.md`) | Tier 0 / 2.1 |
@@ -832,6 +832,734 @@ Hand off to a phase orchestrator after the arc completes. Options include:
 - **The user's own process.** No orchestrator required; the artifacts at `.<tier>-ready/` paths are stable enough that any process can consume them.
 
 The arc-ready / orchestrator boundary: arc-ready owns the arc. The orchestrator owns the iteration loop after the arc. PROGRESS.md is the handoff contract. See `references/shared/ORCHESTRATORS.md` for the integration patterns.
+
+## Mode B: existing-codebase routing
+
+Mode B fires when the user's project already has one or more arc artifacts on disk and they want to fill a gap rather than run the full arc. The Tier 0 detection step inventories the `.<tier>-ready/` directories and routes to the smallest tier-set that closes the gap.
+
+### Mode B decision tree
+
+Start at the inventory and walk the tree:
+
+1. **No `.prd-ready/PRD.md`?** Route to Tier 1.1. The PRD is the upstream of every other planning artifact; without it, downstream work has no grounding. (Exception: the user explicitly says "I have an external PRD; here is the path." Treat as Mode A import.)
+2. **PRD exists; no `.architecture-ready/ARCH.md`?** Route to Tier 1.2.
+3. **PRD + ARCH exist; no `.roadmap-ready/ROADMAP.md`?** Route to Tier 1.3.
+4. **PRD + ARCH + ROADMAP exist; no `.stack-ready/STACK.md` (or `DECISION.md`)?** Route to Tier 1.4.
+5. **All planning artifacts exist; repo not scaffolded (no README, no `.github/workflows/`)?** Route to Tier 2.1.
+6. **Repo scaffolded; no `.production-ready/STATE.md` and no end-to-end-wired feature?** Route to Tier 2.2.
+7. **App built; no deploy pipeline (no `.deploy-ready/DEPLOY.md`, no `.github/workflows/deploy*.yml`)?** Route to Tier 3.1.
+8. **Deploy works; no SLOs (no `.observe-ready/OBSERVE.md` or `SLOs.md`)?** Route to Tier 3.2.
+9. **App deployed and observed; user wants public launch (no `.launch-ready/STATE.md`)?** Route to Tier 3.3.
+10. **App deployed; user wants pre-launch security review (no `.harden-ready/FINDINGS.md`)?** Route to Tier 3.4.
+
+The decision tree honors dependency order. Skipping ahead (e.g., scaffolding the repo before the PRD exists) is allowed only with an explicit user override and a recorded `Mode B override:` note in `.arc-ready/PROGRESS.md`. Otherwise the prior gap is filled first.
+
+### Mode B routing examples
+
+| Existing state | Gap | Route |
+|---|---|---|
+| PRD only | Architecture, roadmap, stack | Tier 1.2 first; user may chain to 1.3 and 1.4 |
+| PRD + ARCH + half-built app | Roadmap, stack settled by code, deploy missing | Tier 1.3 (slice queue), then Tier 3.1 |
+| Repo scaffolded but no PRD | Planning entirely | Tier 1.1; treat the existing repo as input to Tier 2.1's stack detection |
+| Deployed app, no observability | SLO design, runbooks | Tier 3.2 only |
+| Deployed app, post-incident | Class-not-instance hardening | Tier 3.4 with focus on `references/shipping/post-incident-hardening.md` |
+| Public launch needed for a private-pilot product | Launch surface | Tier 3.3 only; Tier 3.4 already done |
+
+### Mode B refusal
+
+If the user requests a tier whose upstream is absent, refuse and route. "You're asking me to design the architecture, but `.prd-ready/PRD.md` does not exist. Either run Tier 1.1 first, or declare an explicit Mode B override with the PRD-equivalent assumptions inline." Ghost-handoff is a Tier-0 failure mode; Mode B routing is its prevention.
+
+## Mode C: retroactive audit
+
+Mode C fires when the user wants to verify an already-produced artifact against arc-ready's discipline. The output is `<TIER>-AUDIT.md` at the canonical artifact path with severity-classified findings, no source-artifact modifications. The user runs the audit, reads the findings, and decides whether to remediate (which may invoke Mode B) or accept the findings as risk.
+
+### Per-tier audit procedure
+
+Each tier has a dedicated audit protocol in its `references/<tier>/<skill>-antipatterns.md` file. The shape is consistent across tiers:
+
+1. **Run the named-pattern grep tests.** Each pattern in the antipatterns catalog has a grep target that is mechanically detectable in the artifact. Run all grep tests.
+2. **Run the substitution test** on user-facing claims (PRD problem and target-user; architecture component names and rationales; roadmap commitments; stack rationales; landing-page hero/cards; security claims).
+3. **Run the three-label test** on every sentence (PRD), every row (roadmap), every box and arrow (architecture), every score (stack), every metric (observe), every finding (harden).
+4. **Score severity per finding.** The standard severity vocabulary: Critical (artifact fails the tier's gate; do not advance), High (artifact passes the gate but a load-bearing claim is shaky), Medium (style or formatting issue), Low (typo or polish).
+5. **Write `<TIER>-AUDIT.md` at the canonical artifact path** with: total findings, breakdown by severity, per-finding entry (location, excerpt, named pattern, severity, remediation), and a verdict line (PASS / PASS WITH FINDINGS / BLOCK).
+6. **Do not modify the source artifact.** Mode C is read-only on the artifact under audit.
+
+### Audit-output canonical paths
+
+| Tier | Audit output |
+|---|---|
+| 1.1 (PRD) | `.prd-ready/AUDIT.md` |
+| 1.2 (architecture) | `.architecture-ready/AUDIT.md` |
+| 1.3 (roadmap) | `.roadmap-ready/AUDIT.md` |
+| 1.4 (stack) | `.stack-ready/AUDIT.md` |
+| 2.1 (repo) | `.repo-ready/AUDIT-REPORT.md` |
+| 2.2 (production / app) | `.production-ready/AUDIT.md` |
+| 3.1 (deploy) | `.deploy-ready/AUDIT.md` |
+| 3.2 (observe) | `.observe-ready/AUDIT.md` |
+| 3.3 (launch) | `.launch-ready/AUDIT.md` |
+| 3.4 (harden) | `.harden-ready/AUDIT.md` (or the `FINDINGS.md` for a fresh audit pass) |
+
+### Audit verdict semantics
+
+- **PASS**: zero Critical, zero High. Artifact passes the tier's gate without remediation.
+- **PASS WITH FINDINGS**: zero Critical; some High. Artifact technically passes the gate, but the High findings are load-bearing risks the user should remediate before relying on the artifact downstream.
+- **BLOCK**: at least one Critical. Artifact does not pass the tier's gate. Downstream tiers cannot proceed until the Critical findings are resolved or explicitly accepted with named-owner risk-acceptance entries.
+
+The verdict is the audit's load-bearing output. A PASS WITH FINDINGS audit is not a clean bill of health; it is a signed-off "passes the bar with documented warts." The user reading the audit must understand which interpretation applies.
+
+## Mode D: multi-repo suite layout
+
+Mode D fires when the user is designing a collection of related repositories that will pair as a suite (a multi-skill collection, a microservice cluster, a monorepo split, a multi-app product family).
+
+The Mode D pattern is documented in `references/building/multi-repo-suite-layout.md`. It is the generalization of the discipline that produced the eleven-skill aihxp/ready-suite itself. arc-ready inherits the pattern reference for users who need to scaffold a different multi-repo collection beyond arc-ready.
+
+The Mode D dispatch:
+
+1. **Determine the collection shape.** Hub-and-spoke (one hub repo, N spoke repos), peer-cluster (N equal-rank repos), or monorepo-with-published-packages. Load `references/building/multi-repo-suite-layout.md` section 1.
+2. **Decide what is byte-identical across siblings.** Common: a SUITE.md or COLLECTION.md, a CONTRIBUTING.md, a SECURITY.md. The byte-identical-collection-map invariant is enforced by lint, not by convention.
+3. **Decide what is per-repo.** Each repo's own SKILL.md (if it is a skill collection), its own CHANGELOG.md, its own README.md.
+4. **Coordinated patch ritual.** When a change affects multiple repos, the maintainer runs the change in a defined order with the lint as the gate. Document this ritual in MAINTAINING.md per `references/building/multi-repo-suite-layout.md` section 5.
+5. **Versioning and tagging.** Each repo carries its own semver; coordinated breaking changes get matching minor or major bumps. Tag-release parity is checked across siblings.
+6. **Hub vs specialist split.** The hub does not have a version of its own (it is the discovery surface); specialists do.
+
+Mode D is rare. arc-ready's primary modes are A, B, and C. If the user asks for "a suite of skills" or "a collection of microservices" without a current arc-ready arc context, route to Mode D.
+
+## Per-tier inline grep tests
+
+Each tier has mechanical grep tests that an agent can run to verify a gate is passing. These are inline reproductions of the same tests in the per-tier antipatterns catalogs; load the full catalog for the failure-mode interpretation.
+
+### Tier 1.1 (PRD) grep tests
+
+```bash
+# Hollow PRD: every R-NN entry must have an acceptance criterion within 3 lines.
+grep -nE '^- \*\*R-[0-9]+ \(Must\)' .prd-ready/PRD.md > /tmp/musts.txt
+# For each line in musts.txt, check the next 3 lines for "Acceptance:" or equivalent.
+
+# Substitution test: the Problem and Target User sections must contain a named-role
+# or named-context noun phrase, not generic adjectives.
+awk '/^## Problem/,/^## /' .prd-ready/PRD.md | grep -iE '\b(generic|users|customers|teams|companies)\b' | head
+
+# MoSCoW distribution: at most 50% of entries are Must.
+must=$(grep -cE 'R-[0-9]+ \(Must\)' .prd-ready/PRD.md)
+total=$(grep -cE 'R-[0-9]+' .prd-ready/PRD.md)
+echo "Must: $must / $total"
+
+# Open questions have owner and date.
+grep -E '^OQ-[0-9]+' .prd-ready/PRD.md | grep -vE 'owner: [A-Z]|due: 20[0-9]{2}-[0-9]{2}-[0-9]{2}'
+```
+
+### Tier 1.2 (architecture) grep tests
+
+```bash
+# Every NFR has a number, not an adjective.
+grep -E 'p9[59] (latency|response|duration)' .architecture-ready/ARCH.md | grep -vE '<[0-9]+ ?(ms|s)'
+
+# Every component has a flip point in its ADR.
+ls .architecture-ready/adr/*.md | while read adr; do
+  grep -q '^## Flip point' "$adr" || echo "[fail] $adr missing Flip point"
+done
+
+# Trust boundaries map to specific code/configs.
+grep -E 'trust boundary' .architecture-ready/ARCH.md | grep -vE '\.(ts|js|py|yml|conf)' | head
+
+# Component dependency graph in HANDOFF.md
+test -f .architecture-ready/HANDOFF.md && grep -q 'dependency graph' .architecture-ready/HANDOFF.md
+```
+
+### Tier 1.3 (roadmap) grep tests
+
+```bash
+# Every commitment references upstream.
+grep -E '^- \[(commitment|direction)\]' .roadmap-ready/ROADMAP.md | grep -vE '\(R-[0-9]+\)|\(C-[A-Z]+\)|\(external:'
+
+# Parallel tracks <= team size.
+team_size=$(grep -E '^team size:' .roadmap-ready/ROADMAP.md | head -1 | awk '{print $NF}')
+max_parallel=$(grep -E '^parallel tracks:' .roadmap-ready/ROADMAP.md | sort -k3 -n | tail -1 | awk '{print $NF}')
+[ "$max_parallel" -le "$team_size" ] || echo "[fail] $max_parallel > $team_size"
+
+# No fictional precision: only Now horizon has dated commitments.
+grep -A 100 '^## Later' .roadmap-ready/ROADMAP.md | grep -E '20[0-9]{2}-[0-9]{2}-[0-9]{2}' && echo "[fail] dates in Later horizon"
+```
+
+### Tier 1.4 (stack) grep tests
+
+```bash
+# Every score has a weight.
+grep -E '^- (Performance|Cost|DX|Operability)' .stack-ready/STACK.md | grep -vE 'weight: [0-9.]+'
+
+# Every recommendation has a flip point.
+grep -E '^## Recommendation' .stack-ready/STACK.md | head -1
+grep -A 50 '^## Recommendation' .stack-ready/STACK.md | grep -E 'flip point:' || echo "[fail] no flip point"
+
+# Migration path exists.
+grep -q '^## Migration paths' .stack-ready/STACK.md || echo "[fail] no Migration paths section"
+```
+
+### Tier 2.1 (repo) grep tests
+
+```bash
+# README is non-placeholder.
+grep -E 'TODO|FIXME|lorem ipsum' README.md && echo "[fail] placeholder in README"
+
+# CI workflow exists and is non-empty.
+test -s .github/workflows/ci.yml || test -s .github/workflows/test.yml || echo "[fail] no CI workflow"
+
+# AGENTS.md exists.
+test -f AGENTS.md || echo "[fail] AGENTS.md missing"
+
+# License is real, not placeholder.
+grep -E 'MIT|Apache|GPL|BSD|MPL|EUPL' LICENSE | head -1
+```
+
+### Tier 2.2 (production / app) grep tests
+
+```bash
+# No placeholder in shipped slice.
+git grep -E '\b(TODO|FIXME|XXX|lorem ipsum)\b' -- 'src/**' && echo "[fail] placeholder in shipped code"
+
+# Real-backend-not-stubbed: search for fake-data signatures.
+git grep -E 'faker\.|fake_data|hardcoded_response' -- 'src/**' && echo "[fail] fake data in production paths"
+
+# Every API endpoint has a permission check (heuristic).
+git grep -lE 'router\.(get|post|put|delete)' src/ | while read f; do
+  grep -qE 'requireAuth|withAuth|@authorize' "$f" || echo "[heuristic-fail] $f"
+done
+
+# Every page has loading/empty/error states.
+git grep -lE 'export default function .*Page' app/ | while read f; do
+  grep -qE 'isLoading|isEmpty|isError|<Skeleton|<EmptyState' "$f" || echo "[heuristic-fail] $f"
+done
+```
+
+### Tier 3.1 (deploy) grep tests
+
+```bash
+# Same-artifact promotion: deploy script does not rebuild.
+grep -E 'docker build|npm run build' .github/workflows/deploy*.yml && echo "[fail] rebuild during deploy"
+
+# Schema migrations classified.
+grep -E '^migration: ' .deploy-ready/DEPLOY.md | grep -vE 'classification: (code-only|data-forward)'
+
+# Canary has stop rule.
+grep -A 5 '^## Canary' .deploy-ready/DEPLOY.md | grep -qE 'abort if|stop rule:|rollback at' || echo "[fail] paper canary"
+
+# Rollback plan for data-forward changes is compensating-forward.
+grep -B 2 -A 5 'classification: data-forward' .deploy-ready/DEPLOY.md | grep -qE 'compensating forward|restore point' || echo "[fail] code-only rollback for data-forward"
+```
+
+### Tier 3.2 (observe) grep tests
+
+```bash
+# Every chart bound to a journey.
+grep -E '^- (chart|metric):' .observe-ready/OBSERVE.md | grep -vE 'journey: |non-alerting|diagnostic-only'
+
+# Error budget policy named with owner.
+grep -A 5 '^## Error budget policy' .observe-ready/SLOs.md | grep -qE 'freeze trigger|owner:' || echo "[fail] paper SLO"
+
+# Runbooks executed at least once.
+grep -E '^last_executed:' .observe-ready/runbook/*.md | grep -vE 'last_executed: 20[0-9]{2}-[0-9]{2}-[0-9]{2}'
+
+# Independence test recorded.
+test -f .observe-ready/INDEPENDENCE.md || echo "[fail] no independence test"
+```
+
+### Tier 3.3 (launch) grep tests
+
+```bash
+# Substitution test: hero copy does not contain generic phrases.
+grep -E '^hero:' .launch-ready/POSITIONING.md | grep -iE 'empower|productivity|seamlessly|leverage|unleash' && echo "[fail] hero-fatigue copy"
+
+# OG card exists and has dimensions.
+test -f public/og-image.png || test -f static/og-image.png || echo "[fail] no OG card image"
+
+# Source attribution wired.
+grep -rE 'utm_source|ref=|source=' src/landing/ | head -1 || echo "[fail] no source attribution"
+
+# Launch-week runbook covers D-7 to D+7.
+grep -E '^## D[+-]?[0-9]' .launch-ready/runbook/*.md | wc -l | grep -vE '^14$|^1[3-9]$' && echo "[heuristic-warn] runbook may be incomplete"
+```
+
+### Tier 3.4 (harden) grep tests
+
+```bash
+# Every OWASP category has a verdict.
+grep -E '^### A0?[1-9]:' .harden-ready/FINDINGS.md | wc -l | grep -vE '^10$'
+
+# Every accepted risk has owner and expiration.
+grep -E 'accepted risk' .harden-ready/FINDINGS.md | grep -vE 'owner: [A-Z].*expires: 20[0-9]{2}-[0-9]{2}-[0-9]{2}'
+
+# Every compliance control mapped.
+grep -E '^### [A-Z]+ ' .harden-ready/COMPLIANCE.md 2>/dev/null | while read line; do
+  grep -A 5 "$line" .harden-ready/COMPLIANCE.md | grep -qE 'evidence: \./|implemented at: \./' || echo "[fail] $line missing evidence"
+done
+
+# Findings actionable.
+grep -E '^## Finding' .harden-ready/FINDINGS.md | while read line; do
+  for required in 'severity:' 'reproduction:' 'fix:' 'retest:'; do
+    grep -A 30 "$line" .harden-ready/FINDINGS.md | grep -q "$required" || echo "[fail] $line missing $required"
+  done
+done
+```
+
+These grep tests are not exhaustive; they catch the dominant failure modes. The full per-tier antipatterns catalogs in `references/<tier>/<skill>-antipatterns.md` have the complete grep matrix.
+
+## Per-harness integration
+
+The arc spans sessions. arc-ready works across every Agent Skills compatible harness, with handoff details that vary by harness. The skill body is identical; the integration glue differs.
+
+### Claude Code
+
+Native invocation: `Skill arc-ready` or the slash form once registered. Resume protocol uses Claude Code's `Read` tool against `.arc-ready/PROGRESS.md`. AGENTS.md is consumed automatically (Claude Code respects the `AGENTS.md` standard via `CLAUDE.md` symlink). Long-running Tier 2.2 sessions benefit from `/compact` invocations between slices; resume re-derives state from disk per Step 0.2.
+
+### Codex CLI
+
+Native invocation: `$ arc-ready` (dollar-sign form). Codex respects the `AGENTS.md` standard directly without a symlink; `CLAUDE.md` is harmless but not required. Resume uses Codex's file-read tool against `.arc-ready/PROGRESS.md`.
+
+### Cursor
+
+No Skill tool. Surface the workflow as Cursor rules in `.cursor/rules/` referencing `SKILL.md` body. Resume is manual: the user opens `.arc-ready/PROGRESS.md` in Cursor and the AI reads it as context. Tier dispatch becomes guidance text.
+
+### Windsurf
+
+Similar to Cursor: no Skill tool; workflow surfaces via `.windsurfrules` referencing `SKILL.md`. Resume is manual.
+
+### Antigravity
+
+Native Agent Skills support per the Antigravity standard. Invocation form per the Antigravity docs.
+
+### Pi / OpenClaw
+
+Native Agent Skills support; invocation form per each tool's standard.
+
+### Generic chat frontend (no file system)
+
+arc-ready surfaces tier sub-step guidance as message blocks. The user copies the relevant artifact content into their own file system and reports back when each artifact is on disk. arc-ready cannot verify import or resume on a file-system-less frontend; the user is responsible for the verification.
+
+## Worked example: the Pulse arc (from the dogfood)
+
+The eleven-skill suite produced a worked example at [aihxp/ready-suite-example](https://github.com/aihxp/ready-suite-example), a fictional B2B SaaS product called Pulse (Customer Success ops platform). The same arc, run end-to-end on arc-ready, produces the same artifacts at the same canonical paths.
+
+The arc, condensed:
+
+- **Tier 0.** User intent: "I have an idea for a Customer Success ops platform. Walk me through to launch." Mode A. PROGRESS.md initialized. Skip declared for `launch-ready`: pilot is private, public launch deferred to v1.1.
+- **Tier 1.1 (PRD).** `.prd-ready/PRD.md` written. Problem framed: CS teams operate from spreadsheets; renewal data lives in HubSpot but adoption signal lives in Mixpanel; reconciliation is manual. Target user: CS Manager at 50-200 person B2B SaaS, $5M-$50M ARR, three or more CS reps reporting up. Success: TTV < 14 days for first health-score dashboard, MTTAR < 8 hours for at-risk account flag. R-NN with MoSCoW. Six pilot customers commit to onboarding within 4 weeks of v1.0 cutover. Sign-off recorded.
+- **Tier 1.2 (architecture).** `.architecture-ready/ARCH.md` written. Modular monolith (3 bounded contexts: ingestion, scoring, surface); single deployable + worker; HubSpot v1.0, Mixpanel v1.1; Auth.js v5 magic-link with OIDC migration path; tenant-id discipline (single-schema multi-tenancy with row-level security); ADR-001 through ADR-007. Trust boundaries mapped to Postgres RLS policies and Auth.js middleware. Component dependency graph in HANDOFF.md.
+- **Tier 1.3 (roadmap).** `.roadmap-ready/ROADMAP.md` written. Team capacity: 4 engineers, 6-week Shape Up cycle, Amdahl serial fraction 0.3. Three Now slices, three Next slices, two Later directions. Each commitment grounded in PRD R-NN. Critical path identified: ingestion before scoring before surface. Cutover milestone gate at week 13.
+- **Tier 1.4 (stack).** `.stack-ready/STACK.md` written. Frontend: Next.js 15 + Tailwind v4 + shadcn/ui re-skinned with DESIGN.md. Backend: Server Actions + tRPC. Data: Postgres on Neon, Drizzle ORM. Auth: Auth.js v5. Hosting: Vercel + Railway worker. Observability: Axiom. 12-dimension scoring with weights (DX 0.18, Cost 0.16, Performance 0.10, Operability 0.16, etc.). Flip points named per dimension.
+- **Tier 2.1 (repo).** `.repo-ready/SCAFFOLD.md` written; repo root populated. README, CONTRIBUTING, SECURITY, LICENSE, CODEOWNERS, .github/workflows/{ci, lint, deploy-staging, deploy-prod}.yml, .editorconfig, Makefile. AGENTS.md emitted (Tier 0 sub-step 6a). DESIGN.md scaffolded (Tier 2.2 sub-step 3b).
+- **Tier 2.2 (production / app).** Slices shipped vertically: tenant-bootstrap -> ingestion-pipeline -> health-score-engine -> renewal-dashboard -> at-risk-flagging. Each end-to-end-wired, all states covered, real backend, no fake data. `.production-ready/STATE.md` records the queue.
+- **Tier 3.1 (deploy).** `.deploy-ready/DEPLOY.md` written. Same-artifact promotion via Vercel build hash; expand-contract calendar for the schema migration that adds `health_score_history`; canary at 10% with concrete stop rule (p99 latency > 1.2s OR error rate > 1% over 5 min); rollback path proven via dry-run; secrets vault-injected via Vercel env.
+- **Tier 3.2 (observe).** `.observe-ready/OBSERVE.md` written. SLOs: dashboard-load p95 < 800ms, ingestion-latency p99 < 60s, health-score-recompute end-to-end p95 < 30s. Error budget policy: code freeze if 30-day budget burns past 50%. Runbooks executed: dashboard-load-degraded, ingestion-stall. INDEPENDENCE.md recorded: telemetry on Axiom is decoupled from the app.
+- **Tier 3.3 (launch).** Skipped (declared at kickoff; pilot is private; deferred to v1.1).
+- **Tier 3.4 (harden).** `.harden-ready/FINDINGS.md` written. OWASP Top 10 walkthrough: 1 High (auth session-fixation in magic-link flow, fix landed; retest passed), 3 Medium, 8 Low. SOC 2 Common Criteria mapped to specific files. Auth-hardening verification in AUTH-VERIFICATION.md. Critical-finding gate to launch (had launch run): would have held until High resolved; resolved before harden was marked done.
+- **Tier 0 (final ledger).** `.arc-ready/PROGRESS.md` updated with `## Arc complete` block. Per-tier summary table. Open items: launch-ready deferred to v1.1, post-pilot bug-bounty program not yet stood up. Recommended next-step orchestrator: GSD for ongoing phase work.
+
+The dogfood verifies cleanly against arc-ready's tier dispatch: every artifact at the same canonical path the eleven-skill suite established, same content shape, same gate-to-gate handoff.
+
+## Tier-by-tier "common failure modes that fire here"
+
+When an agent runs a tier sub-step and hits resistance, the resistance is usually one of the named failure modes. This is the quick-reference: if X is happening, look for failure mode Y.
+
+| Symptom while running | Likely failure mode | Catalog reference |
+|---|---|---|
+| The PRD's Problem section keeps wanting to name the product | Solution-first PRD | `references/planning/prd-antipatterns.md` Antipattern 4 |
+| The PRD's Target User reads like any user | Invisible PRD | `references/planning/prd-antipatterns.md` Antipattern 2 |
+| Architecture diagram done; ADRs are thin | Architecture theater | `references/planning/architecture-antipatterns.md` |
+| Architecture says "we'll figure scale later" | Non-architecture | `references/planning/architecture-antipatterns.md` |
+| Roadmap has dates but no team-capacity input | Fictional precision | `references/planning/roadmap-antipatterns.md` |
+| Roadmap has 6 parallel tracks for 4 engineers | Fictional parallelism | `references/planning/roadmap-antipatterns.md` |
+| Stack pick has rationale but no flip point | Flip-point-free recommendation | `references/planning/stack-antipatterns.md` |
+| Repo has every recommended file regardless of stage | Maximum-files-everywhere | `references/building/repo-antipatterns.md` |
+| App feature has UI but no backend wiring | Hollow button | `references/building/production-antipatterns.md` |
+| App feature uses faker.js or hardcoded JSON | Fake data | `references/building/production-antipatterns.md` |
+| Schema migration in single deploy | Single-deploy expand-contract | `references/shipping/deploy-antipatterns.md` |
+| "Canary" deploy with no stop rule | Paper canary | `references/shipping/deploy-antipatterns.md` |
+| Dashboard has 40 charts; nothing is the SLO | Blind dashboard | `references/shipping/observe-antipatterns.md` |
+| Alert fires every minute and is muted | Alert-without-real-fires | `references/shipping/observe-antipatterns.md` |
+| Hero copy works for any competitor | AI-slop landing / hero-fatigue | `references/shipping/launch-antipatterns.md` |
+| OG card not rendering in previews | Unrendered OG card | `references/shipping/launch-antipatterns.md` |
+| "Snyk passed; we are secure" | Scanner-only security | `references/shipping/harden-antipatterns.md` |
+| Compliance checklist green; trust boundary in code missing | Compliance without security | `references/shipping/harden-antipatterns.md` |
+
+When in doubt, run the named-pattern grep test from the relevant catalog. The catalog has the load-bearing definition, the citation, and the remediation procedure.
+
+## Critical-finding gate (Tier 3.4 -> Tier 3.3)
+
+If harden-ready (Tier 3.4) emits a finding at severity Critical, arc-ready halts launch-ready (Tier 3.3) until one of:
+
+1. The finding is resolved (fix landed; retest passed; verified in `.harden-ready/FINDINGS.md`).
+2. The user explicitly accepts the risk in `.arc-ready/PROGRESS.md` with: named risk owner, justification, dated acceptance, expiration date.
+3. The user overrides the gate with an explicit "skip-harden" preference (rare; only for prototypes with no real user surface).
+
+The gate is the default. Security-sensitive projects (healthcare, finance, regulated industries) have an additional override locked: even with risk acceptance, the launch is gated. The override flag is `gate-launch-on-hardening: hard` in PROGRESS.md.
+
+The grep test:
+
+```bash
+critical_count=$(grep -cE '^severity: critical$' .harden-ready/FINDINGS.md)
+if [ "$critical_count" -gt 0 ]; then
+  unresolved=$(grep -B 1 'severity: critical' .harden-ready/FINDINGS.md | grep -cE '^status: (open|wip)')
+  accepted=$(grep -A 5 'risk-acceptance:' .arc-ready/PROGRESS.md | grep -c '^owner:')
+  if [ "$unresolved" -gt 0 ] && [ "$accepted" -lt "$unresolved" ]; then
+    echo "[block] launch held by critical-finding gate"
+  fi
+fi
+```
+
+This gate is one of the most important integrity properties of the arc. Skipping it is a Tier-0 have-not (critical-finding gate breach).
+
+## AGENTS.md emit and respect
+
+Tier 0 sub-step 6a and Tier 2.1 sub-step 14 both touch `AGENTS.md`. The rule across both: respect any existing `AGENTS.md`; emit a minimal one if absent.
+
+Emit conditions:
+
+1. **Only if absent.** If `AGENTS.md` exists at project root, leave it untouched. Record `AGENTS.md: existing-respected` in `.arc-ready/PROGRESS.md`.
+2. **Tier 0 emit (orchestration metadata only).** Names the suite (arc-ready), points at the artifact map, declares one-paragraph attribution. No stack, no build commands, no conventions. The template is `references/orchestration/agents-md-template.md`.
+3. **Tier 2.1 emit (project conventions).** When repo-ready scaffolds the repo, it writes a fuller AGENTS.md with stack, commands, forbidden actions, conventions. If Tier 0's minimal AGENTS.md already exists, Tier 2.1 augments it (appends the project-conventions section, leaves the artifact-map section intact). If a user-authored AGENTS.md exists, Tier 2.1 leaves it untouched and records `AGENTS.md: existing-respected`.
+4. **Skip on out-of-fs harnesses.** On chat-only frontends, surface the AGENTS.md template as guidance text for the user to paste.
+
+The CLAUDE.md symlink (`CLAUDE.md -> AGENTS.md`) is created at the same time as AGENTS.md. The symlink is harmless on Codex and other AGENTS.md-aware harnesses, and is required for Claude Code to consume the file.
+
+The grep test for emit-respect:
+
+```bash
+# AGENTS.md exists at project root
+test -f AGENTS.md || echo "[fail] no AGENTS.md"
+# CLAUDE.md is a symlink to AGENTS.md
+[ -L CLAUDE.md ] && [ "$(readlink CLAUDE.md)" = "AGENTS.md" ] || echo "[fail] CLAUDE.md not symlinked correctly"
+# AGENTS.md was emitted-or-respected per PROGRESS.md
+grep -E 'agents_md_emitted: (path|existing-respected|guidance-text)' .arc-ready/PROGRESS.md || echo "[fail] PROGRESS.md does not record AGENTS.md decision"
+```
+
+## Resume protocol elaborated
+
+The resume protocol is the single most-important defense against phantom resume (a known Anthropic claude-code failure mode, Issue #42338, #42260, #42309). Every arc-ready turn begins with this protocol; never trust the cached conversation about what tier or sub-step we are on.
+
+### The protocol, step by step
+
+```bash
+# 1. Read the ledger.
+test -f .arc-ready/PROGRESS.md && cat .arc-ready/PROGRESS.md > /tmp/progress.txt
+
+# 2. List every claimed-complete tier directory.
+for tier in prd architecture roadmap stack repo production deploy observe launch harden; do
+  if grep -qE "^- ${tier}-ready: (done|imported)" /tmp/progress.txt; then
+    if [ ! -d ".${tier}-ready" ] || [ -z "$(ls .${tier}-ready 2>/dev/null)" ]; then
+      echo "[drift] PROGRESS.md says ${tier} done but .${tier}-ready/ is missing or empty"
+    fi
+  fi
+done
+
+# 3. Identify the next sub-step from disk, not from conversation.
+# (The next sub-step is the first tier whose artifact does not exist on disk
+# or whose artifact has been declared rolled-back.)
+
+# 4. Record the resume verification with a timestamp.
+echo "## Resume verification: $(date -u +%FT%TZ)" >> .arc-ready/PROGRESS.md
+echo "next_sub_step: <derived from disk>" >> .arc-ready/PROGRESS.md
+```
+
+The protocol runs every turn, not just on explicit resume. Cache invalidations, compression-summary loss, stale tool-result state can all drift the conversation away from disk truth. Disk wins.
+
+### What disk-wins means in practice
+
+If PROGRESS.md says Tier 1.4 (stack) is done but `.stack-ready/STACK.md` does not exist, the conversation is wrong; PROGRESS.md is wrong; only disk is right. Correct PROGRESS.md (downgrade Tier 1.4 to `pending`) and re-run the sub-step.
+
+If PROGRESS.md says Tier 1.1 is `pending` but `.prd-ready/PRD.md` exists and is non-empty, the user has imported a PRD. Verify the import, mark `1.1: imported`, and proceed.
+
+If the conversation memory says "we just finished Tier 2.2 in the last reply," but `.production-ready/STATE.md` does not show the slice queue completed, the conversation is hallucinating progress. The first turn after a long pause must always re-derive state from disk before claiming any progress.
+
+## Per-tier session-state schemas
+
+Each tier's `.<tier>-ready/STATE.md` is the durable record of where the tier is and what it has produced. The schemas vary by tier; the load-on-demand pattern lives in the per-tier references. This section is the at-a-glance summary so an agent can read or write the right shape without round-tripping through references.
+
+### `.arc-ready/PROGRESS.md` (Tier 0)
+
+```markdown
+# arc-ready PROGRESS
+
+## Skill version: 0.1.1
+## Last update: <ISO-8601 timestamp>
+## Mode: A | B | C | D
+## Harness: claude-code | codex | cursor | windsurf | antigravity | pi | openclaw | generic
+## Project: <project name from kickoff intent>
+
+## Kickoff intent
+<one-paragraph user-quoted description; greenfield-or-not check; skip declarations; time budget>
+
+## Tier ledger
+- 0: <status> | <artifact: .arc-ready/PROGRESS.md> | <verified: ISO-8601>
+- 1.1 (PRD): <status> | <artifact: .prd-ready/PRD.md> | <verified: ...>
+- 1.2 (ARCH): <status> | <artifact: .architecture-ready/ARCH.md> | <verified: ...>
+- 1.3 (ROADMAP): <status> | <artifact: .roadmap-ready/ROADMAP.md> | <verified: ...>
+- 1.4 (STACK): <status> | <artifact: .stack-ready/STACK.md> | <verified: ...>
+- 2.1 (REPO): <status> | <artifact: .repo-ready/SCAFFOLD.md + repo root> | <verified: ...>
+- 2.2 (PRODUCTION): <status> | <artifact: .production-ready/STATE.md> | <verified: ...>
+- 3.1 (DEPLOY): <status> | <artifact: .deploy-ready/DEPLOY.md> | <verified: ...>
+- 3.2 (OBSERVE): <status> | <artifact: .observe-ready/OBSERVE.md> | <verified: ...>
+- 3.3 (LAUNCH): <status> | <artifact: .launch-ready/STATE.md> | <verified: ...>
+- 3.4 (HARDEN): <status> | <artifact: .harden-ready/FINDINGS.md> | <verified: ...>
+
+## Resume verifications
+- <ISO-8601>: next_sub_step: <derived>; disk-state hash: <mtime hash>
+
+## Risk acceptances (only if Critical findings exist)
+- finding: <id> | severity: critical | accepted: <ISO-8601> | owner: <name> | expires: <ISO-8601> | justification: <one-line>
+
+## Out-of-scope refusals
+- <ISO-8601>: <user-request> | refused: <named failure mode> | routed-to: <harness | sibling-skill>
+
+## Arc complete (only when arc finishes)
+- per-tier summary table
+- open items handed off to ongoing work
+- recommended next-step orchestrator
+- agents_md_emitted: path | existing-respected | guidance-text
+```
+
+`status` vocabulary: `pending`, `in-flight`, `done`, `skipped`, `imported`, `failed`, `re-invoked`. Silence is not a status. Every tier appears in the ledger.
+
+### `.prd-ready/STATE.md` (Tier 1.1, when ongoing)
+
+```markdown
+# PRD STATE
+- skill version, current tier (Brief / Spec / Full PRD / Launch-Ready PRD), mode (A-F)
+- pre-flight answers
+- active sections (problem, target user, success, requirements, NFRs, scope, risks, open questions, handoff, sign-off)
+- sign-off ledger
+- open questions blocking next tier
+- last session note
+```
+
+### `.architecture-ready/STATE.md` (Tier 1.2, when ongoing)
+
+```markdown
+# Architecture STATE
+- skill version, current tier (Sketch / Plan / Design / Spec)
+- mode (A-D)
+- consumed PRD version
+- ADRs written so far
+- open architectural questions blocking next tier
+- last session note
+```
+
+### `.roadmap-ready/STATE.md` (Tier 1.3, when ongoing)
+
+```markdown
+# Roadmap STATE
+- skill version, current tier (Sketch / Plan / Roadmap / Roadmap+ )
+- mode (A-D)
+- team capacity input
+- consumed PRD version, consumed ARCH version
+- horizons (Now / Next / Later) with current commitments and directions
+- review cadence and last review date
+- last session note
+```
+
+### `.stack-ready/STATE.md` (Tier 1.4, when ongoing)
+
+```markdown
+# Stack STATE
+- skill version, current tier (Survey / Score / Decide / Decision)
+- mode (A-D)
+- domain profile selected
+- shortlist with current scores and weights
+- pairing-rule check status
+- migration paths drafted
+- last session note
+```
+
+### `.production-ready/STATE.md` (Tier 2.2)
+
+```markdown
+# Production STATE
+- skill version, current tier (Scaffold / End-to-end / Tested / Polished)
+- consumed PRD, ARCH, ROADMAP, STACK versions
+- slice queue: pending / in-flight / done
+- active architectural decisions (per ADR-NN)
+- ADRs written this tier
+- open questions blocking next slice
+- last session note
+```
+
+### `.deploy-ready/STATE.md` (Tier 3.1)
+
+```markdown
+# Deploy STATE
+- skill version, current tier (Sketch / Plan / Pipeline / Calendar)
+- environments in play (dev, staging, prod, etc.)
+- active pipelines and their last green build hashes
+- in-progress expand/contract cycles
+- rollback paths by service
+- incidents logged this tier
+- open questions blocking next deploy
+- last session note
+```
+
+### `.observe-ready/STATE.md` (Tier 3.2)
+
+```markdown
+# Observe STATE
+- skill version, tier reached (Sketch / Plan / Live / Tuned)
+- services and journeys
+- SLOs active (per `.observe-ready/SLOs.md`)
+- paper-SLO watchlist (numbers without policies)
+- dashboards (per `.observe-ready/DASHBOARDS.md`)
+- runbooks (per `.observe-ready/runbook/`)
+- independence test status (per `.observe-ready/INDEPENDENCE.md`)
+- incidents this quarter
+- alert pruning last pass
+- open questions blocking next tier
+- last session note
+```
+
+### `.launch-ready/STATE.md` (Tier 3.3)
+
+```markdown
+# Launch STATE
+- skill version, tier reached (Positioning / Surfaces / Channels / Live)
+- mode (A-D)
+- positioning (Step 1)
+- landing page (Steps 2-4)
+- OG cards (Step 6)
+- SEO (Step 5)
+- waitlist (Step 7)
+- channels (Step 8)
+- launch week runbook (Step 9)
+- telemetry (Step 10)
+- press kit and outreach status
+- open questions blocking Tier 3 or Tier 4
+- last session note
+```
+
+### `.harden-ready/STATE.md` (Tier 3.4)
+
+```markdown
+# Harden STATE
+- skill version, tier reached (Walkthrough / Compliance / Pen-test / Continuous)
+- mode (A-D)
+- OWASP Top 10 verdicts (Web / API / LLM as applicable)
+- compliance frameworks in scope and mapping status
+- auth verification (per `.harden-ready/AUTH-VERIFICATION.md`)
+- API verification (per `.harden-ready/API-VERIFICATION.md`)
+- class-not-instance fixes (per `.harden-ready/CLASS-FIXES.md`)
+- pen-test scope and last execution
+- responsible disclosure surface
+- findings open / fixed / accepted
+- last session note
+```
+
+The schemas are intentionally short. The deep state lives in companion files at the tier's canonical paths (`.observe-ready/SLOs.md`, `.harden-ready/AUTH-VERIFICATION.md`, etc.); STATE.md is the index plus the resume hint. Reading STATE.md should take an agent under one minute and orient them to where the tier is.
+
+## What good looks like, per tier
+
+When an agent is in the middle of a tier and uncertain whether the artifact is approaching gate-passing quality, this is the at-a-glance reference. The full calibration lives in the worked-example files (`references/planning/EXAMPLE-PRD.md`, etc.).
+
+### Tier 1.1 (PRD): what a passing Problem section looks like
+
+> "Customer Success Managers at 50-200 person B2B SaaS companies spend 6-10 hours per week reconciling renewal data from HubSpot with adoption signal from Mixpanel. The reconciliation is manual: a CSM exports a HubSpot view, joins it against a Mixpanel cohort export, sorts by usage delta, and flags accounts whose adoption has dropped more than 30% in the last 30 days. The flag does not surface in their workflow tools; they paste it into Slack or a renewal-prep doc. The error rate is high (we measure 12-18% miscategorization in pilot data) and the latency is fatal (a flagged account is on average 11 days into the at-risk state by the time the CSM sees the signal). The mean-time-to-at-risk-recognition (MTTAR) we target is under 8 hours."
+
+Substitution test: replace "HubSpot" with "Salesforce" or "Mixpanel" with "Amplitude"; the sentence is still true, but the specific 6-10 hours, the 12-18% miscategorization, and the 11 days are observable claims that fail substitution against a different product. Specificity is the discipline.
+
+### Tier 1.2 (architecture): what a passing ADR looks like
+
+> "ADR-001: Single-schema multi-tenancy with tenant-id row-level security.
+>
+> Context. Pulse serves 50-200 person B2B SaaS companies in pilot phase, scale ceiling per the PRD is 6 pilot tenants in v1.0 and ~50 tenants by v1.1. Cross-tenant data leakage would be a P0 incident given the customer-data subject the platform handles.
+>
+> Decision. We use a single Postgres schema with a `tenant_id` column on every table that holds tenant-owned data, enforced by Postgres row-level security policies. Auth.js v5 attaches the authenticated session's tenant_id to every query via the connection's session-local variable. The default deny RLS policy on every new table is enforced by lint.
+>
+> Consequences. Faster queries than schema-per-tenant; no per-tenant migration overhead. Higher blast radius if RLS is misconfigured; pen-test must verify enforcement. Cross-tenant analytics queries require explicit superuser context.
+>
+> Flip points. (1) A tenant requires a dedicated schema for compliance reasons (we move them off; we do not change the platform default). (2) The tenant count exceeds 5,000 (RLS overhead becomes measurable; we evaluate schema-per-tenant). (3) A bug in RLS leaks one tenant's data to another (we move to schema-per-tenant immediately, not as an evaluation)."
+
+Substitution test: replace "Postgres" with "MySQL"; the rationale survives because RLS-equivalent exists in both. Replace "B2B SaaS" with "consumer mobile"; the rationale collapses (consumer-mobile rarely has multi-tenancy in the tenant-isolation sense).
+
+### Tier 1.3 (roadmap): what a passing commitment row looks like
+
+> "**M1 - Pilot Cutover (week 13).** Commitment. Six named pilot customers (per .prd-ready/PRD.md §Target users) onboarded; ingestion live for HubSpot + Mixpanel; health-score dashboard at TTV<14d; at-risk flag with MTTAR<8h. Reasoning: the pilot contract obligates us to a 14-day TTV per customer; the ingestion plus scoring plus surface chain is the load-bearing critical path per .architecture-ready/HANDOFF.md §dependency-graph; the target date is fixed by the partner-agreed cutover. Sign-off: <CSM Lead, Product Lead, Eng Lead>, dated 2026-04-01."
+
+Each commitment carries: an outcome, an upstream reference (PRD or ARCH), a critical-path justification, a fixed date with sign-off. No bare feature names, no invented dates.
+
+### Tier 1.4 (stack): what a passing recommendation looks like
+
+> "**Recommendation.** Bundle B2: Next.js 15 (App Router) + Server Actions + tRPC + Drizzle + Postgres on Neon + Auth.js v5 + Tailwind v4 + shadcn/ui + Vercel + Railway worker + Axiom.
+>
+> Score 8.6/10 weighted on (DX 0.18, Cost 0.16, Operability 0.16, Performance 0.10, Scale ceiling 0.10, Security 0.10, Maturity 0.08, Hireability 0.06, Multi-tenancy fit 0.06). Pulse is a 4-engineer team building a B2B SaaS pilot with 6 tenants in v1.0 and 50 by v1.1; this bundle optimizes for DX and operability at this scale.
+>
+> Flip points. (1) DAU > 50k or scale ceiling > 5k tenants: re-evaluate Vercel + Railway against AWS ECS + RDS (cost crossover). (2) Real-time collaboration becomes a load-bearing requirement: re-evaluate Drizzle + Postgres against Convex + auto-CRDT. (3) The team grows past 12 engineers: re-evaluate the modular-monolith deploy against split services per ARCH-001."
+
+Every score has weights; every recommendation has flip points; the scale ceiling is named.
+
+### Tier 2.1 (repo): what a passing scaffold looks like
+
+> "Repo root has: README.md (project-specific, not template), LICENSE (MIT), CONTRIBUTING.md, SECURITY.md, AGENTS.md (with CLAUDE.md symlink), DESIGN.md (Tier 2.2 sub-step 3b scaffolded), CODEOWNERS, .editorconfig, .gitignore, Makefile, .nvmrc, .github/workflows/{ci, lint, deploy-staging, deploy-prod, security}.yml, .github/ISSUE_TEMPLATE, .github/pull_request_template.md, package.json with a complete scripts block, biome.json, vitest.config.ts. CI runs and passes on a fresh clone."
+
+No file is the unmaintained template; every file references the project's specific stack and project profile (Next.js + TypeScript + B2B SaaS + pilot stage in this case).
+
+### Tier 2.2 (production): what a passing slice looks like
+
+> "**Slice: At-risk account flagging.** Schema: `account_health_history` table with `tenant_id`, `account_id`, `health_score`, `delta_30d`, `flagged_at`, `flag_reason`. Migration applied. API: `POST /api/health/flag` invoked by the scoring job; `GET /api/health/at-risk` for the dashboard. Permission check: `requireRole('cs_manager')` middleware. Service layer: `flagAtRiskAccount` writes to the table, emits a domain event. Query hooks: `useAtRiskAccounts` with stale-while-revalidate. Dashboard page: list with filters (tenant, severity, age), detail row with reason chips and "view in HubSpot" deep link, empty state ("No at-risk accounts in the last 30 days"), loading state (skeleton), error state (retry banner). Tests: unit (scorer logic), integration (API + DB), E2E (Playwright: dashboard renders, flag-and-view round-trip). Demo: a CSM logs in, sees three flagged accounts, clicks one, reads the reason, deep-links to HubSpot."
+
+Every layer wired end-to-end; no fake data; all states; tests green; demonstrably useful.
+
+### Tier 3.1 (deploy): what a passing canary looks like
+
+> "**Canary deploy: 2026-04-15 health-score-engine v3.0 with `pg_score_history` schema migration.**
+>
+> Classification: data-forward. Compensating-forward plan: if rollback needed, deploy v3.0-rollback that backfills any new health-score rows from v2.x scoring (50ms per row, ~6 hours for full backfill across pilot tenants). Restore point: full DB snapshot taken at 2026-04-15T14:00Z. Calendar: this is deploy 2 of 3 in the expand/contract sequence (deploy 1: schema-add 2026-04-08; deploy 2: writes-now 2026-04-15; deploy 3: contract-old 2026-04-22).
+>
+> Canary: 10% of staging traffic at 2026-04-15T14:30Z, then 10% prod for 30 minutes, then 50% for 60 minutes, then 100%. Stop rule: abort to 0% if (p99 latency on /api/health/recompute > 1.2s for 5 min) OR (error rate > 1% for 5 min) OR (any 5xx on /api/health/at-risk). Manual abort gate at 30 min mark.
+>
+> Rollback: if abort fires before contract step, revert v3.0 image to v2.x; the new schema column remains (NULL-able, no read paths). If abort fires after contract step, this is a partial-rollback impossible scenario; trigger compensating-forward."
+
+Every "canary" is concrete: percentage, duration, metric, threshold, abort condition. No paper canaries.
+
+### Tier 3.2 (observe): what a passing SLO looks like
+
+> "**SLO: Dashboard load p95 < 800ms over 30-day window.**
+>
+> SLI: time from `GET /dashboard` to LCP, measured at edge by Axiom Browser SDK. Target: 99% of requests under 800ms. Window: 30-day rolling. Error budget: 1% (~432 minutes/month over budget).
+>
+> Error budget policy. Owner: Eng Lead. If 30-day budget burns past 50%: trigger code-freeze on dashboard-impacting features; on-call investigates. If past 80%: incident-style review; the budget restoration is a roadmap-prioritized item. Last reviewed: 2026-04-01.
+>
+> Page rule: alert pages on-call if budget burn rate exceeds 14.4x (1% in 1h) for the dashboard journey. Ticket rule (non-paging): rate > 6x for 6h. Both rules live in Axiom alert config; runbook at `.observe-ready/runbook/dashboard-load-degraded.md` and was executed last on 2026-03-22 (SLO breach, MTTR 47 min)."
+
+Every SLO is bound to a journey, has an owner, has a freeze trigger, has a runbook that has actually been run.
+
+### Tier 3.3 (launch): what a passing hero looks like
+
+> "**Hero (substitution-pass).** 'Pulse: the at-risk-account console for CS Managers running 50-200 person B2B SaaS books. Cuts MTTAR from 11 days to 8 hours; replaces the spreadsheet pivot with a 30-second triage view.'
+>
+> Substitution test: replace 'CS Managers running 50-200 person B2B SaaS books' with 'sales reps' or 'product managers'; the sentence becomes false. Replace 'MTTAR from 11 days to 8 hours' with 'productivity'; loses the load-bearing claim. Replace 'spreadsheet pivot' with 'manual workflow'; loses the substitution-failing detail. The hero passes."
+
+Every claim is something a competitor could not also say without the sentence becoming false.
+
+### Tier 3.4 (harden): what a passing finding looks like
+
+> "**Finding: AUTH-2026-04-01-001. Magic-link session fixation.**
+>
+> Severity: High (auth bypass; session-fixation enables an attacker to capture the magic-link token in an OAuth state-poisoning chain).
+>
+> Affected asset: `src/auth/magic-link.ts:42` (token issuance) and `middleware/session.ts:18` (session reuse).
+>
+> Reproduction. (1) Attacker visits `/api/auth/signin/email` with a controlled `state` param. (2) Auth.js issues a session pre-binding the state. (3) Victim follows the magic-link, the state matches, the victim's session is bound to the attacker's pre-existing session. (4) Attacker reuses the session.
+>
+> Impact. Account takeover for any user who follows a magic-link the attacker triggered.
+>
+> Root cause. Auth.js v5 default `state` param policy does not regenerate session ID on token consumption.
+>
+> Proposed fix. (code excerpt: regenerate session-id after `verifyEmailToken` returns). Add unit test that asserts session-id changes between issuance and consumption.
+>
+> Regression prevention. Lint rule that flags any session-fixation-related Auth.js config drift. Add to security CI.
+>
+> Retest plan. Re-run reproduction after fix; expected: session-id mismatch error; verified.
+>
+> References. NIST SP 800-63B 5.1.6, OWASP Session Management Cheatsheet, Auth.js v5 release notes."
+
+Every finding is actionable: title, severity with justification, reproduction, impact, root cause, fix with code, regression prevention, retest plan, references. No vague "auth needs review" entries.
+
+## Closing
 
 ## Keep going until the arc is actually done
 
