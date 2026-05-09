@@ -4,6 +4,17 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [0.1.4] - 2026-05-09
+
+### Added
+
+- `references/orchestration/trigger-disambiguation.md`: ported from the eleven-skill suite hub's `references/TRIGGER-DISAMBIGUATION.md` (99-line phrase-to-tier-sub-step disambiguation table). v0.1.0 had claimed this content was "folded into SKILL.md mode-detection," but a content-fidelity audit (compare arc-ready vs source) revealed the disambiguation table itself was missing. Restored verbatim with the `<skill>-ready` -> `Tier X.Y (NAME)` vocabulary substitution applied to the canonical-skill column. Registered in SKILL.md references table.
+- Disambiguation table covers the dominant overlap cases: "set up CI" (Tier 2.1) vs "CI/CD pipeline" (Tier 3.1), "ADR" (Tier 1.2 vs 1.4), "trust boundaries" (Tier 1.2 declare vs Tier 3.4 verify), "runbook" (Tier 3.2 vs 3.4), "audit" (Tier 2.1 vs 3.4), and ~20 more.
+
+### Why a patch, not a minor
+
+Closes a content-fidelity gap from v0.1.0. No new patterns; no discipline change; this is the missing reference, not a new contribution. The fidelity audit run after this release should now show zero missing source content (excluding intentional drops: SUITE.md, install.sh, plugins/, PLUGIN-RESEARCH.md - all hub-specific to the multi-repo era).
+
 ## [0.1.3] - 2026-05-09
 
 ### Fixed
@@ -75,6 +86,7 @@ The discipline of arc-ready is the discipline the eleven-skill suite produced. S
 - Compatible with: claude-code, codex, cursor, windsurf, antigravity, pi, openclaw, any-agentskills-compatible-harness.
 - Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The aihxp/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
 
+[0.1.4]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.4
 [0.1.3]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.3
 [0.1.2]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.2
 [0.1.1]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.1
