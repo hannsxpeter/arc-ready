@@ -161,4 +161,4 @@ A pattern below is a violation of this principle. Each is grep-testable.
 - `references/scoring-framework.md`: the per-dimension weighting matrix.
 - `references/pairing-rules.md`: the anti-pairing catalog.
 - `references/tradeoff-narratives.md`: flip points, scale ceilings, switching costs.
-- `references/RESEARCH-2026-04.md`: source citations for every named pattern above.
+- `references/shared/RESEARCH-2026-04.md`: source citations for every named pattern above.

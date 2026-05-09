@@ -8,7 +8,7 @@ Read this file at workflow Steps 1, 2, and 6.
 
 PROGRESS.md is **a view, not a database**. The source of truth is the union of `.{skill}-ready/` directories on disk. Every kickoff-ready turn begins by re-deriving state from disk; if PROGRESS.md disagrees with disk, **disk wins** and PROGRESS.md is corrected.
 
-This discipline comes from Just / Make (`references/RESEARCH-2026-04.md` Section 3.4): "the file system is the truth." A target is "done" if its output file exists and is non-empty. Without this discipline, kickoff-ready cannot defend against the phantom-resume class of failures cited in Anthropic claude-code issues #42338, #42260, #42309, NousResearch hermes-agent#17344, and paperclipai#635 (research Section 2.3).
+This discipline comes from Just / Make (`references/shared/RESEARCH-2026-04.md` Section 3.4): "the file system is the truth." A target is "done" if its output file exists and is non-empty. Without this discipline, kickoff-ready cannot defend against the phantom-resume class of failures cited in Anthropic claude-code issues #42338, #42260, #42309, NousResearch hermes-agent#17344, and paperclipai#635 (research Section 2.3).
 
 ## Schema
 
@@ -153,7 +153,7 @@ The resume protocol is mechanical. It does not require LLM judgment; it requires
 
 ## Skip-when-artifact-exists logic (import detection)
 
-In Step 0, before any other action, kickoff-ready checks for pre-existing sibling artifacts. The check is per-sibling and uses the canonical artifact paths from `references/sequencing-rules.md` per-sibling upstream contract.
+In Step 0, before any other action, kickoff-ready checks for pre-existing sibling artifacts. The check is per-sibling and uses the canonical artifact paths from `references/orchestration/sequencing-rules.md` per-sibling upstream contract.
 
 ```
 For each sibling in the topological order:
@@ -233,7 +233,7 @@ Kickoff arc completed on <ISO8601>. The project shipped with the following postu
 ### Recommended next-step orchestrator
 This project's iteration loop after kickoff is suited to GSD or another phase orchestrator.
 The kickoff arc is one-shot; phase work after this is not kickoff-ready's responsibility.
-See production-ready/ORCHESTRATORS.md for the GSD integration pattern.
+See references/shared/ORCHESTRATORS.md for the GSD integration pattern.
 ```
 
 The audit-ledger view is durable. It survives kickoff-ready's removal from the harness. A new engineer joining the project six months later can read PROGRESS.md and reconstruct exactly which siblings were invoked, which were skipped, why, and where the artifacts live.

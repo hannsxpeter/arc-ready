@@ -4,6 +4,23 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [0.1.3] - 2026-05-09
+
+### Fixed
+
+Standalone-repo cleanup. arc-ready had no operational dependencies on the eleven sibling repos (no submodules, no required external files) but its inherited reference content still mentioned sibling-repo paths in prose, which made the repo *feel* coupled even though it wasn't. Sweeps applied:
+
+- `production-ready/ORCHESTRATORS.md` (in inherited prose) rewritten to `references/shared/ORCHESTRATORS.md` across all reference files. The ORCHESTRATORS content is in arc-ready; the citations now point inside arc-ready.
+- Bare `references/<file>.md` paths in `references/orchestration/*.md` (which assumed the source skills' flat references/ layout) rewritten to tier-prefixed paths (`references/orchestration/foo.md`, `references/shared/RESEARCH-2026-04.md`, etc.).
+- Bare `references/<file>.md` paths in `references/building/questioning.md` rewritten to same-tier sibling references (no `references/` prefix needed since the file is itself in `references/building/`).
+- Cursor-handoff prose in `references/orchestration/handoff-protocols.md` rewritten from "open prd-ready's SKILL.md" (eleven-skill suite assumption) to "open arc-ready's SKILL.md and navigate to Tier 1.1" (single-skill reality). The historical inter-skill handoff pattern is annotated as preserved-for-reference; arc-ready's actual dispatch is intra-skill tier-routing.
+
+After this sweep: zero references in `references/` to sibling-repo paths. The only sibling-repo mentions in arc-ready now live in `MIGRATION.md` (the intentional migration matrix showing former-path -> new-path) and `README.md`/`CHANGELOG.md`/`SECURITY.md` (predecessor acknowledgment, not coupling).
+
+### Why a patch, not a minor
+
+Path-rewrite cleanup. No content discipline change; no new failure-mode patterns; arc-ready remains a faithful consolidation. The repo is now standalone in name and feel: no inherited prose pretends arc-ready depends on sibling repos.
+
 ## [0.1.2] - 2026-05-09
 
 ### Fixed
@@ -58,6 +75,7 @@ The discipline of arc-ready is the discipline the eleven-skill suite produced. S
 - Compatible with: claude-code, codex, cursor, windsurf, antigravity, pi, openclaw, any-agentskills-compatible-harness.
 - Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The aihxp/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
 
+[0.1.3]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.3
 [0.1.2]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.2
 [0.1.1]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.1
 [0.1.0]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.0

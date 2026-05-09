@@ -53,7 +53,7 @@ Append project conventions below this line, or replace this template's body whol
 
 - `{{project_name}}` - from PROGRESS.md `## Kickoff intent` block, one-line project description, stripped of quoting.
 - `{{<sibling>_status}}` - one of `done`, `skipped`, `deferred`, `imported`, `failed`. Mirror the PROGRESS.md status field.
-- `{{<sibling>_artifact_path}}` - from the per-sibling artifact contract in [`references/sequencing-rules.md`](sequencing-rules.md). For skipped/deferred siblings, write `(not produced)`.
+- `{{<sibling>_artifact_path}}` - from the per-sibling artifact contract in [`references/orchestration/sequencing-rules.md`](sequencing-rules.md). For skipped/deferred siblings, write `(not produced)`.
 
 ## What kickoff-ready never writes into AGENTS.md
 
@@ -79,4 +79,4 @@ This separation is by design: kickoff-ready owns artifact metadata, repo-ready o
 
 - [agents.md open standard](https://agents.md/) - the format spec and the harnesses that read it
 - repo-ready's `references/onboarding-dx.md` Section 9 - per-tool deltas, anti-patterns, the canonical template for the conventions side
-- [`references/handoff-protocols.md`](handoff-protocols.md) Section "AGENTS.md" - how kickoff-ready surfaces the template on chat-only harnesses
+- [`references/orchestration/handoff-protocols.md`](handoff-protocols.md) Section "AGENTS.md" - how kickoff-ready surfaces the template on chat-only harnesses

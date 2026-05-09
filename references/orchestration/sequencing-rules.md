@@ -2,7 +2,7 @@
 
 This file defines the order kickoff-ready invokes the ten ready-suite siblings, the parallelism rules, the harden-ready gate logic, and the skip-detection semantics. The DAG is the single most important data structure in kickoff-ready. Encoded declaratively here; referenced by SKILL.md Steps 3, 4, and 5.
 
-The full chain verification with citations is in `references/RESEARCH-2026-04.md` Section 5.
+The full chain verification with citations is in `references/shared/RESEARCH-2026-04.md` Section 5.
 
 ## The DAG
 
@@ -136,7 +136,7 @@ The `gate-launch-on-hardening` mode (Section 4.2 override 1) extends the gate to
 
 ### Risk acceptance schema
 
-When the user explicitly accepts a Critical finding to proceed, PROGRESS.md gets a row in the `## Risk acceptances` section (per `references/progress-tracking.md`). The acceptance is dated, named, justified, and time-bounded. Without all four, the acceptance is not valid and the gate remains active.
+When the user explicitly accepts a Critical finding to proceed, PROGRESS.md gets a row in the `## Risk acceptances` section (per `references/orchestration/progress-tracking.md`). The acceptance is dated, named, justified, and time-bounded. Without all four, the acceptance is not valid and the gate remains active.
 
 ## Skip-detection semantics
 
@@ -239,7 +239,7 @@ Two specific design choices are worth recording:
 
 2. **harden-ready in parallel with launch-ready, not before.** harden-ready's `pairs_with: [deploy-ready, observe-ready, launch-ready]` is the load-bearing signal. The skill is designed to run alongside the shipping tier. The critical-finding gate handles the case where adversarial review surfaces a launch-blocking issue.
 
-The full justification for each design choice is in `references/RESEARCH-2026-04.md` Section 5.
+The full justification for each design choice is in `references/shared/RESEARCH-2026-04.md` Section 5.
 
 ## Summary
 

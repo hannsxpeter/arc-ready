@@ -157,7 +157,7 @@ The directory looks like a web app (I see app/routes/), but you mentioned a CLI 
 
 ## What NOT to Ask
 
-- Don't ask about license choice during detection — handle that during file generation (references/licensing-legal.md)
+- Don't ask about license choice during detection — handle that during file generation (licensing-legal.md)
 - Don't ask about CI provider — detect from `.github/` vs `.gitlab/`
 - Don't ask about specific tool preferences (ESLint vs Biome) — the stack profile handles that
 - Don't ask more than 3 questions total — if still unsure after 3, make your best inference and state your assumptions
@@ -167,8 +167,8 @@ The directory looks like a web app (I see app/routes/), but you mentioned a CLI 
 
 This reference is used in **Step 0 (Detect project state)** and **Step 1 (Establish project profile)** of the SKILL.md workflow. After detection:
 
-1. Project type → determines which files to generate (references/project-profiles.md)
-2. Stack → determines folder structure (references/repo-structure.md) and tooling (references/quality-tooling.md)
+1. Project type → determines which files to generate (project-profiles.md)
+2. Stack → determines folder structure (repo-structure.md) and tooling (quality-tooling.md)
 3. Stage → determines how many files (Tier 1/2/3/4)
 4. Audience → adjusts tone and community file selection
 

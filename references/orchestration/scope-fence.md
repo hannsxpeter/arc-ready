@@ -8,7 +8,7 @@ Loaded at SKILL.md Step 7. Cross-referenced from the have-nots list.
 
 > kickoff-ready calls siblings; it never impersonates them.
 
-If kickoff-ready ever produces content a specialist already produces, the boundary is broken. The skill becomes the mega-skill the suite was decomposed to prevent. The Praetorian "monolithic agents" critique (research Section 2.4) and the production-ready/ORCHESTRATORS.md invariants (lines 9-13) are the load-bearing citations.
+If kickoff-ready ever produces content a specialist already produces, the boundary is broken. The skill becomes the mega-skill the suite was decomposed to prevent. The Praetorian "monolithic agents" critique (research Section 2.4) and the references/shared/ORCHESTRATORS.md invariants (lines 9-13) are the load-bearing citations.
 
 ## The eleven canonical refusals
 
@@ -20,7 +20,7 @@ If kickoff-ready ever produces content a specialist already produces, the bounda
 
 **Why.** Those are prd-ready's deliverables. The full skill exists for the discipline of writing each one well; kickoff-ready cannot replicate that discipline in passing.
 
-**Route.** Invoke prd-ready. On harnesses with a Skill tool: emit `/prd-ready` (Claude Code), `$prd-ready` (Codex), or per-harness equivalent. On harnesses without: emit the guidance-text handoff per `references/handoff-protocols.md`.
+**Route.** Invoke prd-ready. On harnesses with a Skill tool: emit `/prd-ready` (Claude Code), `$prd-ready` (Codex), or per-harness equivalent. On harnesses without: emit the guidance-text handoff per `references/orchestration/handoff-protocols.md`.
 
 **Grep test.** Search kickoff-ready's output for: `# Product Requirements`, `## Problem statement`, `## Functional requirements`, `## Success metrics`, `## Out of scope`, `## Open questions`. If any appear in kickoff-ready's output (not in PROGRESS.md import-record references), scope leak fired.
 
@@ -163,7 +163,7 @@ The single artifact kickoff-ready produces is `.kickoff-ready/PROGRESS.md`. Ever
 
 kickoff-ready does not have a "GSD mode" or a "BMAD mode." Composition with phase orchestrators happens at the boundary (kickoff-ready's Step 6 hands off to whatever orchestrator the user chose); kickoff-ready does not branch internally on the orchestrator's identity.
 
-This is the mirror of production-ready/ORCHESTRATORS.md's principle: ready-suite skills are orchestrator-agnostic by design. kickoff-ready inherits this; it is itself an orchestrator (the meta-tier) but does not couple to any other orchestrator.
+This is the mirror of references/shared/ORCHESTRATORS.md's principle: ready-suite skills are orchestrator-agnostic by design. kickoff-ready inherits this; it is itself an orchestrator (the meta-tier) but does not couple to any other orchestrator.
 
 ### Invariant C: No skill invocation outside the eleven
 
@@ -175,9 +175,9 @@ Future ready-suite siblings (an eleventh, twelfth, etc., specialist) will be add
 
 To make the fence concrete, here is the complete list of content kickoff-ready legitimately produces:
 
-1. **PROGRESS.md frontmatter and step-ledger updates.** Per the schema in `references/progress-tracking.md`.
+1. **PROGRESS.md frontmatter and step-ledger updates.** Per the schema in `references/orchestration/progress-tracking.md`.
 2. **Skill-tool invocations.** Single-line or short commands per the harness's invocation form.
-3. **Guidance-text handoffs.** The "next step is to run X; here's how" pattern from `references/handoff-protocols.md`.
+3. **Guidance-text handoffs.** The "next step is to run X; here's how" pattern from `references/orchestration/handoff-protocols.md`.
 4. **Resume-protocol output.** "I read PROGRESS.md, verified disk state, here is where we are."
 5. **Refusal-and-route responses.** "That is scope leak. Route to <sibling> or to your harness."
 6. **Verification reports.** "Sibling X completed. Artifact at path Y verified. Advancing PROGRESS.md."

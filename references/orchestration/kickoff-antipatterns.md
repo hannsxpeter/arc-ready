@@ -1,6 +1,6 @@
 # Anti-pattern catalog: named failure modes with grep tests and guards
 
-This file is the operational reference for kickoff-ready's have-nots. Every named failure mode from `references/RESEARCH-2026-04.md` Section 2 has an entry here with:
+This file is the operational reference for kickoff-ready's have-nots. Every named failure mode from `references/shared/RESEARCH-2026-04.md` Section 2 has an entry here with:
 
 1. The definition.
 2. The grep test (how an auditor or a reviewer detects the pattern).
@@ -37,9 +37,9 @@ Loaded on demand during verification. Cited from the SKILL.md "have-nots" sectio
 
 If any appear in kickoff-ready's output (not in PROGRESS.md as a path reference), scope leak fired.
 
-**Guard.** Step 7 of the workflow. On every out-of-scope request, kickoff-ready refuses, names the failure mode, routes to the correct sibling, and resumes. The scope-fence catalog (`references/scope-fence.md`) lists eleven canonical refusals.
+**Guard.** Step 7 of the workflow. On every out-of-scope request, kickoff-ready refuses, names the failure mode, routes to the correct sibling, and resumes. The scope-fence catalog (`references/orchestration/scope-fence.md`) lists eleven canonical refusals.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 2.4 (Praetorian on deterministic orchestration; AgentOrchestra on supervisor co-authorship). production-ready/ORCHESTRATORS.md invariant 1 ("the harness is the router; no ready-suite skill calls another").
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.4 (Praetorian on deterministic orchestration; AgentOrchestra on supervisor co-authorship). references/shared/ORCHESTRATORS.md invariant 1 ("the harness is the router; no ready-suite skill calls another").
 
 ## Anti-pattern 2: Rubber-stamp orchestration
 
@@ -54,9 +54,9 @@ If any appear in kickoff-ready's output (not in PROGRESS.md as a path reference)
 
 If any check fails, rubber-stamp orchestration fired.
 
-**Guard.** SKILL.md Step 3, 4, 5 verification gate. Two-check rule: artifact exists AND artifact non-empty. The post-invocation checks in `references/sequencing-rules.md` Section "Post-invocation checks" run mechanically; the LLM does not get to decide.
+**Guard.** SKILL.md Step 3, 4, 5 verification gate. Two-check rule: artifact exists AND artifact non-empty. The post-invocation checks in `references/orchestration/sequencing-rules.md` Section "Post-invocation checks" run mechanically; the LLM does not get to decide.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 2.1 (Cogent's 2026 multi-agent orchestration playbook on "the orchestrator only checks whether an agent ran successfully rather than reading verification verdicts"; Cybermaniacs on rubber-stamp risk; the AWS / DEV piece on multi-agent validation).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.1 (Cogent's 2026 multi-agent orchestration playbook on "the orchestrator only checks whether an agent ran successfully rather than reading verification verdicts"; Cybermaniacs on rubber-stamp risk; the AWS / DEV piece on multi-agent validation).
 
 ## Anti-pattern 3: Phantom resume
 
@@ -71,9 +71,9 @@ If any check fails, rubber-stamp orchestration fired.
 
 If a turn skipped these and acted on cached conversation memory, phantom resume fired.
 
-**Guard.** SKILL.md Step 1 resume protocol. `references/progress-tracking.md` "Resume protocol" section. The protocol is mechanical and runs every turn, not just on explicit resume.
+**Guard.** SKILL.md Step 1 resume protocol. `references/orchestration/progress-tracking.md` "Resume protocol" section. The protocol is mechanical and runs every turn, not just on explicit resume.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 2.3 cites six failure modes from the Anthropic claude-code issue tracker:
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.3 cites six failure modes from the Anthropic claude-code issue tracker:
 - Cache invalidation on resume (anthropics/claude-code#42338)
 - Context-compression confusion on resume (NousResearch/hermes-agent#17344)
 - Stale-state inheritance on failed-run resume (paperclipai/paperclip#635)
@@ -88,14 +88,14 @@ If a turn skipped these and acted on cached conversation memory, phantom resume 
 **Definition.** kickoff-ready invokes a sibling without first verifying its upstream artifact exists. The architect agent runs before `.prd-ready/PRD.md` is on disk; it hallucinates a PRD-equivalent from the user's one-paragraph idea; the downstream chain proceeds on a fictional foundation.
 
 **Grep test.** For every Skill-tool invocation kickoff-ready emits:
-- The sibling's `upstream:` list (per `references/sequencing-rules.md` per-sibling upstream contract) is fully present on disk before the invocation timestamp.
+- The sibling's `upstream:` list (per `references/orchestration/sequencing-rules.md` per-sibling upstream contract) is fully present on disk before the invocation timestamp.
 - PROGRESS.md shows verified-done rows for every upstream sibling.
 
 If invocation happened with a missing upstream, ghost handoff fired.
 
-**Guard.** SKILL.md Step 3, 4, 5 pre-invocation upstream-artifact-exists check. `references/sequencing-rules.md` "Mid-arc checks" section.
+**Guard.** SKILL.md Step 3, 4, 5 pre-invocation upstream-artifact-exists check. `references/orchestration/sequencing-rules.md` "Mid-arc checks" section.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 2.7 (Galileo on multi-agent coordination failure where handoffs do not include verifiable pointers; the LLM-agent hallucination survey on agents asked to infer state).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.7 (Galileo on multi-agent coordination failure where handoffs do not include verifiable pointers; the LLM-agent hallucination survey on agents asked to infer state).
 
 ## Anti-pattern 5: Happy-path orchestration
 
@@ -114,9 +114,9 @@ If invocation happened with a missing upstream, ghost handoff fired.
 
 If only `pending` and `done` exist in the schema or in actual rows, happy-path orchestration fired.
 
-**Guard.** `references/progress-tracking.md` status vocabulary defines all seven statuses. SKILL.md Step 2 captures skip declarations. SKILL.md Step 1 detects imports. The re-invocation rules in `references/sequencing-rules.md` handle change.
+**Guard.** `references/orchestration/progress-tracking.md` status vocabulary defines all seven statuses. SKILL.md Step 2 captures skip declarations. SKILL.md Step 1 detects imports. The re-invocation rules in `references/orchestration/sequencing-rules.md` handle change.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 2.6 (Wikipedia on "happy path"; the LangGraph supervisor-vs-swarm tradeoffs piece on edge-case coverage gaps and graph complexity blowup).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.6 (Wikipedia on "happy path"; the LangGraph supervisor-vs-swarm tradeoffs piece on edge-case coverage gaps and graph complexity blowup).
 
 ## Anti-pattern 6: State-vs-artifact drift (also: ouroboros progress)
 
@@ -128,7 +128,7 @@ If only `pending` and `done` exist in the schema or in actual rows, happy-path o
 
 **Guard.** Same as anti-pattern 2: the two-check rule and the resume protocol's disk-vs-PROGRESS reconciliation.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 2.2 (Galileo on shared-context corruption; Cleanlab on agents asked to infer state instead of querying it; arXiv 2509.18970 on LLM-agent hallucinations).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.2 (Galileo on shared-context corruption; Cleanlab on agents asked to infer state instead of querying it; arXiv 2509.18970 on LLM-agent hallucinations).
 
 Note: this anti-pattern is recorded as a name kickoff-ready uses but does not claim. The flagship name is rubber-stamp orchestration (the cause); state-vs-artifact drift is the visible symptom; ouroboros progress is the metaphor.
 
@@ -146,7 +146,7 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Guard.** Step 1 resume protocol enforces disk-as-truth. The supervisor's anchor is the dependency graph (data) and the artifact-on-disk check (mechanical), not the conversation.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 2.12 (LangGraph supervisor pattern goal-drift; Galileo on supervisors becoming silent co-authors).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.12 (LangGraph supervisor pattern goal-drift; Galileo on supervisors becoming silent co-authors).
 
 ## Anti-pattern 8: Skip-as-silence
 
@@ -158,7 +158,7 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Guard.** Step 2 declaration for known-at-start skips; mid-arc declaration with PROGRESS.md update for runtime skips; the Shape Up no-gos discipline applied to PROGRESS.md.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 3.3 (Shape Up no-gos as the model: a pitch lists what is explicitly out, not silence).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 3.3 (Shape Up no-gos as the model: a pitch lists what is explicitly out, not silence).
 
 ## Anti-pattern 9: Critical-finding gate bypass
 
@@ -172,9 +172,9 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 - For each open Critical: PROGRESS.md `## Risk acceptances` must contain a dated, named, justified entry pointing to that finding.
 - If any Critical lacks a corresponding acceptance row, the gate was bypassed.
 
-**Guard.** SKILL.md Step 5 critical-finding gate logic. `references/sequencing-rules.md` "Critical-finding gate logic" section. The gate algorithm runs on every kickoff-ready turn during shipping tier.
+**Guard.** SKILL.md Step 5 critical-finding gate logic. `references/orchestration/sequencing-rules.md` "Critical-finding gate logic" section. The gate algorithm runs on every kickoff-ready turn during shipping tier.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 5.5 (recommended default; harden-ready's pairs_with declaration; the security-sensitive override patterns).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 5.5 (recommended default; harden-ready's pairs_with declaration; the security-sensitive override patterns).
 
 ## Anti-pattern 10: God-skill drift
 
@@ -187,9 +187,9 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 - kickoff-ready should be smaller than every sibling. If it grows past the sibling median, scope leak is happening at the documentation layer.
 - Section headers in kickoff-ready's references should be orchestration-flavored (sequencing, handoff, progress, scope, anti-patterns), not specialist-flavored (PRD, architecture, roadmap, etc.).
 
-**Guard.** Every release of kickoff-ready passes the fence audit (`references/scope-fence.md` Section "Summary"). New features must be orchestration-tier metadata; new content must not duplicate sibling work.
+**Guard.** Every release of kickoff-ready passes the fence audit (`references/orchestration/scope-fence.md` Section "Summary"). New features must be orchestration-tier metadata; new content must not duplicate sibling work.
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 2.5 (Praetorian on monolithic agents; "god skill" as the cautionary endpoint, not a refusal name).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.5 (Praetorian on monolithic agents; "god skill" as the cautionary endpoint, not a refusal name).
 
 ## Anti-pattern 11: Composing with the wrong orchestrator
 
@@ -199,9 +199,9 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Grep test.** PROGRESS.md `## Kickoff complete` block names a "Recommended next-step orchestrator" but the user has no installed orchestrator matching the recommendation.
 
-**Guard.** Step 6 surfaces the recommendation honestly. If the user has GSD installed, recommend GSD. If they have BMAD, recommend BMAD with the boundary-translation pattern from production-ready/ORCHESTRATORS.md. If they have neither, recommend running siblings directly when needed (the "no orchestrator" pattern from production-ready/ORCHESTRATORS.md).
+**Guard.** Step 6 surfaces the recommendation honestly. If the user has GSD installed, recommend GSD. If they have BMAD, recommend BMAD with the boundary-translation pattern from references/shared/ORCHESTRATORS.md. If they have neither, recommend running siblings directly when needed (the "no orchestrator" pattern from references/shared/ORCHESTRATORS.md).
 
-**Citation.** production-ready/ORCHESTRATORS.md sections on GSD, BMAD, and "no orchestrator." `references/handoff-protocols.md` "Composition with phase orchestrators" section.
+**Citation.** references/shared/ORCHESTRATORS.md sections on GSD, BMAD, and "no orchestrator." `references/orchestration/handoff-protocols.md` "Composition with phase orchestrators" section.
 
 ## Anti-pattern 12: Re-invocation without history preservation
 
@@ -211,9 +211,9 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Grep test.** PROGRESS.md should grow monotonically. A sibling that was re-invoked should have at least two rows: the prior `done` row (with status moved to `re-invoked` and a `notes` field pointing to the new row) and the new in-flight or done row.
 
-**Guard.** `references/progress-tracking.md` "Re-invocation discipline" section. PROGRESS.md grows; nothing is deleted (except by explicit user-initiated cleanup, which is itself recorded as a note).
+**Guard.** `references/orchestration/progress-tracking.md` "Re-invocation discipline" section. PROGRESS.md grows; nothing is deleted (except by explicit user-initiated cleanup, which is itself recorded as a note).
 
-**Citation.** `references/RESEARCH-2026-04.md` Section 5.7 (the re-invocation rules; the GitHub Actions re-run-failed-jobs discipline).
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 5.7 (the re-invocation rules; the GitHub Actions re-run-failed-jobs discipline).
 
 ## How to use the catalog during verification
 

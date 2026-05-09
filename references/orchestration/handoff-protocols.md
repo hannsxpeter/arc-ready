@@ -2,7 +2,7 @@
 
 This file specifies how kickoff-ready hands off to a sibling on each major harness. The handoff has two shapes: programmatic (the harness exposes a Skill tool that kickoff-ready can invoke directly) and guidance-text (the harness has no Skill tool; kickoff-ready surfaces an instruction string the user copies to the next prompt).
 
-Loaded at SKILL.md Steps 0, 3, 4, and 5. The harness landscape research is in `references/RESEARCH-2026-04.md` Section 4.
+Loaded at SKILL.md Steps 0, 3, 4, and 5. The harness landscape research is in `references/shared/RESEARCH-2026-04.md` Section 4.
 
 ## Detection: which harness is running
 
@@ -27,7 +27,7 @@ Programmatic handoff is supported.
 
 Skills are invoked via slash command in chat: `/skill-name <args>`. From within kickoff-ready, the orchestrator emits the slash command into the conversation; the harness routes the command to the named skill.
 
-The Skill tool in Claude Code 2026 supports nested invocation. Per `references/RESEARCH-2026-04.md` Section 4.1, the `claude_code.skill_activated` OpenTelemetry event carries `invocation_trigger=nested-skill` for skills invoked from within other skills.
+The Skill tool in Claude Code 2026 supports nested invocation. Per `references/shared/RESEARCH-2026-04.md` Section 4.1, the `claude_code.skill_activated` OpenTelemetry event carries `invocation_trigger=nested-skill` for skills invoked from within other skills.
 
 ### Pattern
 
@@ -61,7 +61,7 @@ Programmatic handoff is supported with a different invocation form.
 
 ### Invocation form
 
-Skills in Codex are invoked via `$skill-name <args>` (dollar-sign instead of slash). Per `references/RESEARCH-2026-04.md` Section 4.2, the form is documented at developers.openai.com/codex/skills. Slash commands (`/review`, `/fork`) are a separate facility for specialized workflows.
+Skills in Codex are invoked via `$skill-name <args>` (dollar-sign instead of slash). Per `references/shared/RESEARCH-2026-04.md` Section 4.2, the form is documented at developers.openai.com/codex/skills. Slash commands (`/review`, `/fork`) are a separate facility for specialized workflows.
 
 ### Pattern
 
@@ -79,7 +79,7 @@ The Codex docs as of May 2026 do not explicitly document skill-to-skill invocati
 
 `AGENTS.md` is the cross-tool agent brief read natively by Codex CLI, GitHub Copilot, Cursor, Windsurf, Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin, and others, per the [agents.md open standard](https://agents.md/) (governed by the Linux Foundation's Agentic AI Foundation). On Claude Code the equivalent is `CLAUDE.md`; many teams symlink `CLAUDE.md` -> `AGENTS.md` to avoid drift.
 
-kickoff-ready emits a minimal `AGENTS.md` at project root in Step 6 sub-step 6a if none exists, scoped to artifact metadata only (the per-sibling artifact map). It does not write stack, commands, conventions, or forbidden actions; those belong to repo-ready or to the user. If `AGENTS.md` exists, kickoff-ready records `existing-respected` in PROGRESS.md and does not touch the file. See [`references/agents-md-template.md`](agents-md-template.md) for the template, the substitution rules, and the kickoff-ready / repo-ready handshake on a shared file.
+kickoff-ready emits a minimal `AGENTS.md` at project root in Step 6 sub-step 6a if none exists, scoped to artifact metadata only (the per-sibling artifact map). It does not write stack, commands, conventions, or forbidden actions; those belong to repo-ready or to the user. If `AGENTS.md` exists, kickoff-ready records `existing-respected` in PROGRESS.md and does not touch the file. See [`references/orchestration/agents-md-template.md`](agents-md-template.md) for the template, the substitution rules, and the kickoff-ready / repo-ready handshake on a shared file.
 
 On chat-only harnesses (no file system), kickoff-ready surfaces the template as a guidance string for the user to paste, instead of writing.
 
@@ -96,25 +96,26 @@ No programmatic Skill tool. Cursor has notepads and `.cursorrules`, both of whic
 ### Pattern
 
 ```
-[kickoff-ready writes the guidance string]
+[arc-ready writes the guidance string]
 
-The next step is to run prd-ready. Cursor does not support programmatic skill
+The next step is Tier 1.1 (PRD). Cursor does not support programmatic skill
 invocation, so please:
 
-1. Open prd-ready's SKILL.md (path: ~/.cursor/skills/prd-ready/SKILL.md if you
+1. Open arc-ready's SKILL.md (path: ~/.cursor/skills/arc-ready/SKILL.md if you
    installed via the recommended symlink, or wherever you installed it).
-2. Start a new chat with Cursor.
-3. Paste the SKILL.md contents into the system prompt or invoke via
-   .cursorrules pattern.
+2. Navigate to the "Tier 1.1. PRD" sub-step section.
+3. The .cursorrules file in this project (or the system prompt for the chat)
+   should already reference SKILL.md. If it does not, paste the relevant
+   sub-step section into the system prompt.
 4. Provide the project intent: "<intent quoted from PROGRESS.md>"
-5. When prd-ready writes .prd-ready/PRD.md and you have verified it,
-   return to this kickoff-ready session.
+5. When .prd-ready/PRD.md is written and you have verified it, return to
+   the arc-ready session and the next turn will detect the import.
 
-PROGRESS.md row 1 is now `in-flight`. I will pick up when you confirm prd-ready
-is done.
+PROGRESS.md row 1.1 is now `in-flight`. The next arc-ready turn picks up when
+you confirm the PRD artifact exists on disk.
 ```
 
-The user runs prd-ready in a separate Cursor chat. kickoff-ready's session waits.
+In arc-ready's single-skill architecture, "handoff" is internal: the agent stays in arc-ready and advances to the next tier sub-step. The historical inter-skill handoff pattern (eleven-skill suite) is preserved here for reference; arc-ready's actual dispatch is intra-skill tier-routing per SKILL.md.
 
 ### Practical reality on Cursor
 
@@ -173,7 +174,7 @@ A user on chat-only frontends or a Cursor / Windsurf user without access to the 
 
 1. The user declares the skip in PROGRESS.md (Step 2 declaration or mid-arc declaration).
 2. kickoff-ready records the skip with reason.
-3. The skip cascade rules from `references/sequencing-rules.md` apply.
+3. The skip cascade rules from `references/orchestration/sequencing-rules.md` apply.
 
 This is the explicit-skip path. No silent failure.
 
@@ -190,7 +191,7 @@ For full automation, use Claude Code, Codex, or Antigravity. For semi-automated,
 kickoff-ready ends when the kickoff arc completes. Ongoing phase / milestone work is a different orchestration pattern. kickoff-ready hands off explicitly:
 
 1. **Step 6 produces the handoff block.** "Recommended next-step orchestrator: GSD" (or BMAD, or the user's own process).
-2. **PROGRESS.md remains.** The next orchestrator reads PROGRESS.md to understand what was kicked off. Per production-ready/ORCHESTRATORS.md, GSD's `/gsd-new-project` is the canonical follow-on.
+2. **PROGRESS.md remains.** The next orchestrator reads PROGRESS.md to understand what was kicked off. Per references/shared/ORCHESTRATORS.md, GSD's `/gsd-new-project` is the canonical follow-on.
 3. **The siblings continue without kickoff-ready.** kickoff-ready exits the chain. Each sibling can be re-invoked directly later (a roadmap revision, a new architecture decision, a hardening pass) without going through kickoff-ready again.
 
 The composition is one-way: kickoff-ready knows about the suite, hands off to phase orchestrators, and gets out of the way. Phase orchestrators do not call kickoff-ready back.
