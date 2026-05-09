@@ -4,6 +4,18 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [0.1.2] - 2026-05-09
+
+### Fixed
+
+- CI lint workflow no longer fails on `push` events. The `tag-release-parity` check is now run only on `schedule` and `workflow_dispatch`, because tag pushes trigger CI before the matching GitHub Release is created (chicken-and-egg). Push and pull-request runs run every other check; the daily schedule run catches missing releases. Local `bash scripts/lint.sh --all` continues to run the full check.
+- Hardcoded local-clone paths (`/Users/hprincivil/Projects/<skill>-ready/SKILL.md`) in `references/planning/trust-boundaries.md` and `references/shared/RESEARCH-2026-04.md` rewritten to skill-relative references. These were inherited from source authoring and survived the v0.1.0 cross-reference sweep.
+- Broken external link in `references/shared/RESEARCH-2026-04.md` from `aihxp/production-ready/blob/main/SUITE.md` (no longer the canonical hub) to `aihxp/ready-suite/blob/main/SUITE.md` with a "(predecessor)" annotation.
+
+### Why a patch, not a minor
+
+Bug-fix release. CI was structurally broken; published references contained user-specific local paths; one external cross-link was outdated. No discipline change, no new content.
+
 ## [0.1.1] - 2026-05-09
 
 ### Added
@@ -46,5 +58,6 @@ The discipline of arc-ready is the discipline the eleven-skill suite produced. S
 - Compatible with: claude-code, codex, cursor, windsurf, antigravity, pi, openclaw, any-agentskills-compatible-harness.
 - Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The aihxp/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
 
+[0.1.2]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.2
 [0.1.1]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.1
 [0.1.0]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.0

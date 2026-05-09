@@ -122,7 +122,7 @@ The anti-pattern to name: trusting the network. "Internal services don't need au
 
 ## Section 5. Threat-model pre-fill for production-ready
 
-production-ready Step 2 reads this file. Its threat-model block (from `/Users/hprincivil/Projects/production-ready/SKILL.md` lines 80 to 93) requires three one-line answers plus an optional compliance line. This section shows exactly what to write in ARCH.md so production-ready consumes it without interpretation.
+production-ready Step 2 reads this file. Its threat-model block (from `the production-ready source SKILL.md` lines 80 to 93) requires three one-line answers plus an optional compliance line. This section shows exactly what to write in ARCH.md so production-ready consumes it without interpretation.
 
 The exact template production-ready expects:
 

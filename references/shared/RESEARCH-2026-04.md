@@ -177,11 +177,11 @@ Cited but not adopted as names: god-skill (cautionary endpoint), monolithic kick
 
 ### 3.1 GSD (get-shit-done) and `/gsd-new-project`
 
-Note on availability: the user's local copy at `/Users/hprincivil/Projects/gsd/` was empty at the time of this research. The analysis below is drawn from the GSD skill set installed in this environment (`gsd-new-project`, `gsd-new-milestone`, `gsd-plan-phase`, `gsd-execute-phase`, `gsd-resume-work`, `gsd-validate-phase`, `gsd-audit-milestone`, `gsd-forensics`, plus thirty-plus siblings) and from production-ready's ORCHESTRATORS.md, which documents the GSD-as-orchestrator integration explicitly.
+Note on availability: the user's local copy at `<the user's GSD installation>` was empty at the time of this research. The analysis below is drawn from the GSD skill set installed in this environment (`gsd-new-project`, `gsd-new-milestone`, `gsd-plan-phase`, `gsd-execute-phase`, `gsd-resume-work`, `gsd-validate-phase`, `gsd-audit-milestone`, `gsd-forensics`, plus thirty-plus siblings) and from production-ready's ORCHESTRATORS.md, which documents the GSD-as-orchestrator integration explicitly.
 
 **How it sequences work.** GSD is project-and-phase-and-milestone-shaped, not skill-shaped. `/gsd-new-project` performs deep context gathering and writes a `PROJECT.md`; `/gsd-new-milestone` opens a milestone cycle and routes to requirements; `/gsd-discuss-phase` gathers phase context through adaptive questioning; `/gsd-plan-phase` produces a `PLAN.md` with verification loop; `/gsd-execute-phase` runs the plan with wave-based parallelization; `/gsd-validate-phase` retroactively audits Nyquist validation gaps; `/gsd-audit-milestone` checks completion against original intent before archiving. The sequence is enforced by a state machine inside `.planning/`, not by the skill's self-description.
 
-**How it handles handoffs.** GSD's handoff is "the next command on the same project state." There is no inter-skill API; the next skill reads the project state. Production-ready's ORCHESTRATORS.md documents the optional ready-suite invocation: GSD can call `prd-ready`, `architecture-ready`, `roadmap-ready`, `stack-ready` from within `/gsd-new-project` ([production-ready/ORCHESTRATORS.md, lines 17-29](file:///Users/hprincivil/Projects/production-ready/ORCHESTRATORS.md)). The integration cost is "entirely in GSD: each command's prompt gets a few additional lines describing when to invoke which sibling skill. Ready-suite is consumed, not modified."
+**How it handles handoffs.** GSD's handoff is "the next command on the same project state." There is no inter-skill API; the next skill reads the project state. Production-ready's ORCHESTRATORS.md documents the optional ready-suite invocation: GSD can call `prd-ready`, `architecture-ready`, `roadmap-ready`, `stack-ready` from within `/gsd-new-project` ([production-ready/ORCHESTRATORS.md, lines 17-29](references/shared/ORCHESTRATORS.md)). The integration cost is "entirely in GSD: each command's prompt gets a few additional lines describing when to invoke which sibling skill. Ready-suite is consumed, not modified."
 
 **How it tracks progress.** Through `.planning/` files (PROJECT.md, ROADMAP.md, per-phase manifests). `/gsd-progress` shows current state and routes to next action. `/gsd-stats` displays project statistics. `/gsd-health` diagnoses planning-directory health. `/gsd-forensics` is post-mortem investigation for failed workflows.
 
@@ -201,7 +201,7 @@ Note on availability: the user's local copy at `/Users/hprincivil/Projects/gsd/`
 
 **What it does on resume.** BMAD relies on the workflow YAML being the source of truth; resume re-reads the YAML and the artifacts on disk. There is no separate progress ledger.
 
-**Trade-offs and where it differs from ready-suite.** Ready-suite is harness-routed (the harness's skill-trigger picks the next skill); BMAD is workflow-routed (the YAML picks the next persona). They compose at boundaries, not within a single feature. Production-ready's ORCHESTRATORS.md is explicit on this: "Mixing BMAD personas with ready-suite skills inside the same session creates a fragmented workflow. The persona-driven model (BMAD) and the harness-routed model (ready-suite) can compose at boundaries but should not compose within a single feature build" ([production-ready/ORCHESTRATORS.md](file:///Users/hprincivil/Projects/production-ready/ORCHESTRATORS.md)).
+**Trade-offs and where it differs from ready-suite.** Ready-suite is harness-routed (the harness's skill-trigger picks the next skill); BMAD is workflow-routed (the YAML picks the next persona). They compose at boundaries, not within a single feature. Production-ready's ORCHESTRATORS.md is explicit on this: "Mixing BMAD personas with ready-suite skills inside the same session creates a fragmented workflow. The persona-driven model (BMAD) and the harness-routed model (ready-suite) can compose at boundaries but should not compose within a single feature build" ([production-ready/ORCHESTRATORS.md](references/shared/ORCHESTRATORS.md)).
 
 The two valid integrations are: (a) BMAD owns planning, ready-suite owns building and shipping, with a one-time path translation at the boundary; or (b) BMAD off for ready-suite projects.
 
@@ -759,7 +759,7 @@ For each downstream ready-suite skill, what the PRD must supply to let that skil
 
 ### 6.1 architecture-ready needs (planning tier, not yet released)
 
-`architecture-ready` owns "design how the big pieces fit together" ([SUITE.md](https://github.com/aihxp/production-ready/blob/main/SUITE.md)). From the PRD it needs:
+`architecture-ready` owns "design how the big pieces fit together" ([ready-suite SUITE.md (predecessor)](https://github.com/aihxp/ready-suite/blob/main/SUITE.md)). From the PRD it needs:
 
 - **Entities** (the nouns: users, orders, documents, sensors, etc.) with their key attributes and identifiers.
 - **Flows** (the verbs: sign up, checkout, approve, escalate, refund, audit). Primary happy-path flow and at least two error/edge flows per feature.
@@ -1371,7 +1371,7 @@ This section is the schema input for SKILL.md's handoff contract. Every field li
 
 ### 6.1 What prd-ready has already committed ARCH.md to produce
 
-From `/Users/hprincivil/Projects/prd-ready/SKILL.md` Step 9 "Downstream handoff block," sub-section "To architecture-ready":
+From `the prd-ready source SKILL.md` Step 9 "Downstream handoff block," sub-section "To architecture-ready":
 
 ```
 ## Architecture-ready inputs
@@ -1389,7 +1389,7 @@ This is the INPUT contract to ARCH.md. ARCH.md's OUTPUT contract needs to serve 
 
 ### 6.2 What stack-ready needs from ARCH.md
 
-From `/Users/hprincivil/Projects/stack-ready/SKILL.md` Step 1 pre-flight and Step 2 constraint map:
+From `the stack-ready source SKILL.md` Step 1 pre-flight and Step 2 constraint map:
 
 - **Domain.** Already resolved by PRD; ARCH.md should not rename.
 - **Scale ceiling.** ARCH.md can tighten if the decomposition changes the per-service scale ceiling.
@@ -1406,7 +1406,7 @@ Specifically, stack-ready's `.stack-ready/DECISION.md` template expects ARCH.md 
 
 ### 6.3 What production-ready needs from ARCH.md
 
-From `/Users/hprincivil/Projects/production-ready/SKILL.md` Step 2 architecture note and Step 1 pre-flight:
+From `the production-ready source SKILL.md` Step 2 architecture note and Step 1 pre-flight:
 
 - **System shape.** "modular monolith," "service-oriented," "serverless functions," etc. Production-ready's Step 2 architecture note quotes this.
 - **Trust boundaries.** Production-ready's Step 2 requires a threat model with three answers (attacker-gain, highest-blast-radius mutation, trust-boundary locations). ARCH.md must pre-populate this.

@@ -21,7 +21,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run lint
+      - name: Run lint (skip tag-release-parity on push; releases are created after the tag push)
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        run: |
+          bash scripts/lint.sh unicode-clean --verbose
+          bash scripts/lint.sh frontmatter-version --verbose
+          bash scripts/lint.sh compatible-with --verbose
+          bash scripts/lint.sh references-exist --verbose
+          bash scripts/lint.sh tier-folders-populated --verbose
+
+      - name: Run full lint (schedule and manual)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: bash scripts/lint.sh --all --verbose
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
