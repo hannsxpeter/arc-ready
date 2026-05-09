@@ -1,0 +1,119 @@
+# Maintaining arc-ready
+
+Procedural guide for the arc-ready maintainer. Single-repo rituals, version-bump rules, release discipline. The eleven-skill aihxp/ready-suite required coordinated patches across twelve repos and a byte-identical SUITE.md ritual; arc-ready is one repo and the rituals collapse accordingly.
+
+For the contributor-facing version of these conventions, see `CONTRIBUTING.md`.
+
+## The repo
+
+One repo, one SKILL.md, one CHANGELOG.md, one tag stream, one release stream. The eleven-skill suite's coordinated-patch rituals do not apply.
+
+| File | Versioned | Notes |
+|---|---|---|
+| `SKILL.md` | Yes (frontmatter `version:` field) | The skill body. Lint checks `version:` matches CHANGELOG top entry. |
+| `CHANGELOG.md` | Yes (top entry) | Keep a Changelog format. Top entry is checked by lint for unicode cleanliness and version-shape. |
+| `README.md`, `AGENTS.md`, `CLAUDE.md` (symlink), `SECURITY.md`, `CONTRIBUTING.md`, `MAINTAINING.md`, `MIGRATION.md` | No (load-bearing surfaces; lint checks unicode cleanliness) | |
+| `LICENSE` | No | MIT. |
+| `scripts/lint.sh`, `.github/workflows/lint.yml`, `.github/CODEOWNERS`, `.gitignore` | No | |
+| `references/<tier>/*.md` | No | Inherited from source skills; faithful copies. Cross-reference updates allowed; content rewrites are not. |
+
+## The four rituals
+
+### Ritual 1: patch release (v0.1.x)
+
+For bug fixes, typo corrections, broken cross-reference fixes, lint improvements that catch documented failure modes.
+
+Steps:
+
+```bash
+cd ~/Projects/arc-ready
+# 1. Make the change.
+# 2. Bump SKILL.md frontmatter version (e.g., 0.1.0 -> 0.1.1) and updated date.
+# 3. Prepend a CHANGELOG entry. Pattern:
+#       ## [0.1.1] - YYYY-MM-DD
+#       <one-paragraph problem-and-fix>
+#       ### Fixed
+#       - bullet
+#       ### Why a patch
+#       <one-paragraph rationale>
+# 4. Run lint:
+bash scripts/lint.sh
+# 5. Commit, push, tag, release:
+git add -A  # or specific files
+git commit -m "v0.1.1: <imperative summary>"
+git push origin HEAD
+git tag v0.1.1
+git push origin v0.1.1
+gh release create v0.1.1 --title "v0.1.1" --notes-from-tag
+```
+
+The lint enforces `version: 0.1.1` in SKILL.md matches the top CHANGELOG entry `## [0.1.1]`. If the CI lint fails after push, fix and ship a v0.1.2 (do not amend or force-push the tag).
+
+### Ritual 2: minor release (v0.x.0)
+
+For new content within the established pattern catalog (refinements, additions for new ecosystem developments, new references that supplement existing tiers).
+
+Same steps as Ritual 1 with version bumped at the minor position (e.g., 0.1.5 -> 0.2.0). The CHANGELOG entry uses `### Added` and `### Changed` sections instead of `### Fixed`.
+
+### Ritual 3: major release (vX.0.0)
+
+For breaking changes to the artifact contract or the workflow shape.
+
+Major releases require coordination:
+
+1. Open a discussion thread (GitHub Discussions or Issues) at least 30 days before tag.
+2. Update `MIGRATION.md` with the breaking-change matrix.
+3. Verify the dogfood (`aihxp/ready-suite-example`) still works against the new arc-ready, or coordinate the dogfood update.
+4. Notify downstream orchestrator authors (GSD, BMAD, Spec Kit, Superpowers, etc.) if the artifact paths or contracts change.
+5. Tag and release per Ritual 1, with a long-form CHANGELOG entry covering the breaking changes and migration steps.
+
+### Ritual 4: tag-release parity
+
+Every git tag must have a matching GitHub Release. The lint includes a `tag-release-parity` check that walks `git tag` and verifies each tag has a release.
+
+If a tag is missing a release, run:
+
+```bash
+gh release create <tag> --title "<tag>" --notes-from-tag
+```
+
+If a release is created without a tag (rare), the lint surfaces it; create the tag from the release commit.
+
+## Lint checks
+
+`bash scripts/lint.sh --all` runs:
+
+| Check | What it does |
+|---|---|
+| `unicode-clean` | Em-dash, en-dash, arrow, box-drawing absent from load-bearing files (SKILL.md, README.md, AGENTS.md, CLAUDE.md, SECURITY.md, CONTRIBUTING.md, MAINTAINING.md, MIGRATION.md, top CHANGELOG entry). Inherited reference files are exempt. |
+| `frontmatter-version` | SKILL.md `version:` field matches the top CHANGELOG entry version. |
+| `tag-release-parity` | Every git tag has a matching GitHub Release. Requires `gh` authenticated. Runs only in CI or when `gh` is available. |
+| `compatible-with` | SKILL.md `compatible_with:` frontmatter contains the standards-level harness names (claude-code, codex, cursor, windsurf, pi, openclaw, any-agentskills-compatible-harness). antigravity is allowed but not required. |
+| `references-exist` | Every reference path mentioned in SKILL.md (`references/<tier>/<file>.md`) exists in the file system. Detects broken links from SKILL.md to references. |
+| `tier-folders-populated` | `references/{orchestration,planning,building,shipping,shared}` each have at least one file. Detects accidental directory deletions. |
+
+`bash scripts/lint.sh --help` lists individual checks.
+
+## Em-dash discipline
+
+The hub (predecessor: `aihxp/ready-suite/scripts/lint.sh`) enforced em-dash cleanliness on a defined set of "suite-authored" files. arc-ready does the same:
+
+**Enforced**: `SKILL.md` (whole file), `README.md` (whole file), `AGENTS.md`, `CLAUDE.md` (symlink target), `SECURITY.md`, `CONTRIBUTING.md`, `MAINTAINING.md`, `MIGRATION.md`, top CHANGELOG entry only.
+
+**Exempt**: `references/<tier>/*.md`. These are faithful copies of the source skills' references, which contain em-dashes from their original authoring. Removing them would alter the inherited content and violate the "faithful consolidation, not v2" principle.
+
+If you edit a reference file, do not introduce new em-dashes. The existing ones are inherited; the new ones would be net-new authoring.
+
+## Predecessor: aihxp/ready-suite
+
+The eleven-skill suite remains available and supported. arc-ready does not deprecate it. If a critical bug affects both, fix it in arc-ready first (single-repo patch) and port to the relevant suite skill (per-skill patch).
+
+The dogfood example (`aihxp/ready-suite-example`) is the integration test surface for both. If a change to arc-ready breaks the dogfood, the dogfood is the authority; revisit the change.
+
+## Release announcements
+
+Major and minor releases get a release announcement (GitHub Discussions, blog post, or Twitter/X thread). Patch releases do not, unless the patch closes a security issue (then coordinate with `SECURITY.md` disclosure).
+
+## What this file is not
+
+This file is **not** the equivalent of `aihxp/ready-suite/MAINTAINING.md`. The hub maintained twelve repos, a byte-identical SUITE.md ritual, the v2.5.12 precedent recovery story, and the multi-repo coordinated-patch matrix. None of that applies to arc-ready. arc-ready is one repo; the rituals are correspondingly small. If you need the multi-repo discipline (because you are scaffolding a different multi-repo collection), see `references/building/multi-repo-suite-layout.md`.

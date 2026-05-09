@@ -1,0 +1,15 @@
+# arc-ready code ownership.
+# Default reviewer for all changes.
+
+* @aihxp
+
+# Tier reference catalogs: per-tier review (currently the same maintainer; extension point).
+/references/orchestration/ @aihxp
+/references/planning/      @aihxp
+/references/building/      @aihxp
+/references/shipping/      @aihxp
+/references/shared/        @aihxp
+
+# Lint and CI: maintainer-only.
+/scripts/                  @aihxp
+/.github/                  @aihxp

@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Lint scratch files
+/tmp/arc-ready-*.txt
+
+# Local arc-ready state in this repo (we are not a consumer project,
+# but ignore for safety in case the maintainer dogfoods locally)
+.arc-ready/
+.prd-ready/
+.architecture-ready/
+.roadmap-ready/
+.stack-ready/
+.repo-ready/
+.production-ready/
+.deploy-ready/
+.observe-ready/
+.launch-ready/
+.harden-ready/
