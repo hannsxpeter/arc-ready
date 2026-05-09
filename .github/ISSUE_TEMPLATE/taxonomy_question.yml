@@ -1,0 +1,52 @@
+name: Taxonomy question
+description: A behavior that feels like a failure but does not map to a named pattern.
+title: "[taxonomy] "
+labels: [taxonomy-question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The named failure modes in arc-ready's have-nots catalog are the load-bearing
+        taxonomy. If you encounter a behavior that feels like a failure but does not map
+        to an existing named pattern, file this issue so the maintainer can either point
+        you at the existing pattern or refine the catalog. Net-new pattern names require
+        strong evidence that the behavior is distinct from every existing pattern.
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Tier where the behavior was observed
+      options:
+        - "Tier 0 (orchestration)"
+        - "Tier 1.1 (PRD)"
+        - "Tier 1.2 (architecture)"
+        - "Tier 1.3 (roadmap)"
+        - "Tier 1.4 (stack)"
+        - "Tier 2.1 (repo)"
+        - "Tier 2.2 (production / app)"
+        - "Tier 3.1 (deploy)"
+        - "Tier 3.2 (observe)"
+        - "Tier 3.3 (launch)"
+        - "Tier 3.4 (harden)"
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: The behavior
+      description: What did the agent (or output) do that felt wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: existing_check
+    attributes:
+      label: Which existing patterns did you check?
+      description: List the named patterns from the relevant antipatterns catalog you considered.
+    validations:
+      required: true
+  - type: textarea
+    id: distinction
+    attributes:
+      label: Why is this distinct from existing patterns?
+      description: Be concrete. "It feels different" is not enough; "the grep test for X would not catch this case because Y" is.
+    validations:
+      required: true

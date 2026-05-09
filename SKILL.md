@@ -1,7 +1,7 @@
 ---
 name: arc-ready
 description: "Take a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, and adversarial hardening. The full arc, mechanically enforced, in one skill. Triggers on 'kickoff,' 'I have an idea,' 'walk me through idea to launch,' 'orchestrate the whole arc,' 'help me ship it end-to-end,' 'new project from scratch,' 'write a PRD,' 'product spec,' 'design the architecture,' 'system design,' 'monolith or microservices,' 'C4 diagram,' 'ADR,' 'build a roadmap,' 'milestone plan,' 'quarterly plan,' 'sequence the work,' 'Now-Next-Later,' 'Shape Up cycle,' 'what stack should I use,' 'pick a database,' 'which framework,' 'set up a repo,' 'add CI,' 'GitHub Actions,' 'configure linting,' 'add a README,' 'dashboard,' 'admin panel,' 'internal tool,' 'back office,' 'CRUD app,' 'deploy this,' 'CI/CD pipeline,' 'promote to staging,' 'zero-downtime migration,' 'expand-contract,' 'rollback,' 'canary,' 'blue/green,' 'add monitoring,' 'define an SLO,' 'alerts when X,' 'write a runbook,' 'structured logging,' 'distributed tracing,' 'error budget policy,' 'launch my product,' 'build a landing page,' 'Product Hunt,' 'Show HN,' 'waitlist,' 'OG card,' 'launch-day SEO,' 'press kit,' 'adversarial review,' 'pen-test prep,' 'OWASP walkthrough,' 'SOC 2 / HIPAA / PCI-DSS / GDPR gap check,' 'responsible disclosure,' 'bug bounty,' 'post-incident hardening,' 'security review before launch.' Refuses scope leak (one tier doing another tier's work), AI-slop output (PRDs/architectures/roadmaps/launches that read the same across any product), hollow output (sections filled, decisions absent), feature-factory output (un-prioritized feature lists), paper SLOs (numbers with no error budget), paper canaries (deploy mechanics absent under canary labels), AI-slop landings (substitution-test failures), scanner-only security (Snyk-passed-but-front-door-exploitable), rubber-stamp orchestration (advancing without artifact verification), and ghost handoff (a tier consuming an absent upstream artifact). Greenfield projects use Mode A (full arc); existing-codebase work uses Mode B (specific tiers); audit work uses Mode C (retroactive review); multi-repo collections use Mode D (suite-layout patterns). Successor to and consolidation of the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready). Full trigger list and mode-routing table in README."
-version: 0.1.4
+version: 0.1.5
 updated: 2026-05-09
 changelog: CHANGELOG.md
 tier: arc
@@ -259,6 +259,15 @@ Sub-steps:
 #### Step 2.2. Production: build the end-to-end-wired application
 
 Load `references/building/preflight-and-verification.md` for the pre-flight protocol. Then load `references/building/codebase-research.md` if existing code is present.
+
+The 35 sub-steps below cluster into six concerns. Use the cluster as a navigation aid; the load-on-demand discipline is per individual reference, not per cluster.
+
+- **Foundations (sub-steps 1-9)**: vertical slice discipline, DESIGN.md, states, data, auth, navigation, IA, naming, domain.
+- **Quality (sub-steps 10-13)**: performance and security, API design, data viz, telemetry.
+- **Polish (sub-steps 14-18)**: motion, AI patterns, a11y, dark mode, error pages.
+- **Scale and i18n (sub-steps 19-22)**: expansion, file management, internationalization, login surfaces.
+- **Engagement and ops (sub-steps 23-29)**: marketing pages in-app, migration, notifications, billing, realtime, reporting, SEO.
+- **Integration and testing (sub-steps 30-35)**: settings, social features, system integration, testing and quality, workflows.
 
 Sub-steps:
 

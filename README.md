@@ -1,8 +1,26 @@
 # arc-ready
 
+[![lint](https://github.com/aihxp/arc-ready/actions/workflows/lint.yml/badge.svg)](https://github.com/aihxp/arc-ready/actions/workflows/lint.yml)
+[![release](https://img.shields.io/github/v/release/aihxp/arc-ready)](https://github.com/aihxp/arc-ready/releases)
+[![license](https://img.shields.io/github/license/aihxp/arc-ready)](LICENSE)
+
 A single AI skill that takes a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, and adversarial hardening. The full arc, mechanically enforced.
 
 arc-ready is the consolidated successor to the eleven-skill aihxp/ready-suite. Same content, same discipline, same artifacts, one repo.
+
+## Quickstart
+
+```bash
+# Claude Code
+git clone https://github.com/aihxp/arc-ready ~/.claude/skills/arc-ready
+
+# Then in any project, invoke a tier sub-step by saying any of the trigger phrases.
+# Greenfield: "I have an idea for X. Walk me through to launch."
+# Existing-codebase gap-fill: "Write a PRD for this app."
+# Audit: "Audit the architecture in .architecture-ready/ARCH.md."
+```
+
+The skill produces artifacts at canonical `.<tier>-ready/<ARTIFACT>.md` paths in the project directory. See [Artifact map](#artifact-map) below for the full path table.
 
 ## Why arc-ready
 

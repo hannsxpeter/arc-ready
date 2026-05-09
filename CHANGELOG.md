@@ -4,6 +4,33 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [0.1.5] - 2026-05-09
+
+Repo-hygiene and discoverability pass. Closes the C-territory gaps surfaced by the post-build self-evaluation: missing OSS scaffolding files, no plugin marketplace entry, large/flat Tier 2.2 sub-step list, README without quickstart or status badges. No discipline change; no new patterns.
+
+### Added
+
+- `CODE_OF_CONDUCT.md`: Contributor Covenant (lifted from the suite's repo-ready dogfood).
+- `.github/ISSUE_TEMPLATE/bug_report.yml`: structured bug-report form covering version, harness, mode, tier, reproduction, expected, actual.
+- `.github/ISSUE_TEMPLATE/feature_request.yml`: feature-request form with scope-check (faithful-consolidation discipline reminder).
+- `.github/ISSUE_TEMPLATE/taxonomy_question.yml`: dedicated form for "behavior that feels like a failure but does not map to a named pattern" - the load-bearing edge case for the pattern catalog.
+- `.github/pull_request_template.md`: PR checklist covering type-of-change, discipline, versioning, lint, cross-references.
+- `.github/dependabot.yml`: weekly GitHub Actions update PRs (markdown-only repo; ecosystem updates are limited to CI infra).
+- `plugins/arc-ready/.claude-plugin/plugin.json`: Claude Code plugin marketplace entry. Symlinks to the repo's SKILL.md and references/ to avoid content duplication.
+- `README.md` quickstart block with concrete first command, status badges (lint, release, license).
+
+### Changed
+
+- `SKILL.md` Tier 2.2 sub-step list: added a six-cluster navigation aid (Foundations / Quality / Polish / Scale and i18n / Engagement and ops / Integration and testing) before the 35 numbered sub-steps. Substantive content unchanged; navigation only.
+
+### Operationally smoke-tested
+
+Resume protocol shell snippet from SKILL.md was simulated against a synthetic `.arc-ready/PROGRESS.md` showing PRD imported, ARCH in-flight, others pending. The drift-detection logic correctly identified no drift; the next-sub-step heuristic returned an approximate first-pending row (refinement opportunity for v0.1.6: tighten the heuristic to skip Tier 0 in-flight when downstream tiers are in-flight).
+
+### Why a patch, not a minor
+
+Repo-hygiene additions and a navigation-aid edit. No content discipline change. Faithful consolidation preserved.
+
 ## [0.1.4] - 2026-05-09
 
 ### Added
@@ -86,6 +113,7 @@ The discipline of arc-ready is the discipline the eleven-skill suite produced. S
 - Compatible with: claude-code, codex, cursor, windsurf, antigravity, pi, openclaw, any-agentskills-compatible-harness.
 - Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The aihxp/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
 
+[0.1.5]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.5
 [0.1.4]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.4
 [0.1.3]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.3
 [0.1.2]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.2

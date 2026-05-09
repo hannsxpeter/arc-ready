@@ -1,0 +1,43 @@
+name: Feature request or improvement
+description: Suggest a refinement to existing arc-ready content.
+title: "[feature] "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        arc-ready is faithful consolidation of the eleven-skill aihxp/ready-suite, not a v2.
+        Net-new failure-mode patterns and discipline rules will be rejected.
+        Refinements within the established pattern catalog (clarifications, references for new
+        ecosystem developments, lint improvements that catch documented modes) are welcome.
+
+        For taxonomy questions (a behavior that feels like a failure but does not map to a
+        named pattern), use the "taxonomy question" template instead.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Concrete user-facing problem, not "it would be nice if".
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: What specifically would change in SKILL.md, references, lint, or workflow?
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - "Within scope: refinement of existing pattern, lint improvement, ecosystem update"
+        - "Possibly out of scope: net-new pattern (please justify)"
+        - "Unsure"
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
