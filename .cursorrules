@@ -1,0 +1,31 @@
+# arc-ready (Cursor adaptation)
+#
+# This file is a slim Cursor-rule version of arc-ready's SKILL.md frontmatter.
+# Cursor's per-rule recommended limit is ~2KB; the full SKILL.md description
+# is 2,558 chars (over the threshold). This file gives Cursor a trimmed
+# trigger surface that still routes correctly.
+#
+# For the full skill body, load arc-ready/SKILL.md.
+
+When the user asks to do any of:
+
+- write a PRD, product spec, requirements doc, problem statement
+- design the architecture, system diagram, ADR, trust boundaries, C4 diagram
+- build a roadmap, milestone plan, sequence the work, Now-Next-Later, Shape Up
+- pick a stack, choose a database, frontend or backend framework decision
+- set up a repo, add CI, GitHub Actions, configure linting, README, license
+- build a dashboard, admin panel, internal tool, back office, CRUD app
+- deploy, CI/CD pipeline, promote to staging, expand-contract, canary, rollback
+- add monitoring, define an SLO, alerts, write a runbook, error budget policy
+- launch, build a landing page, Product Hunt, Show HN, waitlist, OG card
+- adversarial review, pen-test prep, OWASP walkthrough, SOC 2 / HIPAA / PCI / GDPR check
+- responsible disclosure, bug bounty, post-incident hardening
+- kickoff, walk me through idea to launch, orchestrate the whole arc
+
+Load `arc-ready/SKILL.md` and follow the tier-routed workflow.
+
+Modes: A (full arc, greenfield), B (specific tier, existing codebase), C (retroactive audit), D (multi-repo suite layout).
+
+Artifacts: written to canonical .{tier}-ready/{ARTIFACT}.md paths. Refuses scope leak, AI-slop output, hollow output, paper SLOs, paper canaries, scanner-only security.
+
+Faithful consolidation of the eleven-skill aihxp/ready-suite into one repo. See arc-ready/MIGRATION.md.

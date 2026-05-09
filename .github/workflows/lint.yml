@@ -35,3 +35,6 @@ jobs:
         run: bash scripts/lint.sh --all --verbose
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run dogfood smoke test
+        run: bash scripts/dogfood-smoke.sh --verbose

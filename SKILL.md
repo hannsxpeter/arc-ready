@@ -1,7 +1,7 @@
 ---
 name: arc-ready
 description: "Take a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, and adversarial hardening. The full arc, mechanically enforced, in one skill. Triggers on 'kickoff,' 'I have an idea,' 'walk me through idea to launch,' 'orchestrate the whole arc,' 'help me ship it end-to-end,' 'new project from scratch,' 'write a PRD,' 'product spec,' 'design the architecture,' 'system design,' 'monolith or microservices,' 'C4 diagram,' 'ADR,' 'build a roadmap,' 'milestone plan,' 'quarterly plan,' 'sequence the work,' 'Now-Next-Later,' 'Shape Up cycle,' 'what stack should I use,' 'pick a database,' 'which framework,' 'set up a repo,' 'add CI,' 'GitHub Actions,' 'configure linting,' 'add a README,' 'dashboard,' 'admin panel,' 'internal tool,' 'back office,' 'CRUD app,' 'deploy this,' 'CI/CD pipeline,' 'promote to staging,' 'zero-downtime migration,' 'expand-contract,' 'rollback,' 'canary,' 'blue/green,' 'add monitoring,' 'define an SLO,' 'alerts when X,' 'write a runbook,' 'structured logging,' 'distributed tracing,' 'error budget policy,' 'launch my product,' 'build a landing page,' 'Product Hunt,' 'Show HN,' 'waitlist,' 'OG card,' 'launch-day SEO,' 'press kit,' 'adversarial review,' 'pen-test prep,' 'OWASP walkthrough,' 'SOC 2 / HIPAA / PCI-DSS / GDPR gap check,' 'responsible disclosure,' 'bug bounty,' 'post-incident hardening,' 'security review before launch.' Refuses scope leak (one tier doing another tier's work), AI-slop output (PRDs/architectures/roadmaps/launches that read the same across any product), hollow output (sections filled, decisions absent), feature-factory output (un-prioritized feature lists), paper SLOs (numbers with no error budget), paper canaries (deploy mechanics absent under canary labels), AI-slop landings (substitution-test failures), scanner-only security (Snyk-passed-but-front-door-exploitable), rubber-stamp orchestration (advancing without artifact verification), and ghost handoff (a tier consuming an absent upstream artifact). Greenfield projects use Mode A (full arc); existing-codebase work uses Mode B (specific tiers); audit work uses Mode C (retroactive review); multi-repo collections use Mode D (suite-layout patterns). Successor to and consolidation of the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready). Full trigger list and mode-routing table in README."
-version: 0.1.5
+version: 0.1.6
 updated: 2026-05-09
 changelog: CHANGELOG.md
 tier: arc
@@ -1252,23 +1252,54 @@ The resume protocol is the single most-important defense against phantom resume 
 # 1. Read the ledger.
 test -f .arc-ready/PROGRESS.md && cat .arc-ready/PROGRESS.md > /tmp/progress.txt
 
-# 2. List every claimed-complete tier directory.
+# 2. Drift check: every "done" or "imported" tier must have its artifact on disk.
 for tier in prd architecture roadmap stack repo production deploy observe launch harden; do
-  if grep -qE "^- ${tier}-ready: (done|imported)" /tmp/progress.txt; then
+  if grep -qE "^- [0-9.]+ \(${tier^^}\): (done|imported)" /tmp/progress.txt 2>/dev/null \
+     || grep -qiE "^- ${tier}-ready: (done|imported)" /tmp/progress.txt; then
     if [ ! -d ".${tier}-ready" ] || [ -z "$(ls .${tier}-ready 2>/dev/null)" ]; then
-      echo "[drift] PROGRESS.md says ${tier} done but .${tier}-ready/ is missing or empty"
+      echo "[drift] PROGRESS.md says ${tier} done/imported but .${tier}-ready/ is missing or empty"
     fi
   fi
 done
 
-# 3. Identify the next sub-step from disk, not from conversation.
-# (The next sub-step is the first tier whose artifact does not exist on disk
-# or whose artifact has been declared rolled-back.)
+# 3. Identify the next sub-step in DEPENDENCY order, not file order.
+# The dependency order is fixed: 1.1 -> 1.2 -> 1.3 -> 1.4 -> 2.1 -> 2.2 ->
+# 3.1 -> 3.2 -> (3.3 || 3.4 in parallel). The next sub-step is the FIRST
+# entry in that order whose status is `pending` or `in-flight` AND whose
+# upstream tier is `done` or `imported` (or is itself the user-declared
+# starting tier in Mode B).
+ordered_tiers="1.1 1.2 1.3 1.4 2.1 2.2 3.1 3.2 3.3 3.4"
+next_substep=""
+prior_done=true
+for t in $ordered_tiers; do
+  status=$(grep -E "^- ${t}" /tmp/progress.txt | sed -E 's/.*: *([a-z-]+).*/\1/' | head -1)
+  case "$status" in
+    done|imported|skipped)
+      prior_done=true
+      continue
+      ;;
+    pending|in-flight|failed|"")
+      if [ "$prior_done" = "true" ]; then
+        next_substep="$t"
+        break
+      fi
+      ;;
+  esac
+done
+echo "next_sub_step: ${next_substep:-arc-complete}"
 
 # 4. Record the resume verification with a timestamp.
+echo "" >> .arc-ready/PROGRESS.md
 echo "## Resume verification: $(date -u +%FT%TZ)" >> .arc-ready/PROGRESS.md
-echo "next_sub_step: <derived from disk>" >> .arc-ready/PROGRESS.md
+echo "next_sub_step: ${next_substep:-arc-complete}" >> .arc-ready/PROGRESS.md
 ```
+
+Two things this heuristic gets right that the v0.1.5 version did not:
+
+1. It walks tiers in **dependency order**, so a Mode A project with PRD imported and ARCH in-flight resolves to next-sub-step `1.2`, not `0`.
+2. It treats `skipped` as a complete status, so an explicit skip does not block downstream tier dispatch.
+
+The launch / harden parallelism (3.3 || 3.4) is handled by the heuristic returning whichever is first non-complete; the actual parallelism decision is made in SKILL.md Tier 3 dispatch text, not in this resume snippet.
 
 The protocol runs every turn, not just on explicit resume. Cache invalidations, compression-summary loss, stale tool-result state can all drift the conversation away from disk truth. Disk wins.
 

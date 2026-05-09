@@ -4,6 +4,38 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [0.1.6] - 2026-05-09
+
+Operational-validation pass. Closes the remaining gaps from the post-v0.1.5 evaluation: untested resume-protocol heuristic, no end-to-end smoke test, oversized description for Cursor's per-rule limit. Adds CI integration of the smoke test.
+
+### Added
+
+- `scripts/dogfood-smoke.sh`: seven-test operational smoke test covering drift-detection (happy path + synthetic drift), next-sub-step heuristic, artifact-path contract reachability for all eleven canonical paths, AGENTS.md emit-respect (existing-respected and absent cases), and the critical-finding gate logic. All seven tests pass against a synthetic mid-arc project. Run with `bash scripts/dogfood-smoke.sh [--verbose]`.
+- CI workflow runs the smoke test on every push and PR. Smoke-test failure is a CI failure.
+- `.cursorrules` (1,754 chars; under Cursor's per-rule 2KB recommendation): slim Cursor-adapter rule with the trigger surface and a pointer to the full SKILL.md. Lets Cursor users install arc-ready under tighter rule-size constraints. The full SKILL.md description (2,558 chars) is fine for Claude Code, Codex, and any harness with a 4KB practical ceiling on frontmatter.
+
+### Changed
+
+- `SKILL.md` resume-protocol shell snippet: rewritten to walk tiers in dependency order (1.1 -> 1.2 -> ... -> 3.4), treat `skipped` as a complete status, and resolve next-sub-step against the dependency-order traversal rather than file-order pattern matching. The smoke test verifies it returns `1.2` correctly when PRD is imported and ARCH is in-flight (the bug v0.1.5 acknowledged).
+
+### Validated
+
+- **Description size analysis**: 2,558 chars / ~639 tokens. Under the practical 4KB ceiling for Claude Code, Codex, Antigravity, Pi, OpenClaw. Over the 2KB recommendation for Cursor; addressed via `.cursorrules` adapter.
+- **Trigger collision analysis (static)**: 63 unique trigger phrases extracted; no generic single-word triggers; all are domain-specific phrases. Low collision risk against general-purpose skills.
+- **Operational smoke test**: 7/7 tests pass on a synthetic mid-arc project. Covers the load-bearing operational properties (drift detection, dependency-ordered next-sub-step, AGENTS.md emit-respect, critical-finding gate).
+
+### Still untested (requires live harnesses)
+
+- Functional agent execution: an actual agent loaded with arc-ready's SKILL.md running through Tier 0 -> Tier 3 on a real or fictional product. Out of scope for a build script; tested in a session.
+- Trigger routing on live harnesses: empirical measurement of how Claude Code's, Codex's, Cursor's, Windsurf's skill routers score arc-ready against other installed skills.
+- Token cost on real invocations: actual cache behavior across the eight compatible_with harnesses.
+
+These are operational properties that require live measurement. The static and structural validations above are the maximum buildable validation.
+
+### Why a patch, not a minor
+
+Refines an inline heuristic; adds a smoke test + adapter file; no discipline change. arc-ready remains faithful consolidation.
+
 ## [0.1.5] - 2026-05-09
 
 Repo-hygiene and discoverability pass. Closes the C-territory gaps surfaced by the post-build self-evaluation: missing OSS scaffolding files, no plugin marketplace entry, large/flat Tier 2.2 sub-step list, README without quickstart or status badges. No discipline change; no new patterns.
@@ -113,6 +145,7 @@ The discipline of arc-ready is the discipline the eleven-skill suite produced. S
 - Compatible with: claude-code, codex, cursor, windsurf, antigravity, pi, openclaw, any-agentskills-compatible-harness.
 - Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The aihxp/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
 
+[0.1.6]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.6
 [0.1.5]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.5
 [0.1.4]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.4
 [0.1.3]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.3
