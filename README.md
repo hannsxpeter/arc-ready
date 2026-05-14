@@ -1,7 +1,7 @@
 # arc-ready
 
 [![lint](https://github.com/aihxp/arc-ready/actions/workflows/lint.yml/badge.svg)](https://github.com/aihxp/arc-ready/actions/workflows/lint.yml)
-[![release](https://img.shields.io/github/v/release/aihxp/arc-ready)](https://github.com/aihxp/arc-ready/releases)
+[![release](https://img.shields.io/badge/release-v1.0.0-blue)](https://github.com/aihxp/arc-ready/releases/tag/v1.0.0)
 [![version](https://img.shields.io/badge/version-1.0.0-blue)](CHANGELOG.md)
 [![agent skills](https://img.shields.io/badge/Agent%20Skills-compatible-2f6fed)](SKILL.md)
 [![aihxp/pillars](https://img.shields.io/badge/aihxp%2Fpillars-standard-0f766e)](https://github.com/aihxp/pillars)
