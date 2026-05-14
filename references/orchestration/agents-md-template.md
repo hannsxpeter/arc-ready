@@ -1,82 +1,199 @@
-# `AGENTS.md` template emitted by kickoff-ready
+# `AGENTS.md` template emitted by arc-ready
 
-Loaded at SKILL.md Step 6 sub-step 6a. The template kickoff-ready writes to project root when no `AGENTS.md` exists.
+Loaded at SKILL.md Step 0.6 and Step 2.1. The template arc-ready writes to project root when no `AGENTS.md` exists.
 
 ## What this file is for
 
-`AGENTS.md` is the cross-tool agent brief read natively by Codex CLI, GitHub Copilot, Cursor, Windsurf, Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin, and others, per the open standard at [agents.md](https://agents.md/) (governed by the Linux Foundation's Agentic AI Foundation). On Claude Code the equivalent is `CLAUDE.md`; many teams symlink `CLAUDE.md` -> `AGENTS.md` to avoid drift.
+`AGENTS.md` is the cross-tool agent brief read by Codex CLI, GitHub Copilot, Cursor, Windsurf, Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin, and others, per the open standard at [agents.md](https://agents.md/). On Claude Code the equivalent is `CLAUDE.md`; many teams symlink `CLAUDE.md` to `AGENTS.md` to avoid drift.
 
-kickoff-ready's emit is **artifact metadata only**: it names the ready-suite artifacts produced by the kickoff and points at them. It does not contain stack, build commands, conventions, or forbidden actions. Those belong to repo-ready's scaffolding (or to the user). Mixing the two re-introduces scope leak.
+arc-ready emits a Pillars-compatible `AGENTS.md` by default for file-system projects. Pillars owns durable, task-routed agent memory in `agents/*.md`. arc-ready owns the canonical arc artifacts in `.<tier>-ready/`. The relationship is:
 
-## Emit conditions (recap)
+- `AGENTS.md` tells agents how to load Pillars and where arc-ready artifacts live.
+- `agents/*.md` distill stable operating memory for future coding tasks.
+- `.<tier>-ready/*.md` remain the source of truth for arc decisions.
 
-1. Only if no `AGENTS.md` exists at project root. If one exists, leave it untouched, record `agents_md_emitted: existing-respected` in PROGRESS.md.
-2. Only on harnesses with a file system. On chat-only frontends, surface the template as a guidance string for the user to paste.
-3. Once written, kickoff-ready never re-edits this file. Subsequent kickoff resumes do not append or rewrite.
+## Emit conditions
+
+1. If no `AGENTS.md` exists, write the Pillars-compatible template below.
+2. If `AGENTS.md` exists and is already Pillars-compatible, preserve it and add only missing arc-ready artifact-map context if the file has an obvious place for it.
+3. If `AGENTS.md` exists and conflicts with the Pillars loader, leave it untouched and record `pillars: adoption-blocked-existing-agents` in `.arc-ready/PROGRESS.md`.
+4. On chat-only frontends with no file system, surface the template as guidance text for the user to paste.
 
 ## Template
 
-Substitutions are double-braced. Resolve from PROGRESS.md.
+Substitutions are double-braced. Resolve from PROGRESS.md and the artifact paths on disk.
 
-```markdown
+````markdown
 # {{project_name}}
 
-This project was kicked off via the [ready-suite](https://github.com/aihxp/ready-suite). The kickoff arc produced the artifacts listed below; consult the relevant artifact before changes that touch its area.
+This project follows the [Pillars](https://github.com/aihxp/pillars) standard. Coding agents working in this repository read the pillar files in `./agents/*.md` to stay aligned with the project's facts, decisions, and conventions.
 
-## Ready-suite artifact map
+## At the start of any task
 
-| Sibling | Status | Artifact |
+1. Load every file in `./agents/` recursively whose frontmatter has `always_load: true`.
+2. Scan frontmatter in the remaining pillar files.
+3. Identify primary pillars whose `triggers` or `covers` match the current task.
+4. Load the primaries and every pillar listed in their `must_read_with`, depth 1 only.
+5. Consult `see_also` only if the task explicitly touches that area.
+6. Follow `Rules`, apply `Workflows`, heed `Watchouts`, and ask about `Gaps`.
+
+## Handling missing pillars
+
+| State | Action |
+|---|---|
+| `status: present` | Load and comply. |
+| `status: stub` | Ask before making decisions in this area. |
+| Name in `excluded:` | Treat as intentionally not applicable. |
+| Trigger matches a known absent pillar | Infer from code, state the assumption, and recommend creating the pillar. |
+
+If `context.md` or `repo.md` is missing, pause and ask the human to create stubs or declare an explicit project exception.
+
+## Excluded pillars
+
+```yaml
+excluded: []
+```
+
+## arc-ready artifacts
+
+This project was shaped via [arc-ready](https://github.com/aihxp/arc-ready). For source-of-truth planning, build, ship, and hardening decisions, consult the artifacts below before changing the related area.
+
+| Tier | Status | Artifact |
 |---|---|---|
-| prd-ready | {{prd_status}} | `{{prd_artifact_path}}` |
-| architecture-ready | {{arch_status}} | `{{arch_artifact_path}}` |
-| roadmap-ready | {{roadmap_status}} | `{{roadmap_artifact_path}}` |
-| stack-ready | {{stack_status}} | `{{stack_artifact_path}}` |
-| repo-ready | {{repo_status}} | (repo-level scaffolding) |
-| production-ready | {{production_status}} | `{{production_artifact_path}}` |
-| deploy-ready | {{deploy_status}} | `{{deploy_artifact_path}}` |
-| observe-ready | {{observe_status}} | `{{observe_artifact_path}}` |
-| launch-ready | {{launch_status}} | `{{launch_artifact_path}}` |
-| harden-ready | {{harden_status}} | `{{harden_artifact_path}}` |
+| 1.1 PRD | {{prd_status}} | `{{prd_artifact_path}}` |
+| 1.2 Architecture | {{arch_status}} | `{{arch_artifact_path}}` |
+| 1.3 Roadmap | {{roadmap_status}} | `{{roadmap_artifact_path}}` |
+| 1.4 Stack | {{stack_status}} | `{{stack_artifact_path}}` |
+| 2.1 Repo | {{repo_status}} | (repo-level scaffolding) |
+| 2.2 Production | {{production_status}} | `{{production_artifact_path}}` |
+| 3.1 Deploy | {{deploy_status}} | `{{deploy_artifact_path}}` |
+| 3.2 Observe | {{observe_status}} | `{{observe_artifact_path}}` |
+| 3.3 Launch | {{launch_status}} | `{{launch_artifact_path}}` |
+| 3.4 Harden | {{harden_status}} | `{{harden_artifact_path}}` |
 
-The kickoff audit ledger lives at `.kickoff-ready/PROGRESS.md`. It records every sibling invocation, skip declaration, and verification timestamp from the kickoff arc.
+The arc audit ledger lives at `.arc-ready/PROGRESS.md`. It records tier invocation, skip declarations, Pillars adoption status, and verification timestamps.
+````
 
-## Project conventions
+## Required companion files
 
-This file is the cross-tool agent brief; project conventions (stack, build/test commands, forbidden actions, contribution policy) belong in a separate canonical document. If repo-ready ran during kickoff, those conventions are already captured at the location repo-ready chose (typically appended to this file or in `CONTRIBUTING.md`). If repo-ready was skipped or did not run, see `CONTRIBUTING.md`, `README.md`, or run repo-ready directly to scaffold the conventions section.
+The AGENTS.md emit is incomplete unless `agents/context.md` and `agents/repo.md` exist. If the source artifacts are not mature enough to fill them, emit stubs:
 
-## How to extend this file
+```markdown
+---
+pillar: context
+status: stub
+always_load: true
+covers: [project identity, domain language, product invariants, glossary]
+triggers: []
+must_read_with: []
+see_also: [repo]
+---
 
-Append project conventions below this line, or replace this template's body wholesale once your team has settled on the canonical agent brief. kickoff-ready will not re-edit this file. Treat it like any other repo-controlled doc: it passes through code review, it is covered by `CODEOWNERS` if you have one, and changes appear in the commit history.
+## Scope
+
+(stub) Fill in project identity, domain language, product invariants, and glossary.
+
+## Context
+
+(stub)
+
+## Decisions
+
+(none)
+
+## Rules
+
+(none)
+
+## Workflows
+
+(none)
+
+## Watchouts
+
+(none)
+
+## Touchpoints
+
+- `see_also: [repo]`
+
+## Gaps
+
+- This pillar is a stub. Ask before inventing project identity, domain vocabulary, or product invariants.
+```
+
+```markdown
+---
+pillar: repo
+status: stub
+always_load: true
+covers: [file layout, naming conventions, where things go, repository structure]
+triggers: []
+must_read_with: []
+see_also: [context]
+---
+
+## Scope
+
+(stub) Fill in file layout, naming conventions, and structural decisions.
+
+## Context
+
+(stub)
+
+## Decisions
+
+(none)
+
+## Rules
+
+(none)
+
+## Workflows
+
+(none)
+
+## Watchouts
+
+(none)
+
+## Touchpoints
+
+- `see_also: [context]`
+
+## Gaps
+
+- This pillar is a stub. Ask before inventing folder layout, naming patterns, or where tests, configs, and docs live.
 ```
 
 ## Substitution rules
 
 - `{{project_name}}` - from PROGRESS.md `## Kickoff intent` block, one-line project description, stripped of quoting.
-- `{{<sibling>_status}}` - one of `done`, `skipped`, `deferred`, `imported`, `failed`. Mirror the PROGRESS.md status field.
-- `{{<sibling>_artifact_path}}` - from the per-sibling artifact contract in [`references/orchestration/sequencing-rules.md`](sequencing-rules.md). For skipped/deferred siblings, write `(not produced)`.
+- `{{<tier>_status}}` - one of `done`, `skipped`, `deferred`, `imported`, `failed`. Mirror the PROGRESS.md status field.
+- `{{<tier>_artifact_path}}` - from the per-tier artifact contract in [`references/orchestration/sequencing-rules.md`](sequencing-rules.md). For skipped or deferred tiers, write `(not produced)`.
 
-## What kickoff-ready never writes into AGENTS.md
+## What arc-ready does not put in AGENTS.md
 
-The emit is artifact metadata. The following content is forbidden in the kickoff-ready emit even if helpful in principle, because writing it re-introduces scope leak:
+The AGENTS.md file is a loader and map, not a substitute for artifacts or Pillars.
 
-- **Stack details** (language, framework, runtime versions). repo-ready's job.
-- **Build / test / lint commands.** repo-ready's job.
-- **Forbidden actions** (don't commit to main, don't edit lockfile, etc.). repo-ready's job, derived from CONTRIBUTING.md.
-- **Specialist content** (PRD excerpts, architecture decisions, launch strategy notes). The artifact files themselves are authoritative; kickoff-ready never excerpts them inline.
-- **Future-work TODOs.** PROGRESS.md tracks deferred items; AGENTS.md is not a second ledger.
+- Do not paste PRD, architecture, roadmap, launch, or hardening content into AGENTS.md.
+- Do not duplicate detailed stack rules if `agents/stack.md` exists.
+- Do not duplicate detailed repo rules if `agents/repo.md` exists.
+- Do not use AGENTS.md as a future-work TODO list. PROGRESS.md tracks deferred arc items; a phase orchestrator tracks ongoing work.
 
-## Interaction with repo-ready
+## Interaction with Tier 2.1
 
-If the kickoff arc invokes repo-ready, both skills converge on `AGENTS.md` at project root. The handshake:
+Tier 0 may emit the loader and mandatory stubs. Tier 2.1 enriches the memory layer:
 
-1. kickoff-ready Step 6 sub-step 6a runs after all siblings (including repo-ready, if invoked) have completed. By then, repo-ready may already have written or extended `AGENTS.md` with project conventions.
-2. If `AGENTS.md` exists when sub-step 6a runs, kickoff-ready records `existing-respected` and does not write. repo-ready's AGENTS.md is authoritative.
-3. If repo-ready was skipped or did not produce `AGENTS.md`, kickoff-ready emits the artifact-map-only template. The user can run repo-ready later to extend it with conventions, or extend it manually.
-
-This separation is by design: kickoff-ready owns artifact metadata, repo-ready owns project conventions. The same file holds both, but they are written by different skills at different times.
+1. It verifies `AGENTS.md` is Pillars-compatible.
+2. It fills or creates `agents/context.md` and `agents/repo.md`.
+3. It adds source-backed pillars such as `stack.md`, `arch.md`, `quality.md`, `deploy.md`, and `observe.md` when the source artifacts exist.
+4. It records Pillars adoption status in `.arc-ready/PROGRESS.md`.
 
 ## Cross-references
 
-- [agents.md open standard](https://agents.md/) - the format spec and the harnesses that read it
-- repo-ready's `references/onboarding-dx.md` Section 9 - per-tool deltas, anti-patterns, the canonical template for the conventions side
-- [`references/orchestration/handoff-protocols.md`](handoff-protocols.md) Section "AGENTS.md" - how kickoff-ready surfaces the template on chat-only harnesses
+- [Pillars standard](https://github.com/aihxp/pillars) - task-routed agent memory standard
+- [agents.md open standard](https://agents.md/) - the AGENTS.md ecosystem standard
+- `references/building/pillars-integration.md` - required memory-layer mapping from arc-ready artifacts to Pillars
+- `references/building/onboarding-dx.md` Section 9 - per-tool deltas and conventions
+- [`references/orchestration/handoff-protocols.md`](handoff-protocols.md) Section "AGENTS.md" - chat-only harness behavior

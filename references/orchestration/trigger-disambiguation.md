@@ -2,7 +2,7 @@
 
 arc-ready's tier sub-steps have tight scopes but adjacent triggers overlap. This file maps the most likely confusion cases to the canonical tier sub-step with one-line rationale.
 
-(Origin: in the eleven-skill predecessor aihxp/ready-suite, this disambiguation table mapped phrases to canonical sibling skills. arc-ready consolidates the eleven skills into ten tier sub-steps; the disambiguation logic is preserved with sub-step labels in place of skill names.)
+This table uses tier sub-step labels instead of skill names so the routing stays native to arc-ready.
 
 When a user phrase plausibly matches more than one tier sub-step, the agent picks one; this file is the reference for the canonical answer and the disambiguating question to ask if the routing is genuinely ambiguous.
 
@@ -53,8 +53,8 @@ User says X. You're not sure which tier sub-step should run. Look up X in the ta
 | "Product Hunt" / "Show HN" / "Reddit launch" | Tier 3.3 (LAUNCH) | Launch channels are Tier 3.3. |
 | "waitlist" / "OG card" / "press kit" | Tier 3.3 (LAUNCH) | Launch artifacts are Tier 3.3. |
 | "kickoff" / "new project from scratch" / "I have an idea" | Tier 0 (orchestration) | Greenfield orchestration from raw user intent is Tier 0. |
-| "constitution.md" | (none) | The suite does not own a `constitution.md` equivalent. That slot belongs to Spec Kit; ready-suite reads it when present. See ORCHESTRATORS.md Pattern: Spec Kit. |
-| "AGENTS.md" / "CLAUDE.md" | Tier 2.1 (scaffold) or Tier 0 (post-arc emit) | Project-conventions agent brief is Tier 2.1. Suite-artifact-map emit when none exists is Tier 0 Step 6 sub-step 6a. |
+| "constitution.md" | (none) | arc-ready does not own a `constitution.md` equivalent. That slot belongs to Spec Kit; arc-ready treats it as project-root context when present. See ORCHESTRATORS.md Pattern: Spec Kit. |
+| "AGENTS.md" / "CLAUDE.md" | Tier 2.1 (scaffold) or Tier 0 (post-arc emit) | Project-conventions agent brief is Tier 2.1. arc-ready artifact-map emit when none exists is Tier 0 Step 0.6. |
 | "DESIGN.md" | Tier 2.2 (consume) | Detect and consume the Google Labs DESIGN.md format in Step 3 sub-step 3a is Tier 2.2. |
 
 ## When to fall back to the user
@@ -71,19 +71,19 @@ One question, two options. Do not list five.
 
 ## When the harness routes wrong
 
-The user is the final authority. If a harness or orchestrator routes to skill X but Y is correct, the user invokes Y by name explicitly. Ready-suite skills are addressable directly; nothing requires going through an orchestrator's router.
+The user is the final authority. If a harness or orchestrator routes to sub-step X but Y is correct, the user invokes Y by name explicitly. arc-ready tier sub-steps are addressable directly; nothing requires going through an orchestrator's router.
 
 ## Out-of-scope phrases
 
-These look like ready-suite triggers but are NOT. Route elsewhere:
+These look like arc-ready triggers but are NOT. Route elsewhere:
 
-| User phrase | Why not ready-suite |
+| User phrase | Why not arc-ready |
 |---|---|
-| "fix this bug" | Generic debugging, not a ready-suite skill. Use the harness's general agent. |
-| "refactor this module" | Not a ready-suite skill. Use the harness's general agent. |
-| "write tests" (alone) | Generic testing. ready-suite skills include testing within their tier verification, but a standalone "add tests" request routes to general agent. |
+| "fix this bug" | Generic debugging, not an arc-ready tier. Use the harness's general agent. |
+| "refactor this module" | Not an arc-ready tier. Use the harness's general agent. |
+| "write tests" (alone) | Generic testing. arc-ready tiers include testing within their tier verification, but a standalone "add tests" request routes to general agent. |
 | "translate to Spanish" | Not in scope. |
-| "explain this code" | Generic code explanation, not a ready-suite skill. |
+| "explain this code" | Generic code explanation, not an arc-ready tier. |
 | "debug a memory leak" | Not in scope. |
 | "write a blog post" | Not in scope (Tier 3.3 writes launch-day copy, not ongoing content). |
 | "pick a logo" | Not in scope. |

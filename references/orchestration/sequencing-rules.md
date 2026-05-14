@@ -1,6 +1,6 @@
-# Sequencing rules: the dependency DAG kickoff-ready encodes
+# Sequencing rules: the dependency DAG arc-ready encodes
 
-This file defines the order kickoff-ready invokes the ten ready-suite siblings, the parallelism rules, the harden-ready gate logic, and the skip-detection semantics. The DAG is the single most important data structure in kickoff-ready. Encoded declaratively here; referenced by SKILL.md Steps 3, 4, and 5.
+This file defines the order arc-ready invokes the ten arc-ready tiers, the parallelism rules, the harden-ready gate logic, and the skip-detection semantics. The DAG is the single most important data structure in arc-ready. Encoded declaratively here; referenced by SKILL.md Steps 3, 4, and 5.
 
 The full chain verification with citations is in `references/shared/RESEARCH-2026-04.md` Section 5.
 
@@ -37,11 +37,11 @@ architecture-ready
 
 Topological order: prd-ready, architecture-ready, (roadmap-ready, stack-ready), repo-ready, production-ready, deploy-ready, observe-ready, (launch-ready, harden-ready). Two pairs of nodes are technically parallelizable (roadmap-ready and stack-ready in planning; launch-ready and harden-ready in shipping). Production reality, parallelism rules, and gate logic are below.
 
-## Per-sibling upstream contract
+## Per-tier upstream contract
 
-This is the data kickoff-ready uses to verify the ghost-handoff guard. Before invoking a sibling, kickoff-ready confirms every entry in its upstream column exists on disk.
+This is the data arc-ready uses to verify the ghost-handoff guard. Before invoking a tier, arc-ready confirms every entry in its upstream column exists on disk.
 
-| Step | Sibling | Upstream artifacts (must exist before invocation) | Primary artifact (kickoff-ready verifies after) |
+| Step | Tier | Upstream artifacts (must exist before invocation) | Primary artifact (arc-ready verifies after) |
 |---|---|---|---|
 | 1 | prd-ready | (none) | `.prd-ready/PRD.md` |
 | 2 | architecture-ready | `.prd-ready/PRD.md` | `.architecture-ready/ARCH.md` |
@@ -54,10 +54,10 @@ This is the data kickoff-ready uses to verify the ghost-handoff guard. Before in
 | 9 | launch-ready | `.production-ready/STATE.md`, `.stack-ready/DECISION.md`, `.deploy-ready/STATE.md`, `.observe-ready/STATE.md` | `.launch-ready/STATE.md` |
 | 10 | harden-ready | `.architecture-ready/ARCH.md`, `.production-ready/STATE.md`, `.deploy-ready/STATE.md`, `.observe-ready/STATE.md`, `.repo-ready/SECURITY.md` (the specific repo-ready file harden-ready consumes) | `.harden-ready/STATE.md` and `.harden-ready/FINDINGS.md` |
 
-The upstream lists come directly from each sibling's `upstream:` frontmatter and "Consumes from upstream" sections. Two notes on the rough edges this dogfood walk surfaced:
+The upstream lists come directly from each tier's `upstream:` frontmatter and "Consumes from upstream" sections. Two notes on the rough edges this dogfood walk surfaced:
 
-1. **stack-ready and repo-ready declare graceful-degradation.** Their frontmatter `upstream:` lists are empty (or stack-ready has no field), but the per-skill body documents recommended upstream reads. Within kickoff-ready, we keep them in the documented order to maximize artifact quality.
-2. **repo-ready does not produce a single STATE.md.** Its outputs are top-level repo files (README.md, CI workflows, .editorconfig, etc.) and `.repo-ready/SECURITY.md` (the file harden-ready consumes). kickoff-ready's verification gate for repo-ready is a multi-file scaffolding check, not a single-file existence check. The "Post-invocation checks" section below codifies the multi-file pattern for siblings whose primary artifact is plural.
+1. **stack-ready and repo-ready declare graceful-degradation.** Their frontmatter `upstream:` lists are empty (or stack-ready has no field), but the per-skill body documents recommended upstream reads. Within arc-ready, we keep them in the documented order to maximize artifact quality.
+2. **repo-ready does not produce a single STATE.md.** Its outputs are top-level repo files (README.md, CI workflows, .editorconfig, etc.) and `.repo-ready/SECURITY.md` (the file harden-ready consumes). arc-ready's verification gate for repo-ready is a multi-file scaffolding check, not a single-file existence check. The "Post-invocation checks" section below codifies the multi-file pattern for tiers whose primary artifact is plural.
 
 ## Parallelism rules
 
@@ -67,11 +67,11 @@ Both list `pairs_with` each other. They write to different paths primarily (repo
 
 **Default: sequential.** repo-ready first, then production-ready. Reasons:
 
-1. **Cognitive cost.** Two agent sessions writing to the same repo simultaneously is hard for a human to supervise. A sequential pass is reviewable in one PR per sibling.
+1. **Cognitive cost.** Two agent sessions writing to the same repo simultaneously is hard for a human to supervise. A sequential pass is reviewable in one PR per tier.
 2. **package.json merge.** Sequential avoids the merge problem entirely.
 3. **Better production-ready output.** A properly-scaffolded repo (with lint config, CI, test runner, devcontainer) makes production-ready's output materially better. The reverse order produces an app on a half-configured repo.
 
-**Optional advanced parallel mode.** A user with two harness sessions and the operational discipline to handle a package.json merge can run repo-ready and production-ready concurrently. Document this in PROGRESS.md as `parallelism: building-tier-concurrent` and accept the merge cost. kickoff-ready will not initiate the parallel mode by default.
+**Optional advanced parallel mode.** A user with two harness sessions and the operational discipline to handle a package.json merge can run repo-ready and production-ready concurrently. Document this in PROGRESS.md as `parallelism: building-tier-concurrent` and accept the merge cost. arc-ready will not initiate the parallel mode by default.
 
 ### 4.2 Shipping tier: launch-ready and harden-ready
 
@@ -98,11 +98,11 @@ Both consume `.prd-ready/PRD.md` and `.architecture-ready/ARCH.md`. Neither cons
 1. The roadmap shapes which stack decisions matter. A two-week roadmap weights "ship fast" stack picks; a six-month roadmap weights "compound on the framework choice" stack picks.
 2. Sequential keeps planning-tier output reviewable in a single PR.
 
-The two are technically parallelizable; kickoff-ready does not initiate parallel by default, but a user with a clear separation of concerns can run them concurrently.
+The two are technically parallelizable; arc-ready does not initiate parallel by default, but a user with a clear separation of concerns can run them concurrently.
 
 ## Critical-finding gate logic
 
-The gate exists because harden-ready is the only sibling whose output can require kickoff-ready to halt a sibling that is already in-flight (launch-ready). Every other sibling boundary is an upstream dependency, not a synchronization gate.
+The gate exists because harden-ready is the only tier whose output can require arc-ready to halt a tier that is already in-flight (launch-ready). Every other tier boundary is an upstream dependency, not a synchronization gate.
 
 ### Gate inputs
 
@@ -112,7 +112,7 @@ The gate exists because harden-ready is the only sibling whose output can requir
 ### Gate algorithm
 
 ```
-On every kickoff-ready turn during shipping tier:
+On every arc-ready turn during shipping tier:
   1. Read .harden-ready/FINDINGS.md if present.
   2. Identify Critical findings with status != Closed.
   3. If any Critical findings are open:
@@ -150,11 +150,11 @@ A skip is a recorded decision, not silence. The Shape Up "no-gos" discipline (re
 
 ### Skip cascade rules
 
-When a sibling is skipped, downstream siblings that depend on its artifact must either:
+When a tier is skipped, downstream tiers that depend on its artifact must either:
 
 a. **Refuse to run** (raise an error; the user must un-skip the upstream or skip the downstream too). This applies when the upstream artifact is structurally required.
 
-b. **Proceed with implicit defaults** (the downstream sibling falls back to its graceful-degradation behavior). This applies when the upstream artifact is recommended but not required (stack-ready and repo-ready, per their frontmatter).
+b. **Proceed with implicit defaults** (the downstream tier falls back to its graceful-degradation behavior). This applies when the upstream artifact is recommended but not required (stack-ready and repo-ready, per their frontmatter).
 
 The cascade table:
 
@@ -175,23 +175,23 @@ Whenever the cascade is "proceed with note," the note appears in PROGRESS.md row
 
 ## Re-invocation rules
 
-Re-invocation happens when the user changes the input to a sibling that has already produced its artifact. The simplest case: the PRD changed; architecture-ready, roadmap-ready, and production-ready may need to re-run.
+Re-invocation happens when the user changes the input to a tier that has already produced its artifact. The simplest case: the PRD changed; architecture-ready, roadmap-ready, and production-ready may need to re-run.
 
 ### Re-invocation trigger
 
-The user explicitly invokes a previously-done sibling, or kickoff-ready detects that the user manually edited an upstream artifact (file mtime is newer than the downstream artifact's `disk_state_hash`).
+The user explicitly invokes a previously-done tier, or arc-ready detects that the user manually edited an upstream artifact (file mtime is newer than the downstream artifact's `disk_state_hash`).
 
 ### Cascade
 
-When sibling N is re-invoked, every downstream sibling whose upstream includes N is marked `re-invoked` in PROGRESS.md. The user is informed of the cascade and chooses:
+When tier N is re-invoked, every downstream tier whose upstream includes N is marked `re-invoked` in PROGRESS.md. The user is informed of the cascade and chooses:
 
-a. **Full cascade re-run.** kickoff-ready re-invokes every cascaded sibling in topological order. Costly but correct.
+a. **Full cascade re-run.** arc-ready re-invokes every cascaded tier in topological order. Costly but correct.
 
 b. **Manual reconciliation.** The user manually edits the downstream artifacts to reflect the new upstream. PROGRESS.md records the manual edit with a note. Cheaper but trusts the user's edit discipline.
 
-c. **Selective re-run.** The user picks which downstream siblings to re-invoke. PROGRESS.md records the choice.
+c. **Selective re-run.** The user picks which downstream tiers to re-invoke. PROGRESS.md records the choice.
 
-The default is to ask. kickoff-ready does not auto-cascade re-invocation without confirmation, because re-running the entire shipping tier on a small PRD edit is rarely what the user wants.
+The default is to ask. arc-ready does not auto-cascade re-invocation without confirmation, because re-running the entire shipping tier on a small PRD edit is rarely what the user wants.
 
 ### Re-invocation preserves history
 
@@ -199,43 +199,43 @@ The prior `done` row is preserved with status moved to `re-invoked` and a `notes
 
 ## Static error checks (Just-style)
 
-Per the Just / Make discipline (research Section 3.4), kickoff-ready should resolve errors statically before the run begins.
+Per the Just / Make discipline (research Section 3.4), arc-ready should resolve errors statically before the run begins.
 
 ### Pre-flight checks
 
 Run at Step 0:
 
-1. **Sibling install check.** For every sibling in the DAG, verify the sibling is loadable in the current harness. If a sibling is not installed:
-   - Surface the install instruction (the sibling's GitHub URL).
-   - Give the user the choice: install now and resume, or skip this sibling.
+1. **Tier install check.** For every tier in the DAG, verify the tier is loadable in the current harness. If a tier is not installed:
+   - Surface the install instruction (the tier's GitHub URL).
+   - Give the user the choice: install now and resume, or skip this tier.
    - Do not silently fail mid-arc.
-2. **DAG integrity check.** The encoded DAG should be acyclic. (kickoff-ready's DAG is hard-coded in this file; the check is a sanity guard against future extensions.)
-3. **PROGRESS.md schema check.** If PROGRESS.md exists and the schema does not match the current kickoff-ready version, the user is informed and a migration path is offered (or the user re-runs from scratch).
+2. **DAG integrity check.** The encoded DAG should be acyclic. (arc-ready's DAG is hard-coded in this file; the check is a sanity guard against future extensions.)
+3. **PROGRESS.md schema check.** If PROGRESS.md exists and the schema does not match the current arc-ready version, the user is informed and a migration path is offered (or the user re-runs from scratch).
 
 ### Mid-arc checks
 
-Run before every sibling invocation:
+Run before every tier invocation:
 
-1. **Upstream artifact existence.** Per the per-sibling upstream contract above. Without all upstream artifacts present, the invocation is refused (ghost-handoff guard).
-2. **Sibling not already in-flight.** PROGRESS.md should not show two rows in `in-flight` for the same sibling.
+1. **Upstream artifact existence.** Per the per-tier upstream contract above. Without all upstream artifacts present, the invocation is refused (ghost-handoff guard).
+2. **Tier not already in-flight.** PROGRESS.md should not show two rows in `in-flight` for the same tier.
 
 ### Post-invocation checks
 
-Run after every sibling invocation:
+Run after every tier invocation:
 
-1. **Artifact existence.** The declared `artifact_path` exists. For siblings with a single canonical artifact (rows 1-4 and 6-10 above), this is one file check. For repo-ready (row 5), the check is multi-file: README.md at repo root must exist AND at least one of (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `.editorconfig`, `.repo-ready/SECURITY.md`) must exist. The PROGRESS.md `artifact_path` field for repo-ready stores the multi-file expression as a string (e.g., `README.md + .github/workflows/`); the verification walks each component.
-2. **Artifact non-empty.** Each file in the artifact (single or multi) is larger than the empty template scaffold (size > 100 bytes is a useful default; siblings with tiny canonical artifacts can override).
-3. **Artifact mtime is later than invocation timestamp.** Otherwise, the artifact existed before the sibling ran (rubber-stamp orchestration risk). For multi-file artifacts, the latest mtime among the files must exceed the invocation timestamp.
+1. **Artifact existence.** The declared `artifact_path` exists. For tiers with a single canonical artifact (rows 1-4 and 6-10 above), this is one file check. For repo-ready (row 5), the check is multi-file: README.md at repo root must exist AND at least one of (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `.editorconfig`, `.repo-ready/SECURITY.md`) must exist. The PROGRESS.md `artifact_path` field for repo-ready stores the multi-file expression as a string (e.g., `README.md + .github/workflows/`); the verification walks each component.
+2. **Artifact non-empty.** Each file in the artifact (single or multi) is larger than the empty template scaffold (size > 100 bytes is a useful default; tiers with tiny canonical artifacts can override).
+3. **Artifact mtime is later than invocation timestamp.** Otherwise, the artifact existed before the tier ran (rubber-stamp orchestration risk). For multi-file artifacts, the latest mtime among the files must exceed the invocation timestamp.
 
 If any post-invocation check fails, the row is marked `failed` and the user is informed.
 
 ## Why this DAG and not another
 
-The DAG is derived directly from the documented `upstream:` frontmatter of each sibling, not from preference. The verification walk (research Section 5.2) confirms every handoff has the artifacts it expects.
+The DAG is derived directly from the documented `upstream:` frontmatter of each tier, not from preference. The verification walk (research Section 5.2) confirms every handoff has the artifacts it expects.
 
 Two specific design choices are worth recording:
 
-1. **stack-ready after roadmap-ready, not before architecture-ready.** stack-ready's description explicitly accepts a project with only a one-paragraph idea; it does not require PRD + ARCH + ROADMAP. But within kickoff-ready's full chain, putting stack-ready after roadmap-ready means the stack decision is informed by the time horizon (the roadmap) and the system shape (the architecture). This produces better stack picks. A user with no PRD and no ARCH can invoke stack-ready directly outside kickoff-ready; that is graceful degradation, not a kickoff-ready optimization.
+1. **stack-ready after roadmap-ready, not before architecture-ready.** stack-ready's description explicitly accepts a project with only a one-paragraph idea; it does not require PRD + ARCH + ROADMAP. But within arc-ready's full chain, putting stack-ready after roadmap-ready means the stack decision is informed by the time horizon (the roadmap) and the system shape (the architecture). This produces better stack picks. A user with no PRD and no ARCH can invoke stack-ready directly outside arc-ready; that is graceful degradation, not an arc-ready optimization.
 
 2. **harden-ready in parallel with launch-ready, not before.** harden-ready's `pairs_with: [deploy-ready, observe-ready, launch-ready]` is the load-bearing signal. The skill is designed to run alongside the shipping tier. The critical-finding gate handles the case where adversarial review surfaces a launch-blocking issue.
 
@@ -243,4 +243,4 @@ The full justification for each design choice is in `references/shared/RESEARCH-
 
 ## Summary
 
-The DAG is data. The parallelism rules and the gate logic are mechanical. kickoff-ready encodes them here and follows them per turn. When a new sibling joins the suite (the suite is additive), the DAG entry is the diff; everything else stays unchanged.
+The DAG is data. The parallelism rules and the gate logic are mechanical. arc-ready encodes them here and follows them per turn. When a new tier joins the arc, the DAG entry is the diff; everything else stays unchanged.

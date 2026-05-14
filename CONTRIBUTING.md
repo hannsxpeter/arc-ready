@@ -2,6 +2,8 @@
 
 arc-ready is the consolidated successor to the eleven-skill aihxp/ready-suite. The discipline of arc-ready is the discipline of the suite, preserved verbatim. Contributions that add new failure-mode patterns the source suite did not enforce will be rejected; contributions that clarify, fix, or extend the existing pattern catalog within its established shape are welcome.
 
+Pillars is the standard agent-memory layer arc-ready emits for file-system projects. Changes that touch `AGENTS.md` emission, repo scaffolding, or ongoing-agent context must preserve that contract: canonical arc artifacts remain authoritative, and Pillars carries task-routed operating memory.
+
 ## Before you contribute
 
 Read in this order:
@@ -24,6 +26,7 @@ Read in this order:
 
 - New named failure-mode patterns the source suite did not enforce. arc-ready is faithful consolidation, not v2.
 - Workflow restructures that change the artifact contract (the canonical `.<tier>-ready/<ARTIFACT>.md` paths). Downstream consumers depend on these paths.
+- A non-Pillars variant of the emitted project memory layer. Pillars is the default standard; exceptions are recorded blockers, not a separate distribution.
 - Deletion or merging of references that have load-on-demand value. Eighty references at ~5-15K each are correct.
 - Em-dashes, en-dashes, arrows, or box-drawing characters in load-bearing files (lint enforces).
 - Emojis anywhere (lint enforces).
@@ -40,11 +43,22 @@ Read in this order:
 8. Push the branch to your fork.
 9. Open a pull request. The PR template (see `.github/pull_request_template.md` if present) lists the checks; cover them in the description.
 
+## Documentation changes
+
+Documentation is load-bearing in this repo. Before merging a docs-only change, check whether it touches one of the public contracts:
+
+- Artifact paths in `.<tier>-ready/`.
+- Pillars adoption rules for `AGENTS.md` and `agents/*.md`.
+- Tier gates, have-nots, or grep tests.
+- Release rituals or versioning policy.
+
+If it touches any of those, update `CHANGELOG.md`, run `bash scripts/lint.sh --all`, and run `bash scripts/dogfood-smoke.sh --verbose`. If it changes Pillars wording, make sure the docs still say one thing: arc artifacts are authoritative, Pillars is the project-memory layer, and blockers are recorded instead of creating a non-Pillars variant.
+
 ## Versioning
 
 arc-ready follows semantic versioning:
 
-- **Patch** (v0.1.x): bug fixes, typo corrections, cross-reference fixes, lint improvements.
+- **Patch** (v0.x.y): bug fixes, typo corrections, cross-reference fixes, lint improvements.
 - **Minor** (v0.x.0): new content within the established pattern catalog (refinements, additions of references for new ecosystem developments).
 - **Major** (vX.0.0): breaking changes to the artifact contract or the workflow shape. Coordinate with downstream consumers and the dogfood example.
 

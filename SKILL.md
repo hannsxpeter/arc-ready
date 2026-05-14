@@ -1,8 +1,8 @@
 ---
 name: arc-ready
-description: "Take a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, and adversarial hardening. The full arc, mechanically enforced, in one skill. Triggers on 'kickoff,' 'I have an idea,' 'walk me through idea to launch,' 'orchestrate the whole arc,' 'help me ship it end-to-end,' 'new project from scratch,' 'write a PRD,' 'product spec,' 'design the architecture,' 'system design,' 'monolith or microservices,' 'C4 diagram,' 'ADR,' 'build a roadmap,' 'milestone plan,' 'quarterly plan,' 'sequence the work,' 'Now-Next-Later,' 'Shape Up cycle,' 'what stack should I use,' 'pick a database,' 'which framework,' 'set up a repo,' 'add CI,' 'GitHub Actions,' 'configure linting,' 'add a README,' 'dashboard,' 'admin panel,' 'internal tool,' 'back office,' 'CRUD app,' 'deploy this,' 'CI/CD pipeline,' 'promote to staging,' 'zero-downtime migration,' 'expand-contract,' 'rollback,' 'canary,' 'blue/green,' 'add monitoring,' 'define an SLO,' 'alerts when X,' 'write a runbook,' 'structured logging,' 'distributed tracing,' 'error budget policy,' 'launch my product,' 'build a landing page,' 'Product Hunt,' 'Show HN,' 'waitlist,' 'OG card,' 'launch-day SEO,' 'press kit,' 'adversarial review,' 'pen-test prep,' 'OWASP walkthrough,' 'SOC 2 / HIPAA / PCI-DSS / GDPR gap check,' 'responsible disclosure,' 'bug bounty,' 'post-incident hardening,' 'security review before launch.' Refuses scope leak (one tier doing another tier's work), AI-slop output (PRDs/architectures/roadmaps/launches that read the same across any product), hollow output (sections filled, decisions absent), feature-factory output (un-prioritized feature lists), paper SLOs (numbers with no error budget), paper canaries (deploy mechanics absent under canary labels), AI-slop landings (substitution-test failures), scanner-only security (Snyk-passed-but-front-door-exploitable), rubber-stamp orchestration (advancing without artifact verification), and ghost handoff (a tier consuming an absent upstream artifact). Greenfield projects use Mode A (full arc); existing-codebase work uses Mode B (specific tiers); audit work uses Mode C (retroactive review); multi-repo collections use Mode D (suite-layout patterns). Successor to and consolidation of the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready). Full trigger list and mode-routing table in README."
-version: 0.1.6
-updated: 2026-05-09
+description: "Take a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, and adversarial hardening. The full arc, mechanically enforced, in one skill. Triggers on 'kickoff,' 'I have an idea,' 'walk me through idea to launch,' 'orchestrate the whole arc,' 'help me ship it end-to-end,' 'new project from scratch,' 'write a PRD,' 'product spec,' 'design the architecture,' 'system design,' 'monolith or microservices,' 'C4 diagram,' 'ADR,' 'build a roadmap,' 'milestone plan,' 'quarterly plan,' 'sequence the work,' 'Now-Next-Later,' 'Shape Up cycle,' 'what stack should I use,' 'pick a database,' 'which framework,' 'set up a repo,' 'add CI,' 'GitHub Actions,' 'configure linting,' 'add a README,' 'adopt Pillars,' 'task-routed agent memory,' 'dashboard,' 'admin panel,' 'internal tool,' 'back office,' 'CRUD app,' 'deploy this,' 'CI/CD pipeline,' 'promote to staging,' 'zero-downtime migration,' 'expand-contract,' 'rollback,' 'canary,' 'blue/green,' 'add monitoring,' 'define an SLO,' 'alerts when X,' 'write a runbook,' 'structured logging,' 'distributed tracing,' 'error budget policy,' 'launch my product,' 'build a landing page,' 'Product Hunt,' 'Show HN,' 'waitlist,' 'OG card,' 'launch-day SEO,' 'press kit,' 'adversarial review,' 'pen-test prep,' 'OWASP walkthrough,' 'SOC 2 / HIPAA / PCI-DSS / GDPR gap check,' 'responsible disclosure,' 'bug bounty,' 'post-incident hardening,' 'security review before launch.' Refuses scope leak (one tier doing another tier's work), AI-slop output (PRDs/architectures/roadmaps/launches that read the same across any product), hollow output (sections filled, decisions absent), feature-factory output (un-prioritized feature lists), paper SLOs (numbers with no error budget), paper canaries (deploy mechanics absent under canary labels), AI-slop landings (substitution-test failures), scanner-only security (Snyk-passed-but-front-door-exploitable), rubber-stamp orchestration (advancing without artifact verification), and ghost handoff (a tier consuming an absent upstream artifact). Greenfield projects use Mode A (full arc); existing-codebase work uses Mode B (specific tiers); audit work uses Mode C (retroactive review); multi-repo collections use Mode D (suite-layout patterns). Successor to and consolidation of the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready). Full trigger list and mode-routing table in README."
+version: 1.0.0
+updated: 2026-05-14
 changelog: CHANGELOG.md
 tier: arc
 upstream: []
@@ -23,7 +23,7 @@ compatible_with:
 
 This skill consolidates the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready) into a single tier-routed orchestrator. The discipline, the named failure modes, the grep tests, and the artifact contracts are unchanged. The installation footprint is one repo instead of twelve.
 
-The arc is what every software project traverses, ordered or not, named or not: idea -> PRD -> architecture -> roadmap -> stack pick -> repo scaffolding -> app build -> deploy pipeline -> observability -> launch -> adversarial hardening. arc-ready makes the arc explicit, gates each tier on a verified artifact from the prior tier, and refuses the dominant AI failure modes at every step. Each tier was previously a sibling skill; consolidation preserves every tier's content and contract while removing the multi-repo coordination cost.
+The arc is what every software project traverses, ordered or not, named or not: idea -> PRD -> architecture -> roadmap -> stack pick -> repo scaffolding -> app build -> deploy pipeline -> observability -> launch -> adversarial hardening. arc-ready makes the arc explicit, gates each tier on a verified artifact from the prior tier, and refuses the dominant AI failure modes at every step. Each tier was previously a separate skill; consolidation preserves every tier's content and contract while removing the multi-repo coordination cost.
 
 ## Core principle: every artifact element is a decision, a hypothesis, or a named open question
 
@@ -74,7 +74,7 @@ The mode is recorded in `.arc-ready/PROGRESS.md` at the start of every session. 
 
 Mode A runs the tiers in dependency order. The default sequence:
 
-1. **Tier 0** (orchestration scaffolding): detection, intent capture, progress ledger, AGENTS.md emission.
+1. **Tier 0** (orchestration scaffolding): detection, intent capture, progress ledger, Pillars-compatible AGENTS.md emission.
 2. **Tier 1** (planning): PRD -> ARCH -> ROADMAP -> STACK.
 3. **Tier 2** (building): REPO scaffolding -> PRODUCTION application build (vertical slices).
 4. **Tier 3** (shipping): DEPLOY -> OBSERVE -> (LAUNCH and HARDEN in parallel, with the critical-finding gate).
@@ -249,12 +249,13 @@ Sub-steps:
 12. **Onboarding DX.** First-run experience, dev container, devbox, codespace, Makefile. Load `references/building/onboarding-dx.md`.
 13. **Release distribution.** Versioning, tagging, release-notes generation, package publishing. Load `references/building/release-distribution.md`.
 14. **AGENTS.md.** Cross-tool agent brief at project root. Load `references/orchestration/agents-md-template.md`. Detect existing AGENTS.md; respect or augment per the emission rules.
-15. **Mode B audit-only path.** If the user wants an audit, not a scaffold, run `references/building/repo-audit.md` and `references/building/audit-mode.md`. Output `.repo-ready/AUDIT-REPORT.md` with severity-classified findings, no file modifications.
-16. **Mode D multi-repo suite layout.** If the user is designing a collection of related repos, load `references/building/multi-repo-suite-layout.md` for the suite-layout pattern (skill-suite, microservice-cluster, monorepo-split).
-17. **Monorepo patterns.** Workspace tools (pnpm/yarn/npm workspaces, Turborepo, Nx, Lerna, Rush). Load `references/building/monorepo-patterns.md`.
-18. **Agent safety.** Forbidden actions, scope of agent edits, tool-permission policy. Load `references/building/agent-safety.md`.
+15. **Pillars memory layer.** Load `references/building/pillars-integration.md`. Every file-system project arc-ready shapes adopts Pillars: a Pillars-compatible `AGENTS.md` plus `agents/*.md` files distilled from arc-ready artifacts. Pillars steers future agent outputs; canonical `.<tier>-ready/` artifacts remain the source of truth. Respect any existing AGENTS.md and any existing `agents/` directory, but record non-Pillars conflicts as adoption blockers.
+16. **Mode B audit-only path.** If the user wants an audit, not a scaffold, run `references/building/repo-audit.md` and `references/building/audit-mode.md`. Output `.repo-ready/AUDIT-REPORT.md` with severity-classified findings, no file modifications.
+17. **Mode D multi-repo suite layout.** If the user is designing a collection of related repos, load `references/building/multi-repo-suite-layout.md` for the suite-layout pattern (skill-suite, microservice-cluster, monorepo-split).
+18. **Monorepo patterns.** Workspace tools (pnpm/yarn/npm workspaces, Turborepo, Nx, Lerna, Rush). Load `references/building/monorepo-patterns.md`.
+19. **Agent safety.** Forbidden actions, scope of agent edits, tool-permission policy. Load `references/building/agent-safety.md`.
 
-**Passes when:** the relevant-files-not-maximum-files principle is satisfied (no scaffolded file is unmaintained-template); README is non-placeholder; CI workflows run and pass on a fresh clone; AGENTS.md exists at project root; the project profile is recorded.
+**Passes when:** the relevant-files-not-maximum-files principle is satisfied (no scaffolded file is unmaintained-template); README is non-placeholder; CI workflows run and pass on a fresh clone; AGENTS.md exists at project root as a Pillars loader or the adoption blocker is recorded; the project profile is recorded; `agents/context.md` and `agents/repo.md` exist or the adoption blocker is recorded.
 
 #### Step 2.2. Production: build the end-to-end-wired application
 
@@ -406,15 +407,15 @@ Once all in-scope tiers are verified-done or recorded-skip, the arc is complete.
 
 #### Step 0.6. Emit project-root AGENTS.md if absent
 
-If no `AGENTS.md` exists at project root, arc-ready writes a minimal one. This is one of the few files arc-ready writes outside `.arc-ready/` and the per-tier `.<tier>-ready/` directories; it is orchestration metadata. Load `references/orchestration/agents-md-template.md`.
+If no `AGENTS.md` exists at project root, arc-ready writes a Pillars-compatible one. This is one of the few files arc-ready writes outside `.arc-ready/` and the per-tier `.<tier>-ready/` directories; it is agent-memory metadata, not specialist tier content. Load `references/orchestration/agents-md-template.md`.
 
 Emit conditions are strict:
 
-1. **Only if absent.** If `AGENTS.md` already exists, leave it untouched. Record `AGENTS.md: existing-respected`.
-2. **Only artifact metadata.** The emitted file lists the arc-ready artifacts produced and a one-paragraph pointer. It does NOT contain stack, build commands, conventions, forbidden actions, or specialist content. Those belong to repo-ready scaffolding (Step 2.1) or to the user.
+1. **Only if absent or safely augmentable.** If `AGENTS.md` already exists and is not Pillars-compatible, leave it untouched and record `pillars: adoption-blocked-existing-agents`.
+2. **Pillars loader plus artifact map.** The emitted file describes the Pillars loading protocol, points at `agents/*.md`, and lists the arc-ready artifacts produced. It does NOT inline stack rules, build commands, conventions, forbidden actions, or specialist content. Those belong to Pillars files, Tier 2.1 scaffolding, or the user.
 3. **Skip on out-of-fs harnesses.** On chat-only frontends with no file system, surface the AGENTS.md template as a guidance string for the user to paste.
 
-**Passes when:** the summary table is in PROGRESS.md; deferred items are explicit; AGENTS.md exists at project root (either user-authored or arc-ready-emitted); the emit decision is recorded.
+**Passes when:** the summary table is in PROGRESS.md; deferred items are explicit; AGENTS.md exists at project root as a Pillars loader or adoption is blocked with reason; `agents/context.md` and `agents/repo.md` exist when a file system is available; the emit decision is recorded.
 
 ## The "have-nots": consolidated failure-mode catalog
 
@@ -486,7 +487,7 @@ These have-nots disqualify the artifact at the corresponding tier. Every one is 
 - **Maximum-files-everywhere.** Every project gets every file regardless of stage and audience. Weekend CLI gets GOVERNANCE.md and a 39-point audit.
 - **Placeholder-in-production.** Files scaffolded with TODO/lorem-ipsum that never get filled in. Worse than no file: signals an unmaintained project.
 - **Stack-detection skipped.** Same scaffold for every stack. Node-shaped scaffold dropped onto a Python project.
-- **AGENTS.md collision.** repo-ready overwrites an existing AGENTS.md instead of respecting it.
+- **Pillars adoption collision.** repo-ready overwrites an existing AGENTS.md or `agents/` directory instead of respecting it and recording the blocker.
 - **CI workflow that does not run.** The .github/workflows/*.yml file is present but the build fails on a fresh clone.
 - **README that does not describe the project.** Generic README with no project-specific content.
 - **License absent.** OSS distribution without a LICENSE file.
@@ -569,13 +570,13 @@ A gate must pass before the next tier begins. Skips are recorded; silence is not
 | Tier 1.2 -> Tier 1.3 | `.architecture-ready/ARCH.md` exists, non-empty; every box/arrow/ADR has a flip point; substitution test passes on component names and rationales; trust boundaries mapped to specific files/configs; component dependency graph in `.architecture-ready/HANDOFF.md`. |
 | Tier 1.3 -> Tier 1.4 | `.roadmap-ready/ROADMAP.md` exists, non-empty; every row labeled (commitment, direction, open question); every commitment grounded in upstream artifact; parallel tracks <= team size; handoff section filled. |
 | Tier 1.4 -> Tier 2 | `.stack-ready/DECISION.md` exists, non-empty; weights stated; flip points named; pairing-rules check clean; migration paths documented; ADRs cross-linked to architecture. |
-| Tier 2.1 -> Tier 2.2 | Repo scaffolded for the detected stack and project profile; README is project-specific; CI runs and passes on a fresh clone; AGENTS.md exists; no placeholder-in-production files. |
+| Tier 2.1 -> Tier 2.2 | Repo scaffolded for the detected stack and project profile; README is project-specific; CI runs and passes on a fresh clone; Pillars-compatible AGENTS.md and floor pillars exist or adoption is blocked with reason; no placeholder-in-production files. |
 | Tier 2.2 -> Tier 3 | Slice queue from roadmap is processed; every shipped slice is end-to-end-wired; no-scaffold-no-placeholder grep clean; `.production-ready/STATE.md` records progress. |
 | Tier 3.1 -> Tier 3.2 | Pipeline promotes the same artifact through environments; expand/contract calendars exist for data-forward changes; canary stop rules are concrete; rollback paths proven; secrets vault-injected. |
 | Tier 3.2 -> Tier 3.3 / 3.4 | Every charted/alerted/SLOed number bound to a journey; error-budget policy declared with owner; runbooks executed at least once; alerts have real-recent-fire history. |
 | Tier 3.3 -> Done | Substitution test passes on hero, sub-hero, every card, OG card, Show HN title, launch email subject; OG card renders in three preview surfaces; waitlist has source attribution; launch-day telemetry implemented (not stubbed). |
 | Tier 3.4 -> Done | Every OWASP category has a verdict with evidence; every compliance control mapped to specific implementation; every accepted risk has owner and expiration; findings actionable per `references/shipping/actionable-findings.md`; critical-finding gate to launch resolved. |
-| Arc -> Done | All in-scope tiers verified-done or recorded-skip; PROGRESS.md complete-block written; AGENTS.md emitted (or existing-respected); next-step orchestrator named for ongoing operations. |
+| Arc -> Done | All in-scope tiers verified-done or recorded-skip; PROGRESS.md complete-block written; Pillars-compatible AGENTS.md and floor pillars emitted, existing-respected, or blocked with reason; next-step orchestrator named for ongoing operations. |
 
 ## Reference files: load on demand
 
@@ -591,7 +592,7 @@ The reference catalog is organized by tier. Load on demand per the workflow abov
 | `references/orchestration/sequencing-rules.md` | Step 0.3, Step 1, Step 2, Step 3. Tier dependency rules, parallelism, gate logic. |
 | `references/orchestration/kickoff-antipatterns.md` | On demand during verification. |
 | `references/orchestration/trigger-disambiguation.md` | When a user phrase plausibly matches more than one tier sub-step. The disambiguation table maps ambiguous user phrases to the canonical tier sub-step. |
-| `references/orchestration/agents-md-template.md` | Step 0.6 and Step 2.1. The AGENTS.md template arc-ready emits when no AGENTS.md exists. |
+| `references/orchestration/agents-md-template.md` | Step 0.6 and Step 2.1. The Pillars-compatible AGENTS.md template arc-ready emits when no AGENTS.md exists. |
 
 ### Planning
 
@@ -671,7 +672,8 @@ The reference catalog is organized by tier. Load on demand per the workflow abov
 | `references/building/security-setup.md` | Step 2.1 sub-step 11. |
 | `references/building/technical-docs.md` | Step 2.1 sub-step 6. |
 | `references/building/questioning.md` | Step 2.1 pre-flight. |
-| `references/building/agent-safety.md` | Step 2.1 sub-step 18. |
+| `references/building/pillars-integration.md` | Step 2.1 sub-step 15. Pillars memory layer for every file-system project. |
+| `references/building/agent-safety.md` | Step 2.1 sub-step 19. |
 | `references/building/production-antipatterns.md` | Step 2.2 verification. |
 | `references/building/preflight-and-verification.md` | Step 2.2 pre-flight. |
 | `references/building/codebase-research.md` | Step 2.2 existing-codebase mode. |
@@ -815,7 +817,8 @@ arc-ready produces the arc artifacts at canonical `.<tier>-ready/` paths. Downst
 | Observe state and SLOs | `.observe-ready/OBSERVE.md` (overview), `.observe-ready/SLOs.md` (per-journey SLOs), `.observe-ready/INDEPENDENCE.md` (telemetry-decoupling test), `.observe-ready/STATE.md` (resume state) | Tier 3.2 |
 | Launch state | `.launch-ready/STATE.md` (+ runbook/, copy/) | Tier 3.3 |
 | Hardening findings | `.harden-ready/FINDINGS.md` (+ remediation/) | Tier 3.4 |
-| Cross-tool agent brief | `AGENTS.md` at project root (+ symlink `CLAUDE.md` -> `AGENTS.md`) | Tier 0 / 2.1 |
+| Pillars memory loader | `AGENTS.md` at project root (+ symlink `CLAUDE.md` -> `AGENTS.md`) | Tier 0 / 2.1 |
+| Pillars floor memory | `agents/context.md`, `agents/repo.md`, plus source-backed `agents/*.md` | Tier 2.1 |
 
 The artifact paths are stable. Downstream consumers can hard-code these paths and trust them. arc-ready does not move or rename artifacts as it evolves; the eleven-skill suite established the contract, and arc-ready preserves it.
 
@@ -926,10 +929,10 @@ The Mode D pattern is documented in `references/building/multi-repo-suite-layout
 The Mode D dispatch:
 
 1. **Determine the collection shape.** Hub-and-spoke (one hub repo, N spoke repos), peer-cluster (N equal-rank repos), or monorepo-with-published-packages. Load `references/building/multi-repo-suite-layout.md` section 1.
-2. **Decide what is byte-identical across siblings.** Common: a SUITE.md or COLLECTION.md, a CONTRIBUTING.md, a SECURITY.md. The byte-identical-collection-map invariant is enforced by lint, not by convention.
+2. **Decide what is byte-identical across repos.** Common: a SUITE.md or COLLECTION.md, a CONTRIBUTING.md, a SECURITY.md. The byte-identical-collection-map invariant is enforced by lint, not by convention.
 3. **Decide what is per-repo.** Each repo's own SKILL.md (if it is a skill collection), its own CHANGELOG.md, its own README.md.
 4. **Coordinated patch ritual.** When a change affects multiple repos, the maintainer runs the change in a defined order with the lint as the gate. Document this ritual in MAINTAINING.md per `references/building/multi-repo-suite-layout.md` section 5.
-5. **Versioning and tagging.** Each repo carries its own semver; coordinated breaking changes get matching minor or major bumps. Tag-release parity is checked across siblings.
+5. **Versioning and tagging.** Each repo carries its own semver; coordinated breaking changes get matching minor or major bumps. Tag-release parity is checked across repos.
 6. **Hub vs specialist split.** The hub does not have a version of its own (it is the discovery surface); specialists do.
 
 Mode D is rare. arc-ready's primary modes are A, B, and C. If the user asks for "a suite of skills" or "a collection of microservices" without a current arc-ready arc context, route to Mode D.
@@ -1014,8 +1017,12 @@ grep -E 'TODO|FIXME|lorem ipsum' README.md && echo "[fail] placeholder in README
 # CI workflow exists and is non-empty.
 test -s .github/workflows/ci.yml || test -s .github/workflows/test.yml || echo "[fail] no CI workflow"
 
-# AGENTS.md exists.
+# Pillars loader and floor files exist, unless adoption is blocked in PROGRESS.md.
 test -f AGENTS.md || echo "[fail] AGENTS.md missing"
+grep -q 'Pillars' AGENTS.md || echo "[fail] AGENTS.md is not Pillars-compatible"
+test -f agents/context.md || echo "[fail] agents/context.md missing"
+test -f agents/repo.md || echo "[fail] agents/repo.md missing"
+grep -E 'pillars: (adopted|adoption-blocked-existing-agents|guidance-text)' .arc-ready/PROGRESS.md || echo "[fail] PROGRESS.md missing Pillars adoption status"
 
 # License is real, not placeholder.
 grep -E 'MIT|Apache|GPL|BSD|MPL|EUPL' LICENSE | head -1
@@ -1156,7 +1163,7 @@ The arc, condensed:
 - **Tier 1.2 (architecture).** `.architecture-ready/ARCH.md` written. Modular monolith (3 bounded contexts: ingestion, scoring, surface); single deployable + worker; HubSpot v1.0, Mixpanel v1.1; Auth.js v5 magic-link with OIDC migration path; tenant-id discipline (single-schema multi-tenancy with row-level security); ADR-001 through ADR-007. Trust boundaries mapped to Postgres RLS policies and Auth.js middleware. Component dependency graph in HANDOFF.md.
 - **Tier 1.3 (roadmap).** `.roadmap-ready/ROADMAP.md` written. Team capacity: 4 engineers, 6-week Shape Up cycle, Amdahl serial fraction 0.3. Three Now slices, three Next slices, two Later directions. Each commitment grounded in PRD R-NN. Critical path identified: ingestion before scoring before surface. Cutover milestone gate at week 13.
 - **Tier 1.4 (stack).** `.stack-ready/STACK.md` written. Frontend: Next.js 15 + Tailwind v4 + shadcn/ui re-skinned with DESIGN.md. Backend: Server Actions + tRPC. Data: Postgres on Neon, Drizzle ORM. Auth: Auth.js v5. Hosting: Vercel + Railway worker. Observability: Axiom. 12-dimension scoring with weights (DX 0.18, Cost 0.16, Performance 0.10, Operability 0.16, etc.). Flip points named per dimension.
-- **Tier 2.1 (repo).** `.repo-ready/SCAFFOLD.md` written; repo root populated. README, CONTRIBUTING, SECURITY, LICENSE, CODEOWNERS, .github/workflows/{ci, lint, deploy-staging, deploy-prod}.yml, .editorconfig, Makefile. AGENTS.md emitted (Tier 0 sub-step 6a). DESIGN.md scaffolded (Tier 2.2 sub-step 3b).
+- **Tier 2.1 (repo).** `.repo-ready/SCAFFOLD.md` written; repo root populated. README, CONTRIBUTING, SECURITY, LICENSE, CODEOWNERS, .github/workflows/{ci, lint, deploy-staging, deploy-prod}.yml, .editorconfig, Makefile. Pillars-compatible AGENTS.md emitted with `agents/context.md` and `agents/repo.md` floor files, then source-backed `agents/stack.md`, `agents/arch.md`, and `agents/quality.md` when artifacts exist. DESIGN.md scaffolded (Tier 2.2 sub-step 3b).
 - **Tier 2.2 (production / app).** Slices shipped vertically: tenant-bootstrap -> ingestion-pipeline -> health-score-engine -> renewal-dashboard -> at-risk-flagging. Each end-to-end-wired, all states covered, real backend, no fake data. `.production-ready/STATE.md` records the queue.
 - **Tier 3.1 (deploy).** `.deploy-ready/DEPLOY.md` written. Same-artifact promotion via Vercel build hash; expand-contract calendar for the schema migration that adds `health_score_history`; canary at 10% with concrete stop rule (p99 latency > 1.2s OR error rate > 1% over 5 min); rollback path proven via dry-run; secrets vault-injected via Vercel env.
 - **Tier 3.2 (observe).** `.observe-ready/OBSERVE.md` written. SLOs: dashboard-load p95 < 800ms, ingestion-latency p99 < 60s, health-score-recompute end-to-end p95 < 30s. Error budget policy: code freeze if 30-day budget burns past 50%. Runbooks executed: dashboard-load-degraded, ingestion-stall. INDEPENDENCE.md recorded: telemetry on Axiom is decoupled from the app.
@@ -1220,14 +1227,15 @@ This gate is one of the most important integrity properties of the arc. Skipping
 
 ## AGENTS.md emit and respect
 
-Tier 0 sub-step 6a and Tier 2.1 sub-step 14 both touch `AGENTS.md`. The rule across both: respect any existing `AGENTS.md`; emit a minimal one if absent.
+Tier 0 sub-step 6a and Tier 2.1 sub-step 14 both touch `AGENTS.md`. The rule across both: respect existing user-authored content, but make Pillars the standard memory layer for file-system projects.
 
 Emit conditions:
 
-1. **Only if absent.** If `AGENTS.md` exists at project root, leave it untouched. Record `AGENTS.md: existing-respected` in `.arc-ready/PROGRESS.md`.
-2. **Tier 0 emit (orchestration metadata only).** Names the suite (arc-ready), points at the artifact map, declares one-paragraph attribution. No stack, no build commands, no conventions. The template is `references/orchestration/agents-md-template.md`.
-3. **Tier 2.1 emit (project conventions).** When repo-ready scaffolds the repo, it writes a fuller AGENTS.md with stack, commands, forbidden actions, conventions. If Tier 0's minimal AGENTS.md already exists, Tier 2.1 augments it (appends the project-conventions section, leaves the artifact-map section intact). If a user-authored AGENTS.md exists, Tier 2.1 leaves it untouched and records `AGENTS.md: existing-respected`.
-4. **Skip on out-of-fs harnesses.** On chat-only frontends, surface the AGENTS.md template as guidance text for the user to paste.
+1. **Absent file.** If `AGENTS.md` is absent, emit the Pillars-compatible template from `references/orchestration/agents-md-template.md`.
+2. **Pillars-compatible file.** If `AGENTS.md` already implements the Pillars loader, preserve it and add arc-ready artifact-map context only when there is an obvious safe insertion point.
+3. **Non-Pillars file.** If `AGENTS.md` exists but conflicts with Pillars, leave it untouched and record `pillars: adoption-blocked-existing-agents` in `.arc-ready/PROGRESS.md`.
+4. **Pillars memory layer.** Tier 2.1 emits or verifies `agents/*.md` files per `references/building/pillars-integration.md`. The layer distills arc-ready artifacts into durable project memory; it does not replace the canonical artifact files.
+5. **Skip on out-of-fs harnesses.** On chat-only frontends, surface the AGENTS.md template as guidance text for the user to paste.
 
 The CLAUDE.md symlink (`CLAUDE.md -> AGENTS.md`) is created at the same time as AGENTS.md. The symlink is harmless on Codex and other AGENTS.md-aware harnesses, and is required for Claude Code to consume the file.
 
@@ -1236,10 +1244,15 @@ The grep test for emit-respect:
 ```bash
 # AGENTS.md exists at project root
 test -f AGENTS.md || echo "[fail] no AGENTS.md"
+# AGENTS.md is Pillars-compatible
+grep -q 'Pillars' AGENTS.md || echo "[fail] AGENTS.md does not describe Pillars"
+# Pillars floor files exist
+test -f agents/context.md || echo "[fail] agents/context.md missing"
+test -f agents/repo.md || echo "[fail] agents/repo.md missing"
 # CLAUDE.md is a symlink to AGENTS.md
 [ -L CLAUDE.md ] && [ "$(readlink CLAUDE.md)" = "AGENTS.md" ] || echo "[fail] CLAUDE.md not symlinked correctly"
 # AGENTS.md was emitted-or-respected per PROGRESS.md
-grep -E 'agents_md_emitted: (path|existing-respected|guidance-text)' .arc-ready/PROGRESS.md || echo "[fail] PROGRESS.md does not record AGENTS.md decision"
+grep -E 'agents_md_emitted: (path|existing-respected|guidance-text)|pillars: (adopted|adoption-blocked-existing-agents|guidance-text)' .arc-ready/PROGRESS.md || echo "[fail] PROGRESS.md does not record AGENTS.md / Pillars decision"
 ```
 
 ## Resume protocol elaborated
@@ -1349,7 +1362,7 @@ Each tier's `.<tier>-ready/STATE.md` is the durable record of where the tier is 
 - finding: <id> | severity: critical | accepted: <ISO-8601> | owner: <name> | expires: <ISO-8601> | justification: <one-line>
 
 ## Out-of-scope refusals
-- <ISO-8601>: <user-request> | refused: <named failure mode> | routed-to: <harness | sibling-skill>
+- <ISO-8601>: <user-request> | refused: <named failure mode> | routed-to: <harness | tier-sub-step>
 
 ## Arc complete (only when arc finishes)
 - per-tier summary table
@@ -1534,7 +1547,7 @@ Every score has weights; every recommendation has flip points; the scale ceiling
 
 ### Tier 2.1 (repo): what a passing scaffold looks like
 
-> "Repo root has: README.md (project-specific, not template), LICENSE (MIT), CONTRIBUTING.md, SECURITY.md, AGENTS.md (with CLAUDE.md symlink), DESIGN.md (Tier 2.2 sub-step 3b scaffolded), CODEOWNERS, .editorconfig, .gitignore, Makefile, .nvmrc, .github/workflows/{ci, lint, deploy-staging, deploy-prod, security}.yml, .github/ISSUE_TEMPLATE, .github/pull_request_template.md, package.json with a complete scripts block, biome.json, vitest.config.ts. CI runs and passes on a fresh clone."
+> "Repo root has: README.md (project-specific, not template), LICENSE (MIT), CONTRIBUTING.md, SECURITY.md, Pillars-compatible AGENTS.md (with CLAUDE.md symlink), agents/context.md, agents/repo.md, source-backed agents/stack.md and agents/quality.md when artifacts exist, DESIGN.md (Tier 2.2 sub-step 3b scaffolded), CODEOWNERS, .editorconfig, .gitignore, Makefile, .nvmrc, .github/workflows/{ci, lint, deploy-staging, deploy-prod, security}.yml, .github/ISSUE_TEMPLATE, .github/pull_request_template.md, package.json with a complete scripts block, biome.json, vitest.config.ts. CI runs and passes on a fresh clone."
 
 No file is the unmaintained template; every file references the project's specific stack and project profile (Next.js + TypeScript + B2B SaaS + pilot stage in this case).
 

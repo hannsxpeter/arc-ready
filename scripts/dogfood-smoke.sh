@@ -10,7 +10,9 @@
 #   3. The artifact-path contract is reachable: each tier's canonical .{tier}-
 #      ready/ path is creatable and writable in a project workspace.
 #   4. AGENTS.md emit-respect logic: respect existing, emit if absent.
-#   5. The critical-finding gate logic correctly halts on unresolved Critical.
+#   5. Pillars memory-layer emit creates the required loader and floor pillars.
+#   6. Source-backed Pillars carry artifact-backed decisions, not only stubs.
+#   7. The critical-finding gate logic correctly halts on unresolved Critical.
 #
 # This is a STRUCTURAL smoke test, not a functional test of an agent loaded
 # with arc-ready's SKILL.md. Functional testing requires an actual harness
@@ -62,14 +64,14 @@ echo "# WIP architecture document" > .architecture-ready/ARCH.md
 cat > .arc-ready/PROGRESS.md <<'EOF'
 # arc-ready PROGRESS
 
-## Skill version: 0.1.6
-## Last update: 2026-05-09T12:00:00Z
+## Skill version: 1.0.0
+## Last update: 2026-05-14T12:00:00Z
 ## Mode: A
 ## Harness: claude-code
 
 ## Tier ledger
 - 0: in-flight | artifact: .arc-ready/PROGRESS.md
-- 1.1 (PRD): imported | artifact: .prd-ready/PRD.md | verified: 2026-05-09T12:00:00Z
+- 1.1 (PRD): imported | artifact: .prd-ready/PRD.md | verified: 2026-05-14T12:00:00Z
 - 1.2 (ARCH): in-flight | artifact: .architecture-ready/ARCH.md
 - 1.3 (ROADMAP): pending
 - 1.4 (STACK): pending
@@ -157,26 +159,139 @@ NEW_HASH=$(shasum AGENTS.md | awk '{print $1}')
 [ "$ORIG_HASH" = "$NEW_HASH" ] && mark_pass "existing AGENTS.md preserved (existing-respected)" \
   || mark_fail "AGENTS.md was overwritten when it should have been respected"
 
-printf "%sTest 6: AGENTS.md emit-respect (absent case)%s\n" "$C_BOLD" "$C_RESET"
+printf "%sTest 6: AGENTS.md emit-respect (absent case with Pillars loader)%s\n" "$C_BOLD" "$C_RESET"
 rm -f AGENTS.md
 if [ ! -f AGENTS.md ]; then
   cat > AGENTS.md <<'EOF'
-# Synthetic project (arc-ready emitted)
+# Synthetic project
 
-This project was kicked off via arc-ready. The artifacts produced are listed below; consult the relevant artifact before changes that touch its area.
+This project follows the Pillars standard. Coding agents working in this repository read the pillar files in `./agents/*.md`.
 
-## arc-ready artifact map
+## At the start of any task
+
+1. Load every file in `./agents/` recursively whose frontmatter has `always_load: true`.
+2. Scan frontmatter in the remaining pillar files.
+3. Identify primary pillars whose `triggers` or `covers` match the current task.
+4. Load the primaries and every pillar listed in their `must_read_with`, depth 1 only.
+5. Consult `see_also` only if the task explicitly touches that area.
+6. Follow `Rules`, apply `Workflows`, heed `Watchouts`, and ask about `Gaps`.
+
+## arc-ready artifacts
 
 | Tier | Status | Artifact |
 |---|---|---|
 | 1.1 (PRD) | done | .prd-ready/PRD.md |
+
+The arc audit ledger lives at `.arc-ready/PROGRESS.md`.
 EOF
 fi
-[ -f AGENTS.md ] && grep -q "arc-ready emitted" AGENTS.md && mark_pass "AGENTS.md emitted when absent" \
-  || mark_fail "AGENTS.md was not emitted when absent"
+[ -f AGENTS.md ] && grep -q "Pillars standard" AGENTS.md && grep -q ".arc-ready/PROGRESS.md" AGENTS.md && mark_pass "AGENTS.md emitted when absent with Pillars loader" \
+  || mark_fail "AGENTS.md was not emitted with Pillars loader"
 
-# ---------- Test 7: critical-finding gate ----------
-printf "%sTest 7: critical-finding gate (Tier 3.4 -> Tier 3.3)%s\n" "$C_BOLD" "$C_RESET"
+printf "%sTest 7: Pillars floor pillars emitted%s\n" "$C_BOLD" "$C_RESET"
+mkdir -p agents
+cat > agents/context.md <<'EOF'
+---
+pillar: context
+status: stub
+always_load: true
+covers: [project identity, domain language, product invariants, glossary]
+triggers: []
+must_read_with: []
+see_also: [repo]
+---
+
+## Scope
+
+(stub)
+EOF
+cat > agents/repo.md <<'EOF'
+---
+pillar: repo
+status: stub
+always_load: true
+covers: [file layout, naming conventions, where things go, repository structure]
+triggers: []
+must_read_with: []
+see_also: [context]
+---
+
+## Scope
+
+(stub)
+EOF
+[ -f agents/context.md ] && [ -f agents/repo.md ] && grep -q "always_load: true" agents/context.md && grep -q "always_load: true" agents/repo.md && mark_pass "Pillars floor pillars present" \
+  || mark_fail "Pillars floor pillars missing or malformed"
+
+# ---------- Test 8: source-backed Pillars ----------
+printf "%sTest 8: source-backed Pillars carry artifact decisions%s\n" "$C_BOLD" "$C_RESET"
+mkdir -p .stack-ready .repo-ready
+cat > .stack-ready/STACK.md <<'EOF'
+# Stack
+
+Decision: Use Next.js, Postgres, Drizzle, Auth.js, Vercel, and Axiom for the pilot.
+Rationale: The project optimizes for low operating overhead and fast iteration.
+EOF
+cat > .repo-ready/SCAFFOLD.md <<'EOF'
+# Repo scaffold
+
+Decision: Keep CI in .github/workflows/ci.yml and use README.md as the onboarding entry.
+EOF
+cat > agents/stack.md <<'EOF'
+---
+pillar: stack
+status: present
+always_load: false
+covers: [frameworks, runtime, database, auth, hosting, observability]
+triggers: [stack, dependency, nextjs, postgres, auth, observability]
+must_read_with: [repo]
+see_also: [context]
+---
+
+## Scope
+
+Stack decisions for the synthetic project.
+
+## Context
+
+Source: `.stack-ready/STACK.md`.
+
+## Decisions
+
+- Use Next.js, Postgres, Drizzle, Auth.js, Vercel, and Axiom for the pilot.
+
+## Rules
+
+- Recheck `.stack-ready/STACK.md` before changing major platform choices.
+
+## Workflows
+
+(none)
+
+## Watchouts
+
+(none)
+
+## Touchpoints
+
+- `.stack-ready/STACK.md`
+
+## Gaps
+
+(none)
+EOF
+stack_ok=false
+if grep -q 'status: present' agents/stack.md \
+   && grep -q 'Source: `.stack-ready/STACK.md`' agents/stack.md \
+   && grep -q 'Use Next.js, Postgres, Drizzle, Auth.js, Vercel, and Axiom' agents/stack.md \
+   && grep -Fq 'must_read_with: [repo]' agents/stack.md; then
+  stack_ok=true
+fi
+[ "$stack_ok" = "true" ] && mark_pass "source-backed stack pillar has decision, source, and routing metadata" \
+  || mark_fail "source-backed stack pillar missing decision, source, or routing metadata"
+
+# ---------- Test 9: critical-finding gate ----------
+printf "%sTest 9: critical-finding gate (Tier 3.4 -> Tier 3.3)%s\n" "$C_BOLD" "$C_RESET"
 mkdir -p .harden-ready
 cat > .harden-ready/FINDINGS.md <<'EOF'
 # Hardening findings

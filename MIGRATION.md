@@ -120,9 +120,27 @@ The most important property of the migration is that artifact paths are identica
 - `.launch-ready/STATE.md`
 - `.harden-ready/FINDINGS.md`
 
-These paths are stable across the eleven-skill suite and arc-ready. arc-ready also writes its own `.arc-ready/PROGRESS.md` for the cross-tier ledger; this is the only new artifact path.
+These paths are stable across the eleven-skill suite and arc-ready. arc-ready also writes its own `.arc-ready/PROGRESS.md` for the cross-tier ledger.
 
-The `AGENTS.md` emission rules are unchanged: arc-ready emits `AGENTS.md` at project root if absent, respecting any existing `AGENTS.md` (the kickoff-ready Step 6 sub-step 6a discipline).
+arc-ready file-system projects also get Pillars-compatible agent memory:
+
+- `AGENTS.md` with the Pillars loading protocol and an arc-ready artifact map.
+- `agents/context.md` and `agents/repo.md` as mandatory floor pillars.
+- Additional source-backed `agents/*.md` files when the relevant arc artifacts exist.
+
+The arc artifacts remain authoritative. Pillars is the project-memory layer for future agent work.
+
+### Pillars adoption during migration
+
+For projects created under the eleven-skill suite, the migration path is additive:
+
+1. Keep every existing `.<tier>-ready/` artifact in place.
+2. Add `.arc-ready/PROGRESS.md` to record imported tier state.
+3. If `AGENTS.md` is absent, emit the Pillars-compatible loader and the `agents/context.md` and `agents/repo.md` floor pillars.
+4. If `AGENTS.md` already exists and is Pillars-compatible, preserve it and add missing arc-ready artifact-map context only where it fits cleanly.
+5. If `AGENTS.md` exists and conflicts with Pillars, leave it untouched and record `pillars: adoption-blocked-existing-agents` in `.arc-ready/PROGRESS.md`.
+
+Do not rewrite old arc artifacts into Pillars. Pillars points future agents toward the right decisions; the artifact files remain the decision record.
 
 ## Discipline: unchanged
 
@@ -144,7 +162,7 @@ The "have-nots" sections in `SKILL.md` consolidate the load-bearing patterns fro
 
 ## Running both
 
-The eleven-skill suite and arc-ready can coexist on the same machine. The trigger surface overlaps; the harness will route to whichever skill matches first. To prefer arc-ready on a project, ensure arc-ready is installed and the per-skill suite siblings are not (or are uninstalled for that project).
+The eleven-skill suite and arc-ready can coexist on the same machine. The trigger surface overlaps; the harness will route to whichever skill matches first. To prefer arc-ready on a project, ensure arc-ready is installed and the per-skill suite repos are not installed for that project.
 
 There is no harm in keeping both around during a transition period. The artifact contracts are the same, so a project kicked off under the eleven-skill suite is fully consumable by arc-ready (Mode A or B with imports), and vice versa.
 
@@ -159,7 +177,7 @@ Switch when:
 Stay on the eleven-skill suite when:
 
 - You have customized one or more individual skills' references and the per-skill repo is your version-control surface.
-- You are running a CI lint that depends on the byte-identical SUITE.md ritual across siblings.
+- You are running a CI lint that depends on the byte-identical SUITE.md ritual across suite repos.
 - You prefer the per-skill changelog granularity (eleven CHANGELOG.md files, each tracking one skill's evolution).
 
 Both are valid. arc-ready is the recommended path; the eleven-skill suite is the supported alternative.
@@ -168,4 +186,4 @@ Both are valid. arc-ready is the recommended path; the eleven-skill suite is the
 
 - **Trigger collision**: if both arc-ready and the eleven-skill suite are installed, the harness may route ambiguously. Recommended posture: install one or the other, not both, on a given machine.
 - **Dogfood maintenance**: `aihxp/ready-suite-example` continues to dogfood the eleven-skill suite. arc-ready's dogfood acceptance test is that the same artifacts (at the same paths) are reproducible from arc-ready. If they diverge, the dogfood is the authority.
-- **Plugin marketplace**: the eleven-skill suite's hub maintained a plugin marketplace at `ready-suite/plugins/`. arc-ready does not currently include a plugin marketplace; if the use case re-emerges, it will live in a sibling extensions directory.
+- **Pillars adoption for imported projects**: a project started under the eleven-skill suite may not have `agents/*.md`. When arc-ready imports it, Tier 2.1 should add the Pillars memory layer unless an existing `AGENTS.md` blocks adoption.

@@ -1,10 +1,10 @@
 # Anti-pattern catalog: named failure modes with grep tests and guards
 
-This file is the operational reference for kickoff-ready's have-nots. Every named failure mode from `references/shared/RESEARCH-2026-04.md` Section 2 has an entry here with:
+This file is the operational reference for arc-ready's have-nots. Every named failure mode from `references/shared/RESEARCH-2026-04.md` Section 2 has an entry here with:
 
 1. The definition.
 2. The grep test (how an auditor or a reviewer detects the pattern).
-3. The kickoff-ready guard (the specific defense the skill runs).
+3. The arc-ready guard (the specific defense the skill runs).
 4. The citation back to the research report.
 5. The severity.
 
@@ -16,17 +16,17 @@ Loaded on demand during verification. Cited from the SKILL.md "have-nots" sectio
 |---|---|
 | **Definition** | The failure mode in one sentence. |
 | **Grep test** | A specific pattern an auditor checks for. Concrete: file path, regex, count, comparison. |
-| **Guard** | What kickoff-ready does to prevent the failure. Operational, not aspirational. |
+| **Guard** | What arc-ready does to prevent the failure. Operational, not aspirational. |
 | **Severity** | Critical / High / Medium. Critical means the skill's contract is violated and the kickoff is invalid; High means the kickoff is degraded; Medium means a smaller correctness issue. |
-| **Citation** | Where the failure mode is documented. Research report section, sibling SKILL.md, or external source. |
+| **Citation** | Where the failure mode is documented. Research report section, tier SKILL.md, or external source. |
 
 ## Anti-pattern 1: Scope leak
 
 **Severity:** Critical.
 
-**Definition.** The orchestrator drifts into producing the specialist's content rather than invoking the specialist. kickoff-ready writes a PRD inline instead of calling prd-ready; sketches an architecture instead of calling architecture-ready; produces a launch checklist instead of calling launch-ready.
+**Definition.** The orchestrator drifts into producing the specialist's content rather than invoking the specialist. arc-ready writes a PRD inline instead of calling prd-ready; sketches an architecture instead of calling architecture-ready; produces a launch checklist instead of calling launch-ready.
 
-**Grep test.** Audit kickoff-ready's conversation transcript or output. Search for any of:
+**Grep test.** Audit arc-ready's conversation transcript or output. Search for any of:
 - `# Product Requirements`, `## Problem statement`, `## Functional requirements`, `## Success metrics`
 - `# System Architecture`, `## Trust Boundaries`, `## Data Flow`, `ADR-`
 - `## Now`, `## Next`, `## Later` (in roadmap form)
@@ -35,21 +35,21 @@ Loaded on demand during verification. Cited from the SKILL.md "have-nots" sectio
 - Severity-classified security findings, OWASP category headers
 - Code blocks tagged with language identifiers in non-quote contexts
 
-If any appear in kickoff-ready's output (not in PROGRESS.md as a path reference), scope leak fired.
+If any appear in arc-ready's output (not in PROGRESS.md as a path reference), scope leak fired.
 
-**Guard.** Step 7 of the workflow. On every out-of-scope request, kickoff-ready refuses, names the failure mode, routes to the correct sibling, and resumes. The scope-fence catalog (`references/orchestration/scope-fence.md`) lists eleven canonical refusals.
+**Guard.** Step 7 of the workflow. On every out-of-scope request, arc-ready refuses, names the failure mode, routes to the correct tier, and resumes. The scope-fence catalog (`references/orchestration/scope-fence.md`) lists eleven canonical refusals.
 
-**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.4 (Praetorian on deterministic orchestration; AgentOrchestra on supervisor co-authorship). references/shared/ORCHESTRATORS.md invariant 1 ("the harness is the router; no ready-suite skill calls another").
+**Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.4 (Praetorian on deterministic orchestration; AgentOrchestra on supervisor co-authorship). references/shared/ORCHESTRATORS.md invariant 1 ("the harness is the router; no arc-ready tier calls another").
 
 ## Anti-pattern 2: Rubber-stamp orchestration
 
 **Severity:** Critical.
 
-**Definition.** PROGRESS.md is advanced to `done` for a step without verifying the specialist actually produced its declared artifact on disk. The orchestrator trusts the sibling's "I'm done" claim or the conversation's success-shaped tone instead of checking disk.
+**Definition.** PROGRESS.md is advanced to `done` for a step without verifying the specialist actually produced its declared artifact on disk. The orchestrator trusts the tier's "I'm done" claim or the conversation's success-shaped tone instead of checking disk.
 
 **Grep test.** For every PROGRESS.md row with `status: done`:
 - Does the file at `artifact_path` exist on disk? `[ -f "$artifact_path" ]`
-- Is its size non-trivial? `wc -c "$artifact_path"` returns more than 100 bytes (or the sibling's documented threshold).
+- Is its size non-trivial? `wc -c "$artifact_path"` returns more than 100 bytes (or the tier's documented threshold).
 - Is the file's mtime later than the row's `invocation_ts`? `stat -c %Y "$artifact_path"` is greater than the timestamp.
 
 If any check fails, rubber-stamp orchestration fired.
@@ -62,11 +62,11 @@ If any check fails, rubber-stamp orchestration fired.
 
 **Severity:** Critical.
 
-**Definition.** kickoff-ready claims to resume from PROGRESS.md but starts fresh because (a) the prompt cache was invalidated, (b) compression-summary loss caused the agent to relitigate step one, or (c) the agent inherited stale tool-result state and made decisions based on yesterday's truth.
+**Definition.** arc-ready claims to resume from PROGRESS.md but starts fresh because (a) the prompt cache was invalidated, (b) compression-summary loss caused the agent to relitigate step one, or (c) the agent inherited stale tool-result state and made decisions based on yesterday's truth.
 
-**Grep test.** Audit kickoff-ready's session start. Every kickoff-ready turn (not just the first) must begin with:
-- A literal `Read .kickoff-ready/PROGRESS.md` operation.
-- An `ls .{skill}-ready/` operation per claimed-complete sibling.
+**Grep test.** Audit arc-ready's session start. Every arc-ready turn (not just the first) must begin with:
+- A literal `Read .arc-ready/PROGRESS.md` operation.
+- An `ls .{skill}-ready/` operation per claimed-complete tier.
 - A re-derivation of the current step from disk before any further action.
 
 If a turn skipped these and acted on cached conversation memory, phantom resume fired.
@@ -85,11 +85,11 @@ If a turn skipped these and acted on cached conversation memory, phantom resume 
 
 **Severity:** High.
 
-**Definition.** kickoff-ready invokes a sibling without first verifying its upstream artifact exists. The architect agent runs before `.prd-ready/PRD.md` is on disk; it hallucinates a PRD-equivalent from the user's one-paragraph idea; the downstream chain proceeds on a fictional foundation.
+**Definition.** arc-ready invokes a tier without first verifying its upstream artifact exists. The architect agent runs before `.prd-ready/PRD.md` is on disk; it hallucinates a PRD-equivalent from the user's one-paragraph idea; the downstream chain proceeds on a fictional foundation.
 
-**Grep test.** For every Skill-tool invocation kickoff-ready emits:
-- The sibling's `upstream:` list (per `references/orchestration/sequencing-rules.md` per-sibling upstream contract) is fully present on disk before the invocation timestamp.
-- PROGRESS.md shows verified-done rows for every upstream sibling.
+**Grep test.** For every Skill-tool invocation arc-ready emits:
+- The tier's `upstream:` list (per `references/orchestration/sequencing-rules.md` per-tier upstream contract) is fully present on disk before the invocation timestamp.
+- PROGRESS.md shows verified-done rows for every upstream tier.
 
 If invocation happened with a missing upstream, ghost handoff fired.
 
@@ -101,7 +101,7 @@ If invocation happened with a missing upstream, ghost handoff fired.
 
 **Severity:** High.
 
-**Definition.** kickoff-ready handles the case where every sibling succeeds and writes its artifact, but has no policy for: sibling X failed; sibling X claimed success but artifact is missing; the user wants to skip sibling X; the user already has the PRD from before kickoff-ready started; the user wants to re-run sibling X because the input changed.
+**Definition.** arc-ready handles the case where every tier succeeds and writes its artifact, but has no policy for: tier X failed; tier X claimed success but artifact is missing; the user wants to skip tier X; the user already has the PRD from before arc-ready started; the user wants to re-run tier X because the input changed.
 
 **Grep test.** Read PROGRESS.md schema. The status vocabulary must include:
 - `pending` (not started)
@@ -130,15 +130,15 @@ If only `pending` and `done` exist in the schema or in actual rows, happy-path o
 
 **Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.2 (Galileo on shared-context corruption; Cleanlab on agents asked to infer state instead of querying it; arXiv 2509.18970 on LLM-agent hallucinations).
 
-Note: this anti-pattern is recorded as a name kickoff-ready uses but does not claim. The flagship name is rubber-stamp orchestration (the cause); state-vs-artifact drift is the visible symptom; ouroboros progress is the metaphor.
+Note: this anti-pattern is recorded as a name arc-ready uses but does not claim. The flagship name is rubber-stamp orchestration (the cause); state-vs-artifact drift is the visible symptom; ouroboros progress is the metaphor.
 
 ## Anti-pattern 7: Goal drift via supervisor anchoring
 
 **Severity:** Medium.
 
-**Definition.** The supervisor (kickoff-ready) anchors to its own conversation memory rather than to the dependency graph and the per-sibling consumes list. Over many turns, the supervisor's idea of "where we are" drifts from disk truth.
+**Definition.** The supervisor (arc-ready) anchors to its own conversation memory rather than to the dependency graph and the per-tier consumes list. Over many turns, the supervisor's idea of "where we are" drifts from disk truth.
 
-**Grep test.** For every kickoff-ready turn, compare:
+**Grep test.** For every arc-ready turn, compare:
 - The agent's claim of "current step" (from conversation).
 - The PROGRESS.md "next step" (from re-deriving from disk per Step 1 protocol).
 
@@ -152,9 +152,9 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Severity:** Medium.
 
-**Definition.** A sibling is omitted from kickoff-ready's chain without an explicit `skipped` row in PROGRESS.md. The auditor reading PROGRESS.md cannot tell whether the skip was an intentional decision or whether kickoff-ready forgot the sibling.
+**Definition.** A tier is omitted from arc-ready's chain without an explicit `skipped` row in PROGRESS.md. The auditor reading PROGRESS.md cannot tell whether the skip was an intentional decision or whether arc-ready forgot the tier.
 
-**Grep test.** Every sibling in the suite has exactly one row in PROGRESS.md (or a documented re-invoked history). Silence (no row at all) is the failure.
+**Grep test.** Every tier in the arc has exactly one row in PROGRESS.md (or a documented re-invoked history). Silence (no row at all) is the failure.
 
 **Guard.** Step 2 declaration for known-at-start skips; mid-arc declaration with PROGRESS.md update for runtime skips; the Shape Up no-gos discipline applied to PROGRESS.md.
 
@@ -164,7 +164,7 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Severity:** Critical.
 
-**Definition.** harden-ready emits a Critical finding (open status) and kickoff-ready advances launch-ready to `done` without an explicit risk-acceptance entry in PROGRESS.md. The launch happens on top of an unresolved adversarial-review finding.
+**Definition.** harden-ready emits a Critical finding (open status) and arc-ready advances launch-ready to `done` without an explicit risk-acceptance entry in PROGRESS.md. The launch happens on top of an unresolved adversarial-review finding.
 
 **Grep test.** For every PROGRESS.md showing launch-ready as `done`:
 - Read `.harden-ready/FINDINGS.md`.
@@ -172,7 +172,7 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 - For each open Critical: PROGRESS.md `## Risk acceptances` must contain a dated, named, justified entry pointing to that finding.
 - If any Critical lacks a corresponding acceptance row, the gate was bypassed.
 
-**Guard.** SKILL.md Step 5 critical-finding gate logic. `references/orchestration/sequencing-rules.md` "Critical-finding gate logic" section. The gate algorithm runs on every kickoff-ready turn during shipping tier.
+**Guard.** SKILL.md Step 5 critical-finding gate logic. `references/orchestration/sequencing-rules.md` "Critical-finding gate logic" section. The gate algorithm runs on every arc-ready turn during shipping tier.
 
 **Citation.** `references/shared/RESEARCH-2026-04.md` Section 5.5 (recommended default; harden-ready's pairs_with declaration; the security-sensitive override patterns).
 
@@ -180,14 +180,14 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Severity:** Medium.
 
-**Definition.** kickoff-ready's SKILL.md, references, or README begin to grow content that overlaps with sibling deliverables. The skill body crosses the size and scope of a specialist; the orchestrator becomes a second specialist.
+**Definition.** arc-ready's SKILL.md, references, or README begin to grow content that overlaps with tier deliverables. The skill body crosses the size and scope of a specialist; the orchestrator becomes a second specialist.
 
-**Grep test.** Compare SKILL.md line count and content density against the siblings:
-- `wc -l SKILL.md` for kickoff-ready and for the shortest sibling (deploy-ready at ~495 lines per the May 2026 versions).
-- kickoff-ready should be smaller than every sibling. If it grows past the sibling median, scope leak is happening at the documentation layer.
-- Section headers in kickoff-ready's references should be orchestration-flavored (sequencing, handoff, progress, scope, anti-patterns), not specialist-flavored (PRD, architecture, roadmap, etc.).
+**Grep test.** Compare SKILL.md line count and content density against the tiers:
+- `wc -l SKILL.md` for arc-ready and for the shortest tier (deploy-ready at ~495 lines per the May 2026 versions).
+- arc-ready should be smaller than every tier. If it grows past the tier median, scope leak is happening at the documentation layer.
+- Section headers in arc-ready's references should be orchestration-flavored (sequencing, handoff, progress, scope, anti-patterns), not specialist-flavored (PRD, architecture, roadmap, etc.).
 
-**Guard.** Every release of kickoff-ready passes the fence audit (`references/orchestration/scope-fence.md` Section "Summary"). New features must be orchestration-tier metadata; new content must not duplicate sibling work.
+**Guard.** Every release of arc-ready passes the fence audit (`references/orchestration/scope-fence.md` Section "Summary"). New features must be orchestration-tier metadata; new content must not duplicate tier work.
 
 **Citation.** `references/shared/RESEARCH-2026-04.md` Section 2.5 (Praetorian on monolithic agents; "god skill" as the cautionary endpoint, not a refusal name).
 
@@ -195,11 +195,11 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Severity:** Medium.
 
-**Definition.** kickoff-ready ends, but the user's project still needs ongoing phase / milestone work, and kickoff-ready's Step 6 hands off to a phase orchestrator that does not exist or that the user did not configure. The arc completes; the next phase has no owner.
+**Definition.** arc-ready ends, but the user's project still needs ongoing phase / milestone work, and arc-ready's Step 6 hands off to a phase orchestrator that does not exist or that the user did not configure. The arc completes; the next phase has no owner.
 
 **Grep test.** PROGRESS.md `## Kickoff complete` block names a "Recommended next-step orchestrator" but the user has no installed orchestrator matching the recommendation.
 
-**Guard.** Step 6 surfaces the recommendation honestly. If the user has GSD installed, recommend GSD. If they have BMAD, recommend BMAD with the boundary-translation pattern from references/shared/ORCHESTRATORS.md. If they have neither, recommend running siblings directly when needed (the "no orchestrator" pattern from references/shared/ORCHESTRATORS.md).
+**Guard.** Step 6 surfaces the recommendation honestly. If the user has GSD installed, recommend GSD. If they have BMAD, recommend BMAD with the boundary-translation pattern from references/shared/ORCHESTRATORS.md. If they have neither, recommend running tiers directly when needed (the "no orchestrator" pattern from references/shared/ORCHESTRATORS.md).
 
 **Citation.** references/shared/ORCHESTRATORS.md sections on GSD, BMAD, and "no orchestrator." `references/orchestration/handoff-protocols.md` "Composition with phase orchestrators" section.
 
@@ -207,9 +207,9 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 **Severity:** Medium.
 
-**Definition.** The user re-runs a previously-done sibling. PROGRESS.md is updated to show the new run, but the prior `done` row is overwritten or deleted. The audit history is lost.
+**Definition.** The user re-runs a previously-done tier. PROGRESS.md is updated to show the new run, but the prior `done` row is overwritten or deleted. The audit history is lost.
 
-**Grep test.** PROGRESS.md should grow monotonically. A sibling that was re-invoked should have at least two rows: the prior `done` row (with status moved to `re-invoked` and a `notes` field pointing to the new row) and the new in-flight or done row.
+**Grep test.** PROGRESS.md should grow monotonically. A tier that was re-invoked should have at least two rows: the prior `done` row (with status moved to `re-invoked` and a `notes` field pointing to the new row) and the new in-flight or done row.
 
 **Guard.** `references/orchestration/progress-tracking.md` "Re-invocation discipline" section. PROGRESS.md grows; nothing is deleted (except by explicit user-initiated cleanup, which is itself recorded as a note).
 
@@ -217,13 +217,13 @@ If they disagree and the agent acted on the conversation claim, goal drift fired
 
 ## How to use the catalog during verification
 
-A reviewer auditing a kickoff-ready run does this:
+A reviewer auditing an arc-ready run does this:
 
-1. Open `.kickoff-ready/PROGRESS.md`.
+1. Open `.arc-ready/PROGRESS.md`.
 2. For each row with status `done` or `imported`: run anti-pattern 2 grep test (artifact exists, non-empty, mtime later than invocation).
 3. For the chain as a whole: run anti-pattern 4 grep test (each invocation had its upstream verified before).
 4. For the schema: run anti-pattern 5 grep test (all seven statuses are possible; not just done/pending).
-5. For the conversation transcript: run anti-pattern 1 grep test (no specialist content in kickoff-ready's output).
+5. For the conversation transcript: run anti-pattern 1 grep test (no specialist content in arc-ready's output).
 6. If harden-ready ran: run anti-pattern 9 grep test (Critical-gate compliance).
 7. For session continuity: run anti-pattern 3 grep test (every turn re-reads PROGRESS.md).
 

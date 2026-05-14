@@ -4,6 +4,30 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [1.0.0] - 2026-05-14
+
+Stable contract release. Makes Pillars the standard agent-memory layer for file-system projects shaped by arc-ready, while keeping every canonical `.<tier>-ready/` artifact authoritative.
+
+### Added
+
+- `references/building/pillars-integration.md`: required memory-layer bridge from arc-ready artifacts to a Pillars-compatible `AGENTS.md` plus `agents/*.md` files. The mapping covers context, repo, stack, arch, quality, deploy, observe, security, UI, data, and auth pillars.
+- `SKILL.md` Tier 2.1 sub-step 15: loads the Pillars memory layer for every file-system project.
+- README stability-promise section that defines the intended 1.0 contract for canonical artifacts, Pillars floor memory, source-backed pillars, and adoption blockers.
+- README documentation map for new users, ready-suite migrants, maintainers, contributors, and agents changing emitted project memory.
+- MIGRATION Pillars adoption procedure for projects imported from the eleven-skill suite.
+- CONTRIBUTING documentation-change checklist for public contract edits.
+- MAINTAINING 1.0 stabilization checklist for a non-breaking major release.
+
+### Changed
+
+- `references/orchestration/agents-md-template.md` now emits a Pillars-compatible AGENTS.md by default, points at `.arc-ready/PROGRESS.md`, uses tier names, and documents how Pillars owns decomposed project memory.
+- `SKILL.md` AGENTS.md emit-and-respect rules now require the Pillars memory layer for file-system projects unless adoption is explicitly blocked and recorded.
+- `scripts/dogfood-smoke.sh` now verifies the Pillars loader, the mandatory `agents/context.md` and `agents/repo.md` floor pillars, and one source-backed stack pillar with artifact provenance and routing metadata.
+
+### Why 1.0
+
+This is a non-breaking stabilization release. The canonical artifact paths remain unchanged, but the project now declares the combined artifact contract and Pillars memory contract stable for downstream agents and orchestrators.
+
 ## [0.1.6] - 2026-05-09
 
 Operational-validation pass. Closes the remaining gaps from the post-v0.1.5 evaluation: untested resume-protocol heuristic, no end-to-end smoke test, oversized description for Cursor's per-rule limit. Adds CI integration of the smoke test.
@@ -145,6 +169,7 @@ The discipline of arc-ready is the discipline the eleven-skill suite produced. S
 - Compatible with: claude-code, codex, cursor, windsurf, antigravity, pi, openclaw, any-agentskills-compatible-harness.
 - Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The aihxp/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
 
+[1.0.0]: https://github.com/aihxp/arc-ready/releases/tag/v1.0.0
 [0.1.6]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.6
 [0.1.5]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.5
 [0.1.4]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.4

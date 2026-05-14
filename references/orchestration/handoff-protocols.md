@@ -1,12 +1,12 @@
 # Handoff protocols: per-harness invocation patterns
 
-This file specifies how kickoff-ready hands off to a sibling on each major harness. The handoff has two shapes: programmatic (the harness exposes a Skill tool that kickoff-ready can invoke directly) and guidance-text (the harness has no Skill tool; kickoff-ready surfaces an instruction string the user copies to the next prompt).
+This file specifies how arc-ready hands off to a tier on each major harness. The handoff has two shapes: programmatic (the harness exposes a Skill tool that arc-ready can invoke directly) and guidance-text (the harness has no Skill tool; arc-ready surfaces an instruction string the user copies to the next prompt).
 
 Loaded at SKILL.md Steps 0, 3, 4, and 5. The harness landscape research is in `references/shared/RESEARCH-2026-04.md` Section 4.
 
 ## Detection: which harness is running
 
-kickoff-ready cannot ask the harness directly. It infers from environmental signals:
+arc-ready cannot ask the harness directly. It infers from environmental signals:
 
 | Signal | Likely harness |
 |---|---|
@@ -25,7 +25,7 @@ Programmatic handoff is supported.
 
 ### Invocation form
 
-Skills are invoked via slash command in chat: `/skill-name <args>`. From within kickoff-ready, the orchestrator emits the slash command into the conversation; the harness routes the command to the named skill.
+Skills are invoked via slash command in chat: `/skill-name <args>`. From within arc-ready, the orchestrator emits the slash command into the conversation; the harness routes the command to the named skill.
 
 The Skill tool in Claude Code 2026 supports nested invocation. Per `references/shared/RESEARCH-2026-04.md` Section 4.1, the `claude_code.skill_activated` OpenTelemetry event carries `invocation_trigger=nested-skill` for skills invoked from within other skills.
 
@@ -34,7 +34,7 @@ The Skill tool in Claude Code 2026 supports nested invocation. Per `references/s
 After verifying upstream artifacts exist and updating PROGRESS.md to mark the next step `in-flight`:
 
 ```
-[kickoff-ready writes a short status update]
+[arc-ready writes a short status update]
 
 Invoking prd-ready now. PROGRESS.md row 1 is in-flight. I will return when
 .prd-ready/PRD.md exists and verifies.
@@ -42,18 +42,18 @@ Invoking prd-ready now. PROGRESS.md row 1 is in-flight. I will return when
 /prd-ready <one-line project intent quoted from PROGRESS.md>
 ```
 
-The harness picks up the slash command and routes to prd-ready. prd-ready runs its own workflow. When it returns (the user types something kickoff-ready interprets as "prd-ready done"), kickoff-ready reads PROGRESS.md, runs the post-invocation checks, and either marks the row `done` or `failed`.
+The harness picks up the slash command and routes to prd-ready. prd-ready runs its own workflow. When it returns (the user types something arc-ready interprets as "prd-ready done"), arc-ready reads PROGRESS.md, runs the post-invocation checks, and either marks the row `done` or `failed`.
 
 ### Caveat: forked subagents do not nest
 
-From the Claude Code Skills docs: "subagents cannot nest, as a skill running in a forked subagent cannot spawn another subagent." kickoff-ready must not declare `context: fork` in its own frontmatter if it intends to invoke siblings. The orchestrator runs in the main context; each invoked sibling is a regular skill load.
+From the Claude Code Skills docs: "subagents cannot nest, as a skill running in a forked subagent cannot spawn another subagent." arc-ready must not declare `context: fork` in its own frontmatter if it intends to invoke tiers. The orchestrator runs in the main context; each invoked tier is a regular skill load.
 
 ### Failure modes
 
-- **Skill not installed.** The slash command fails. kickoff-ready surfaces the install instruction (sibling's GitHub URL) and pauses the chain. PROGRESS.md status remains `pending` for the un-invokable sibling.
-- **Permission denied.** `.claude/settings.json` denies `Skill(prd-ready *)`. kickoff-ready surfaces a clean error: "Claude Code permissions deny invoking prd-ready. Update your `.claude/settings.json` allowlist or invoke prd-ready manually outside this session."
-- **Skill description budget exceeded.** With many skills installed, descriptions get truncated to fit the 1% / 8000-char budget. kickoff-ready's description has its key use case in the first sentence.
-- **Circular invocation.** Not protected. kickoff-ready must not invoke itself. The static check at Step 0 verifies the next-step sibling is not `kickoff-ready`.
+- **Skill not installed.** The slash command fails. arc-ready surfaces the install instruction (tier's GitHub URL) and pauses the chain. PROGRESS.md status remains `pending` for the un-invokable tier.
+- **Permission denied.** `.claude/settings.json` denies `Skill(prd-ready *)`. arc-ready surfaces a clean error: "Claude Code permissions deny invoking prd-ready. Update your `.claude/settings.json` allowlist or invoke prd-ready manually outside this session."
+- **Skill description budget exceeded.** With many skills installed, descriptions get truncated to fit the 1% / 8000-char budget. arc-ready's description has its key use case in the first sentence.
+- **Circular invocation.** Not protected. arc-ready must not invoke itself. The static check at Step 0 verifies the next-step tier is not `arc-ready`.
 
 ## OpenAI Codex CLI
 
@@ -73,25 +73,25 @@ $prd-ready <one-line project intent>
 
 ### Caveat: nested invocation undocumented
 
-The Codex docs as of May 2026 do not explicitly document skill-to-skill invocation. The form is invocable from any context including inside another skill, but the failure modes are unspecified. kickoff-ready treats Codex as supporting nested invocation in practice but emits the command as text the agent or user can act on, rather than relying on a programmatic spawn.
+The Codex docs as of May 2026 do not explicitly document skill-to-skill invocation. The form is invocable from any context including inside another skill, but the failure modes are unspecified. arc-ready treats Codex as supporting nested invocation in practice but emits the command as text the agent or user can act on, rather than relying on a programmatic spawn.
 
 ### AGENTS.md
 
 `AGENTS.md` is the cross-tool agent brief read natively by Codex CLI, GitHub Copilot, Cursor, Windsurf, Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin, and others, per the [agents.md open standard](https://agents.md/) (governed by the Linux Foundation's Agentic AI Foundation). On Claude Code the equivalent is `CLAUDE.md`; many teams symlink `CLAUDE.md` -> `AGENTS.md` to avoid drift.
 
-kickoff-ready emits a minimal `AGENTS.md` at project root in Step 6 sub-step 6a if none exists, scoped to artifact metadata only (the per-sibling artifact map). It does not write stack, commands, conventions, or forbidden actions; those belong to repo-ready or to the user. If `AGENTS.md` exists, kickoff-ready records `existing-respected` in PROGRESS.md and does not touch the file. See [`references/orchestration/agents-md-template.md`](agents-md-template.md) for the template, the substitution rules, and the kickoff-ready / repo-ready handshake on a shared file.
+arc-ready emits a minimal `AGENTS.md` at project root in Step 6 sub-step 6a if none exists, scoped to artifact metadata only (the per-tier artifact map). It does not write stack, commands, conventions, or forbidden actions; those belong to repo-ready or to the user. If `AGENTS.md` exists, arc-ready records `existing-respected` in PROGRESS.md and does not touch the file. See [`references/orchestration/agents-md-template.md`](agents-md-template.md) for the template, the substitution rules, and the arc-ready / repo-ready handshake on a shared file.
 
-On chat-only harnesses (no file system), kickoff-ready surfaces the template as a guidance string for the user to paste, instead of writing.
+On chat-only harnesses (no file system), arc-ready surfaces the template as a guidance string for the user to paste, instead of writing.
 
 ## Antigravity
 
 Programmatic handoff is supported via the Agent Skills open standard (agentskills.io). The invocation form is per-harness; consult Antigravity's docs.
 
-kickoff-ready behaves identically to Claude Code on Antigravity in practice: emit the invocation, wait for the sibling's artifact to appear on disk, verify, advance.
+arc-ready behaves identically to Claude Code on Antigravity in practice: emit the invocation, wait for the tier's artifact to appear on disk, verify, advance.
 
 ## Cursor
 
-No programmatic Skill tool. Cursor has notepads and `.cursorrules`, both of which are context-injection mechanisms, not invocation mechanisms. kickoff-ready operates in **guidance-text mode** on Cursor.
+No programmatic Skill tool. Cursor has notepads and `.cursorrules`, both of which are context-injection mechanisms, not invocation mechanisms. arc-ready operates in **guidance-text mode** on Cursor.
 
 ### Pattern
 
@@ -119,95 +119,95 @@ In arc-ready's single-skill architecture, "handoff" is internal: the agent stays
 
 ### Practical reality on Cursor
 
-The user typically opens two Cursor windows: one running kickoff-ready, one running the active sibling. PROGRESS.md (in the working directory) is shared. kickoff-ready's resume protocol re-reads PROGRESS.md every turn, so the wait is trivially handled.
+The user typically opens two Cursor windows: one running arc-ready, one running the active tier. PROGRESS.md (in the working directory) is shared. arc-ready's resume protocol re-reads PROGRESS.md every turn, so the wait is trivially handled.
 
 ## Windsurf
 
-No programmatic Skill tool. Windsurf has workflows in `.windsurf/` and global rules. Same posture as Cursor: kickoff-ready operates in guidance-text mode.
+No programmatic Skill tool. Windsurf has workflows in `.windsurf/` and global rules. Same posture as Cursor: arc-ready operates in guidance-text mode.
 
-The Windsurf-specific note: workflows are reusable prompts. A user can wrap a sibling's SKILL.md as a Windsurf workflow and invoke it via the workflow runner. kickoff-ready can suggest this pattern but does not author the workflow file.
+The Windsurf-specific note: workflows are reusable prompts. A user can wrap a tier's SKILL.md as a Windsurf workflow and invoke it via the workflow runner. arc-ready can suggest this pattern but does not author the workflow file.
 
 ## Generic chat frontends (chat.openai.com, claude.ai)
 
-No file system. No `.kickoff-ready/PROGRESS.md` possible. kickoff-ready operates in **degraded mode**.
+No file system. No `.arc-ready/PROGRESS.md` possible. arc-ready operates in **degraded mode**.
 
 ### Pattern
 
-PROGRESS.md exists only inside the conversation as a markdown block the user copies between sessions. The kickoff-ready turn produces:
+PROGRESS.md exists only inside the conversation as a markdown block the user copies between sessions. The arc-ready turn produces:
 
 1. A markdown block tagged `<!-- PROGRESS.md -->` containing the current ledger.
-2. The guidance string for the next sibling.
+2. The guidance string for the next tier.
 3. An instruction to the user: "Open a new conversation, paste prd-ready's SKILL.md, run it, and paste its output back here. I will update PROGRESS.md and continue."
 
-This is genuinely degraded. The user's resume across sessions requires them to copy PROGRESS.md back. There is no artifact-existence check possible (no file system); the verification gate degrades to "the user pastes the artifact back and kickoff-ready reads it."
+This is genuinely degraded. The user's resume across sessions requires them to copy PROGRESS.md back. There is no artifact-existence check possible (no file system); the verification gate degrades to "the user pastes the artifact back and arc-ready reads it."
 
 ### Honesty rule
 
-kickoff-ready is explicit on chat-only frontends: "This harness has no file system. PROGRESS.md is in this conversation only. If you close this tab, the kickoff state is lost. For a multi-day kickoff, install Claude Code, Codex, Cursor, or Windsurf and run kickoff-ready there."
+arc-ready is explicit on chat-only frontends: "This harness has no file system. PROGRESS.md is in this conversation only. If you close this tab, the kickoff state is lost. For a multi-day kickoff, install Claude Code, Codex, Cursor, or Windsurf and run arc-ready there."
 
 ## Verification gate (harness-independent)
 
-After every sibling invocation, regardless of harness:
+After every tier invocation, regardless of harness:
 
 1. **Programmatic harness (Claude Code, Codex, Antigravity).** Read the declared artifact path. Check exists and non-empty. Compute disk_state_hash (file mtime). Update PROGRESS.md row.
 2. **Guidance-text harness (Cursor, Windsurf).** Same as above. PROGRESS.md is in the working directory; the verification is a file read.
-3. **Chat-only harness.** The user pastes the artifact back. kickoff-ready treats the pasted content as the artifact for verification purposes; the file does not exist on disk because there is no disk.
+3. **Chat-only harness.** The user pastes the artifact back. arc-ready treats the pasted content as the artifact for verification purposes; the file does not exist on disk because there is no disk.
 
 The two-check verification (exists, non-empty) is invariant. Only the read mechanism varies.
 
 ## Skill not installed: graceful failure
 
-If kickoff-ready reaches a step where the next sibling is not installed:
+If arc-ready reaches a step where the next tier is not installed:
 
-1. **Detect.** The Skill tool errors (Claude Code, Codex, Antigravity), or the user reports the sibling is not on disk (Cursor, Windsurf), or the user does not have access (chat-only).
-2. **Surface install instructions.** Each sibling has a GitHub URL: https://github.com/aihxp/<sibling-name>. The recommended install on Claude Code is symlinking the dev copy:
+1. **Detect.** The Skill tool errors (Claude Code, Codex, Antigravity), or the user reports the tier is not on disk (Cursor, Windsurf), or the user does not have access (chat-only).
+2. **Surface install instructions.** Each tier has a GitHub URL: https://github.com/aihxp/<tier-name>. The recommended install on Claude Code is symlinking the dev copy:
    ```bash
-   ln -s ~/Projects/<sibling-name> ~/.claude/skills/<sibling-name>
+   ln -s ~/Projects/<tier-name> ~/.claude/skills/<tier-name>
    ```
    On Codex and Antigravity, equivalent symlink paths.
-3. **Pause.** PROGRESS.md row stays `pending`. kickoff-ready does not advance.
-4. **Resume on user signal.** The user installs the sibling and tells kickoff-ready to continue. kickoff-ready re-runs Step 0 (harness and install detection), confirms the sibling is now available, and proceeds.
+3. **Pause.** PROGRESS.md row stays `pending`. arc-ready does not advance.
+4. **Resume on user signal.** The user installs the tier and tells arc-ready to continue. arc-ready re-runs Step 0 (harness and install detection), confirms the tier is now available, and proceeds.
 
 ## Skip-via-guidance: when a harness cannot do the handoff
 
-A user on chat-only frontends or a Cursor / Windsurf user without access to the sibling skill files might choose to skip a sibling rather than install. kickoff-ready respects the choice:
+A user on chat-only frontends or a Cursor / Windsurf user without access to the specialist tier files might choose to skip a tier rather than install. arc-ready respects the choice:
 
 1. The user declares the skip in PROGRESS.md (Step 2 declaration or mid-arc declaration).
-2. kickoff-ready records the skip with reason.
+2. arc-ready records the skip with reason.
 3. The skip cascade rules from `references/orchestration/sequencing-rules.md` apply.
 
 This is the explicit-skip path. No silent failure.
 
 ## On-disk handoff (orchestrator-agnostic baseline)
 
-The deepest handoff pattern in the ready-suite is on-disk, not in-conversation. Every sibling reads upstream artifacts from `.{skill}-ready/` directories on disk. The Skill-tool invocation is a convenience; the artifact-on-disk handoff is the contract.
+The deepest handoff pattern in arc-ready is on-disk, not in-conversation. Every tier reads upstream artifacts from `.<tier>-ready/` directories on disk. The Skill-tool invocation is a convenience; the artifact-on-disk handoff is the contract.
 
-This means kickoff-ready works even when the harness has no Skill tool at all. The user manually invokes each sibling (in any harness, in any tool, with any prompt); kickoff-ready's PROGRESS.md tracks which artifacts have appeared on disk and verifies them. This is the most degraded mode but is fully functional.
+This means arc-ready works even when the harness has no Skill tool at all. The user manually invokes each tier (in any harness, in any tool, with any prompt); arc-ready's PROGRESS.md tracks which artifacts have appeared on disk and verifies them. This is the most degraded mode but is fully functional.
 
-For full automation, use Claude Code, Codex, or Antigravity. For semi-automated, use Cursor or Windsurf with one window per sibling. For zero-automation, use any harness and let kickoff-ready be the audit ledger only.
+For full automation, use Claude Code, Codex, or Antigravity. For semi-automated, use Cursor or Windsurf with one window per tier. For zero-automation, use any harness and let arc-ready be the audit ledger only.
 
 ## Composition with phase orchestrators
 
-kickoff-ready ends when the kickoff arc completes. Ongoing phase / milestone work is a different orchestration pattern. kickoff-ready hands off explicitly:
+arc-ready ends when the arc completes. Ongoing phase / milestone work is a different orchestration pattern. arc-ready hands off explicitly:
 
 1. **Step 6 produces the handoff block.** "Recommended next-step orchestrator: GSD" (or BMAD, or the user's own process).
 2. **PROGRESS.md remains.** The next orchestrator reads PROGRESS.md to understand what was kicked off. Per references/shared/ORCHESTRATORS.md, GSD's `/gsd-new-project` is the canonical follow-on.
-3. **The siblings continue without kickoff-ready.** kickoff-ready exits the chain. Each sibling can be re-invoked directly later (a roadmap revision, a new architecture decision, a hardening pass) without going through kickoff-ready again.
+3. **The tiers continue without arc-ready.** arc-ready exits the chain. Each tier can be re-invoked directly later (a roadmap revision, a new architecture decision, a hardening pass) without going through arc-ready again.
 
-The composition is one-way: kickoff-ready knows about the suite, hands off to phase orchestrators, and gets out of the way. Phase orchestrators do not call kickoff-ready back.
+The composition is one-way: arc-ready knows about the arc, hands off to phase orchestrators, and gets out of the way. Phase orchestrators do not call arc-ready back.
 
 ## Per-harness summary table
 
-| Harness | Skill tool | Invocation form | kickoff-ready mode | Verification source |
+| Harness | Skill tool | Invocation form | arc-ready mode | Verification source |
 |---|---|---|---|---|
 | Claude Code | Yes | `/skill-name args` | Programmatic; nested-skill supported | File system |
 | Codex CLI | Yes | `$skill-name args` | Programmatic; nested-skill undocumented but works | File system |
 | Antigravity | Yes (Agent Skills standard) | Per-harness (similar to Claude Code) | Programmatic | File system |
-| Cursor | No | Manual (notepads, .cursorrules) | Guidance-text; user runs siblings in separate windows | File system |
-| Windsurf | No | Manual (workflows, global rules) | Guidance-text; user runs siblings in separate windows | File system |
+| Cursor | No | Manual (notepads, .cursorrules) | Guidance-text; user runs tiers in separate windows | File system |
+| Windsurf | No | Manual (workflows, global rules) | Guidance-text; user runs tiers in separate windows | File system |
 | chat.openai.com | No | None | Degraded; PROGRESS.md is in conversation | Pasted-back content |
 | claude.ai | No | None | Degraded; PROGRESS.md is in conversation | Pasted-back content |
 
 ## Summary
 
-Programmatic handoff is fastest. Guidance-text handoff is the universal fallback. On-disk artifact verification is invariant. The user's harness choice changes only the invocation mechanism; the contract (each sibling produces its declared artifact at its declared path; kickoff-ready verifies and advances) is the same everywhere.
+Programmatic handoff is fastest. Guidance-text handoff is the universal fallback. On-disk artifact verification is invariant. The user's harness choice changes only the invocation mechanism; the contract (each tier produces its declared artifact at its declared path; arc-ready verifies and advances) is the same everywhere.

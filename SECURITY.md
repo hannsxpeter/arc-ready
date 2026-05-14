@@ -26,3 +26,5 @@ The skill is documentation plus a Bash lint script; it does not execute code at 
 ## Predecessor
 
 arc-ready is the consolidated successor to the eleven-skill aihxp/ready-suite. Vulnerabilities affecting both arc-ready and the predecessor suite should be reported here; the maintainer will coordinate disclosure across both.
+
+If a report affects emitted Pillars agent memory (`AGENTS.md` or `agents/*.md`) in a way that could steer agents toward unsafe behavior, treat it as in scope. Include the generated files and the source arc artifacts that informed them.

@@ -2,11 +2,11 @@
 
 This file is the cross-tool agent brief for the arc-ready repository itself. It is consumed by any harness that respects the Linux Foundation Agentic AI Foundation `AGENTS.md` standard (Codex CLI, GitHub Copilot, Cursor, Windsurf, Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin, and others).
 
-This is **not** the AGENTS.md template arc-ready emits to consumer projects; that template lives at `references/orchestration/agents-md-template.md` and is parameterized by project state. This file describes how to work on arc-ready itself.
+This is **not** the Pillars-compatible AGENTS.md template arc-ready emits to consumer projects; that template lives at `references/orchestration/agents-md-template.md` and is parameterized by project state. This file describes how to work on arc-ready itself.
 
 ## What this repo is
 
-arc-ready is a single AI skill that takes a software project from idea through launch. It is the consolidated successor to the eleven-skill aihxp/ready-suite. See `README.md` for the full picture and `SKILL.md` for the workflow body.
+arc-ready is a single AI skill that takes a software project from idea through launch, then emits Pillars agent memory for future coding work. It is the consolidated successor to the eleven-skill aihxp/ready-suite. See `README.md` for the full picture and `SKILL.md` for the workflow body.
 
 ## Project conventions
 
@@ -18,6 +18,7 @@ This is a documentation-only repository. The only "code" is `scripts/lint.sh` (B
 
 - `bash scripts/lint.sh` runs the meta-linter. Equivalent: `bash scripts/lint.sh --all`.
 - `bash scripts/lint.sh --verbose` for verbose output.
+- `bash scripts/dogfood-smoke.sh --verbose` runs the operational smoke suite, including Pillars floor and source-backed pillar checks.
 - `bash scripts/lint.sh --help` for individual checks.
 - CI runs `lint.sh` on every push and PR.
 
@@ -32,7 +33,7 @@ This is a documentation-only repository. The only "code" is `scripts/lint.sh` (B
 
 ### Contribution policy
 
-- Patch releases (v0.1.x) for bug fixes, typo corrections, cross-reference fixes.
+- Patch releases (v0.x.y) for bug fixes, typo corrections, cross-reference fixes.
 - Minor releases (v0.x.0) for new content (new patterns, new sub-steps).
 - Major releases (vX.0.0) for breaking changes to the artifact contract or the workflow shape. Coordinate with downstream consumers (orchestrators, the dogfood example).
 
@@ -48,6 +49,7 @@ See `MAINTAINING.md` for the release rituals.
 
 - **agentskills.io**: SKILL.md frontmatter format, references/ lazy-load pattern.
 - **agents.md (Linux Foundation Agentic AI Foundation)**: this file at project root; emit `AGENTS.md` to consumer projects per Tier 0 Step 0.6.
+- **Pillars**: consumer projects get a Pillars-compatible `AGENTS.md` plus `agents/*.md` memory files in Tier 2.1. arc-ready itself is not currently organized as a Pillars consumer repo.
 - **Google Labs DESIGN.md**: detect and consume DESIGN.md in the building tier UI work per Tier 2.2 sub-step 3.
 
 ## File map
@@ -70,6 +72,7 @@ See `MAINTAINING.md` for the release rituals.
 | `references/orchestration/` | Tier 0 references. |
 | `references/planning/` | Tier 1 references (PRD, ARCH, ROADMAP, STACK). |
 | `references/building/` | Tier 2 references (REPO, PRODUCTION). |
+| `references/building/pillars-integration.md` | Required Pillars memory-layer mapping for consumer projects. |
 | `references/shipping/` | Tier 3 references (DEPLOY, OBSERVE, LAUNCH, HARDEN). |
 | `references/shared/` | Cross-tier references (RESEARCH, ORCHESTRATORS). |
 

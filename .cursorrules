@@ -2,7 +2,7 @@
 #
 # This file is a slim Cursor-rule version of arc-ready's SKILL.md frontmatter.
 # Cursor's per-rule recommended limit is ~2KB; the full SKILL.md description
-# is 2,558 chars (over the threshold). This file gives Cursor a trimmed
+# is over the threshold. This file gives Cursor a trimmed
 # trigger surface that still routes correctly.
 #
 # For the full skill body, load arc-ready/SKILL.md.
@@ -14,6 +14,7 @@ When the user asks to do any of:
 - build a roadmap, milestone plan, sequence the work, Now-Next-Later, Shape Up
 - pick a stack, choose a database, frontend or backend framework decision
 - set up a repo, add CI, GitHub Actions, configure linting, README, license
+- Pillars, task-routed agent memory, steer future agent outputs
 - build a dashboard, admin panel, internal tool, back office, CRUD app
 - deploy, CI/CD pipeline, promote to staging, expand-contract, canary, rollback
 - add monitoring, define an SLO, alerts, write a runbook, error budget policy
@@ -26,6 +27,6 @@ Load `arc-ready/SKILL.md` and follow the tier-routed workflow.
 
 Modes: A (full arc, greenfield), B (specific tier, existing codebase), C (retroactive audit), D (multi-repo suite layout).
 
-Artifacts: written to canonical .{tier}-ready/{ARTIFACT}.md paths. Refuses scope leak, AI-slop output, hollow output, paper SLOs, paper canaries, scanner-only security.
+Artifacts: written to canonical .{tier}-ready/{ARTIFACT}.md paths. File-system projects also get Pillars-compatible AGENTS.md plus agents/*.md memory. Refuses scope leak, AI-slop output, hollow output, paper SLOs, paper canaries, scanner-only security.
 
 Faithful consolidation of the eleven-skill aihxp/ready-suite into one repo. See arc-ready/MIGRATION.md.
