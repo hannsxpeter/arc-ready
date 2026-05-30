@@ -188,7 +188,7 @@ For products pre-launch, swap "would be surprised" for "would a user in this rol
 
 ## 11. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 3: Intercom, Cagan, Horowitz, Atlassian on target users.
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 3: Intercom, Cagan, Horowitz, Atlassian on target users.
 - April Dunford, *Obviously Awesome* (2019), chapter 4 on positioning to a segment.
 - Clayton Christensen, *Competing Against Luck* (2016) on Jobs-to-be-Done.
 - Erika Hall, *Just Enough Research* (2nd ed., 2019) on lightweight user research for small teams.

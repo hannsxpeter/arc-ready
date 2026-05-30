@@ -14,10 +14,16 @@
 #                          exempt (faithful copies from source ready-suite skills).
 #   frontmatter-version    SKILL.md frontmatter `version:` matches the top
 #                          CHANGELOG entry version `## [X.Y.Z]`.
+#   skill-version-body     every `## Skill version: X` line in the SKILL.md body
+#                          matches the frontmatter `version:` (no stale template
+#                          version strings).
 #   compatible-with        SKILL.md `compatible_with:` includes the standards-
 #                          level harness names.
 #   references-exist       every `references/<tier>/<file>.md` mentioned in
 #                          SKILL.md exists on disk.
+#   relative-links-resolve every markdown link to a real reference file inside
+#                          references/ resolves from the linking file's directory
+#                          (guards cross-tier links written with the wrong path).
 #   tier-folders-populated `references/{orchestration,planning,building,shipping,
 #                          shared}` each have at least one .md file.
 #   tag-release-parity     every git tag has a matching GitHub Release.
@@ -69,9 +75,11 @@ Checks:
   unicode-clean          no em-dashes / en-dashes / arrows / box-drawing
                          in load-bearing files
   frontmatter-version    SKILL.md version matches top CHANGELOG entry
+  skill-version-body     SKILL.md body 'Skill version' matches frontmatter
   compatible-with        SKILL.md compatible_with frontmatter contains
                          standards-level harness names
   references-exist       every references/<tier>/*.md path in SKILL.md exists
+  relative-links-resolve reference cross-links resolve from their own dir
   tier-folders-populated all five tier folders have at least one file
   tag-release-parity     every git tag has a matching GitHub Release
                          (CI-only by default; requires gh auth)
@@ -316,12 +324,96 @@ check_tag_release_parity() {
   fi
 }
 
+# ---------- check: skill-version-body ----------
+check_skill_version_body() {
+  printf "%s== skill-version-body ==%s\n" "$C_BOLD" "$C_RESET"
+  cd "$REPO_DIR"
+
+  if [ ! -f "SKILL.md" ]; then
+    printf "  %s[skip] SKILL.md missing%s\n\n" "$C_YELLOW" "$C_RESET"
+    return
+  fi
+
+  local skill_v
+  skill_v=$(awk -F': *' '/^version:/{gsub(/["'"'"' ]/,"",$2); print $2; exit}' SKILL.md)
+
+  local local_fail=0
+  grep -nE '^## Skill version: ' SKILL.md > /tmp/arc-ready-skillv.txt 2>/dev/null || true
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    local v
+    v=$(printf '%s' "$line" | sed -E 's/.*Skill version: *//; s/[[:space:]]*$//')
+    if [ "$v" = "$skill_v" ]; then
+      [ "$VERBOSE" = "1" ] && printf "  %s[ok] body 'Skill version: %s' matches frontmatter%s\n" "$C_GREEN" "$v" "$C_RESET"
+    else
+      printf "  %s[fail] body 'Skill version: %s' != frontmatter version %s%s\n" "$C_RED" "$v" "$skill_v" "$C_RESET"
+      local_fail=1
+    fi
+  done < /tmp/arc-ready-skillv.txt
+  rm -f /tmp/arc-ready-skillv.txt
+
+  if [ "$local_fail" = "1" ]; then
+    mark_fail
+    printf "  %s[skill-version-body] FAILED%s\n\n" "$C_RED" "$C_RESET"
+  else
+    printf "  %s[skill-version-body] passed%s\n\n" "$C_GREEN" "$C_RESET"
+  fi
+}
+
+# ---------- check: relative-links-resolve ----------
+# Every markdown link [..](target.md) inside references/ whose basename names a
+# real reference file must resolve relative to the linking file's directory.
+# Catches cross-tier links written with the wrong relative path (e.g. a planning
+# file linking RESEARCH-2026-04.md as a sibling when it lives in shared/).
+# Consumer-artifact example filenames (CODE_OF_CONDUCT.md, etc.) are ignored
+# because they never match a real reference basename.
+check_relative_links() {
+  printf "%s== relative-links-resolve ==%s\n" "$C_BOLD" "$C_RESET"
+  cd "$REPO_DIR"
+
+  local refnames="/tmp/arc-ready-refnames.txt"
+  local files="/tmp/arc-ready-reffiles.txt"
+  local fails="/tmp/arc-ready-rellinks.txt"
+  find references -name '*.md' -exec basename {} \; | sort -u > "$refnames"
+  find references -name '*.md' > "$files"
+  : > "$fails"
+
+  local f dir
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    dir=$(dirname "$f")
+    grep -oE '\]\([^)]+\.md[^)]*\)' "$f" 2>/dev/null \
+      | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' \
+      | while IFS= read -r tgt; do
+          [ -z "$tgt" ] && continue
+          case "$tgt" in http*|/*|.*-ready/*) continue ;; esac
+          local base
+          base=$(basename "$tgt")
+          if grep -qx "$base" "$refnames"; then
+            [ -f "$dir/$tgt" ] || printf '%s links %s (unresolved; %s is a real reference)\n' "${f#./}" "$tgt" "$base" >> "$fails"
+          fi
+        done
+  done < "$files"
+
+  if [ -s "$fails" ]; then
+    sed 's/^/  [fail] /' "$fails"
+    rm -f "$refnames" "$files" "$fails"
+    mark_fail
+    printf "  %s[relative-links-resolve] FAILED%s\n\n" "$C_RED" "$C_RESET"
+  else
+    rm -f "$refnames" "$files" "$fails"
+    printf "  %s[relative-links-resolve] passed%s\n\n" "$C_GREEN" "$C_RESET"
+  fi
+}
+
 # ---------- run ----------
 run_all() {
   check_unicode_clean
   check_frontmatter_version
+  check_skill_version_body
   check_compatible_with
   check_references_exist
+  check_relative_links
   check_tier_folders_populated
   check_tag_release_parity
 }
@@ -330,8 +422,10 @@ case "$SELECTED" in
   --all|all) run_all ;;
   unicode-clean) check_unicode_clean ;;
   frontmatter-version) check_frontmatter_version ;;
+  skill-version-body) check_skill_version_body ;;
   compatible-with) check_compatible_with ;;
   references-exist) check_references_exist ;;
+  relative-links-resolve) check_relative_links ;;
   tier-folders-populated) check_tier_folders_populated ;;
   tag-release-parity) check_tag_release_parity ;;
   *) printf "%sunknown check: %s%s\n" "$C_RED" "$SELECTED" "$C_RESET" >&2; usage >&2; exit 2 ;;

@@ -27,7 +27,7 @@ This is a documentation-only repository. The only "code" is `scripts/lint.sh` (B
 - **Em-dashes, en-dashes, arrows, box-drawing characters in load-bearing files** (SKILL.md, README.md, top CHANGELOG entry, MAINTAINING.md, MIGRATION.md, AGENTS.md, CONTRIBUTING.md, SECURITY.md). The lint enforces this. Use ASCII hyphen and `->` arrow form. Reference files inherited from the source ready-suite skills may contain em-dashes from their original authoring; do not introduce new ones in those files when editing.
 - **Emojis anywhere.** No emoji characters in any markdown, code, or commit message. Use words, plain ASCII markers (`-`, `*`, `[x]`, `[ ]`), or proper icons in any UI surface.
 - **Adding new failure-mode patterns the source ready-suite did not enforce.** arc-ready is faithful consolidation, not v2. New patterns dilute the moat the eleven-skill version produced.
-- **Collapsing references that have load-on-demand value.** Eighty references at ~5-15K each are correct; thirty references at ~25K each blow the agent attention budget.
+- **Collapsing references that have load-on-demand value.** Many small, single-topic references (most at ~5-15K) are correct; collapsing them into fewer large files blows the agent attention budget. The catalog is currently ~165 files. A few catalog-style references (for example `references/building/domain-considerations.md` at ~125K and `references/building/login-and-auth-pages.md` at ~78K) already run large; those are split candidates, not merge candidates.
 - **Skipping the lint or bypassing CI.** No `--no-verify` on commits.
 - **Editing `references/<tier>/*.md` to "improve" content lifted from source skills.** Faithful copies. Cross-reference updates are allowed; content rewrites are not.
 

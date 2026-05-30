@@ -314,7 +314,7 @@ When in doubt, describe the property the user or the business cares about, not t
 
 ## 13. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 1.8 (over-specification failure mode) and section 6 (downstream-consumer needs).
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 1.8 (over-specification failure mode) and section 6 (downstream-consumer needs).
 - Mike Cohn, *User Stories Applied* (2004) for Given-When-Then adaptation.
 - Karl Wiegers, Joy Beatty, *Software Requirements* (3rd ed., 2013) for traceability matrix patterns.
 - Gojko Adzic, *Specification by Example* (2011) for acceptance criteria derived from examples.

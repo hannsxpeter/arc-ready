@@ -73,7 +73,7 @@ Choose one. Do not run three analytics tools in parallel; attribution fragments.
 - **Launch plus ongoing product telemetry:** PostHog.
 - **GA4 as the enterprise default:** acceptable but the real-time view is less intuitive than Plausible's.
 
-Record the choice in `stack-ready/DECISION.md` or `.launch-ready/STATE.md`.
+Record the choice in `stack-ready/STACK.md` or `.launch-ready/STATE.md`.
 
 ## 3. The five-event conversion waterfall
 

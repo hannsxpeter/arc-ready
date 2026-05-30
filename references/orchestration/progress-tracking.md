@@ -85,7 +85,7 @@ Example:
 | 1 | prd-ready | done | .prd-ready/PRD.md | 2026-05-06T14:02:11Z | 2026-05-06T14:18:33Z | 1746540513 | |
 | 2 | architecture-ready | done | .architecture-ready/ARCH.md | 2026-05-06T14:21:00Z | 2026-05-06T14:39:14Z | 1746541654 | |
 | 3 | roadmap-ready | done | .roadmap-ready/ROADMAP.md | 2026-05-06T14:42:00Z | 2026-05-06T14:55:08Z | 1746542508 | |
-| 4 | stack-ready | done | .stack-ready/DECISION.md | 2026-05-06T14:57:30Z | 2026-05-06T15:08:42Z | 1746543122 | |
+| 4 | stack-ready | done | .stack-ready/STACK.md | 2026-05-06T14:57:30Z | 2026-05-06T15:08:42Z | 1746543122 | |
 | 5 | repo-ready | done | .repo-ready/STATE.md | 2026-05-06T15:11:00Z | 2026-05-06T15:34:22Z | 1746544462 | |
 | 6 | production-ready | in-flight | .production-ready/STATE.md | 2026-05-06T15:36:00Z | | | running tier 1 |
 | 7 | deploy-ready | pending | | | | | |
@@ -182,7 +182,7 @@ The default on a fresh kickoff is to import existing artifacts (option a). The u
 | prd-ready | `.prd-ready/PRD.md` |
 | architecture-ready | `.architecture-ready/ARCH.md` |
 | roadmap-ready | `.roadmap-ready/ROADMAP.md` |
-| stack-ready | `.stack-ready/DECISION.md` |
+| stack-ready | `.stack-ready/STACK.md` |
 | repo-ready | **Multi-file:** README.md at repo root AND any of (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `.editorconfig`, `.repo-ready/SECURITY.md`). repo-ready does not produce a single STATE.md. |
 | production-ready | `.production-ready/STATE.md` |
 | deploy-ready | `.deploy-ready/STATE.md` |
@@ -219,7 +219,7 @@ Arc completed on <ISO8601>. The project shipped with the following posture:
 | prd-ready | done | .prd-ready/PRD.md | 2026-05-06T14:18:33Z |
 | architecture-ready | done | .architecture-ready/ARCH.md | 2026-05-06T14:39:14Z |
 | roadmap-ready | done | .roadmap-ready/ROADMAP.md | 2026-05-06T14:55:08Z |
-| stack-ready | done | .stack-ready/DECISION.md | 2026-05-06T15:08:42Z |
+| stack-ready | done | .stack-ready/STACK.md | 2026-05-06T15:08:42Z |
 | repo-ready | done | .repo-ready/STATE.md | 2026-05-06T15:34:22Z |
 | production-ready | done | .production-ready/STATE.md | 2026-05-08T19:11:55Z |
 | deploy-ready | done | .deploy-ready/STATE.md | 2026-05-09T11:02:18Z |

@@ -155,7 +155,7 @@ At Step 0, check for and read:
 - `.observe-ready/alert-catalog.md` or equivalent (existing detections).
 - `.observe-ready/INDEPENDENCE.md` (status page / disclosure inbox out-of-band status).
 - `.repo-ready/SECURITY.md` (baseline disclosure contact).
-- `.stack-ready/DECISION.md` (chosen security tools).
+- `.stack-ready/STACK.md` (chosen security tools).
 - `.launch-ready/STATE.md` if a launch is in flight (the timing constraint).
 
 Absences are not failures. They are context. Record which artifacts were absent in the findings report's "Scope and Context" section so the reader understands what harden-ready inferred versus what it consumed from upstream.

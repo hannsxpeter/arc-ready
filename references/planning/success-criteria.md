@@ -235,7 +235,7 @@ If the success list is more than half shipping-checkboxes, it is not a success l
 
 ## 13. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 6.3 (stack-ready's scale-ceiling input) and 6.4 (production-ready's acceptance-criteria consumption).
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 6.3 (stack-ready's scale-ceiling input) and 6.4 (production-ready's acceptance-criteria consumption).
 - Gibson Biddle, *DHM: Delight in Hard-to-copy, Margin-enhancing ways* (2013-2016, Lenny's Newsletter interview).
 - Google, *HEART framework* (Kerry Rodden, Hilary Hutchinson, Xin Fu, CHI 2010).
 - Andrew Chen, *The Cold Start Problem* (2021), chapter on leading vs. lagging engagement metrics.

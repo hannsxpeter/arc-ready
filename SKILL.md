@@ -1,8 +1,8 @@
 ---
 name: arc-ready
 description: "Take a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, and adversarial hardening. The full arc, mechanically enforced, in one skill. Triggers on 'kickoff,' 'I have an idea,' 'walk me through idea to launch,' 'orchestrate the whole arc,' 'help me ship it end-to-end,' 'new project from scratch,' 'write a PRD,' 'product spec,' 'design the architecture,' 'system design,' 'monolith or microservices,' 'C4 diagram,' 'ADR,' 'build a roadmap,' 'milestone plan,' 'quarterly plan,' 'sequence the work,' 'Now-Next-Later,' 'Shape Up cycle,' 'what stack should I use,' 'pick a database,' 'which framework,' 'set up a repo,' 'add CI,' 'GitHub Actions,' 'configure linting,' 'add a README,' 'adopt Pillars,' 'task-routed agent memory,' 'dashboard,' 'admin panel,' 'internal tool,' 'back office,' 'CRUD app,' 'deploy this,' 'CI/CD pipeline,' 'promote to staging,' 'zero-downtime migration,' 'expand-contract,' 'rollback,' 'canary,' 'blue/green,' 'add monitoring,' 'define an SLO,' 'alerts when X,' 'write a runbook,' 'structured logging,' 'distributed tracing,' 'error budget policy,' 'launch my product,' 'build a landing page,' 'Product Hunt,' 'Show HN,' 'waitlist,' 'OG card,' 'launch-day SEO,' 'press kit,' 'adversarial review,' 'pen-test prep,' 'OWASP walkthrough,' 'SOC 2 / HIPAA / PCI-DSS / GDPR gap check,' 'responsible disclosure,' 'bug bounty,' 'post-incident hardening,' 'security review before launch.' Refuses scope leak (one tier doing another tier's work), AI-slop output (PRDs/architectures/roadmaps/launches that read the same across any product), hollow output (sections filled, decisions absent), feature-factory output (un-prioritized feature lists), paper SLOs (numbers with no error budget), paper canaries (deploy mechanics absent under canary labels), AI-slop landings (substitution-test failures), scanner-only security (Snyk-passed-but-front-door-exploitable), rubber-stamp orchestration (advancing without artifact verification), and ghost handoff (a tier consuming an absent upstream artifact). Greenfield projects use Mode A (full arc); existing-codebase work uses Mode B (specific tiers); audit work uses Mode C (retroactive review); multi-repo collections use Mode D (suite-layout patterns). Successor to and consolidation of the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready). Full trigger list and mode-routing table in README."
-version: 1.0.0
-updated: 2026-05-14
+version: 1.0.1
+updated: 2026-05-30
 changelog: CHANGELOG.md
 tier: arc
 upstream: []
@@ -105,7 +105,7 @@ Load `references/orchestration/progress-tracking.md`. On every arc-ready turn (n
 
 1. `Read .arc-ready/PROGRESS.md` if it exists. Cached conversation memory of "we already did step N" is not authoritative; disk is.
 2. `ls .<tier>-ready/` for every tier claimed complete. Verify each artifact path exists and is non-empty (not the unmodified template scaffold).
-3. Identify the next sub-step from disk, not conversation. If PROGRESS.md says Tier 1 done but `.stack-ready/DECISION.md` does not exist, the next sub-step is to run Step 1.4 (stack pick), not advance to Tier 2.
+3. Identify the next sub-step from disk, not conversation. If PROGRESS.md says Tier 1 done but `.stack-ready/STACK.md` does not exist, the next sub-step is to run Step 1.4 (stack pick), not advance to Tier 2.
 4. Record the resume verification with a timestamp and the disk-state hash (file mtime suffices).
 
 This protocol runs every turn. It is the only defense against phantom resume. Trust the file system; the conversation about state is unreliable across cache invalidations and compression-summary loss.
@@ -140,7 +140,7 @@ Load `references/orchestration/scope-fence.md` for the per-failure-mode routing 
 
 ### Tier 1: Planning
 
-The planning tier produces four artifacts in dependency order: `.prd-ready/PRD.md` (what), `.architecture-ready/ARCH.md` (how), `.roadmap-ready/ROADMAP.md` (when), `.stack-ready/DECISION.md` (with what tools). Each gates the next.
+The planning tier produces four artifacts in dependency order: `.prd-ready/PRD.md` (what), `.architecture-ready/ARCH.md` (how), `.roadmap-ready/ROADMAP.md` (when), `.stack-ready/STACK.md` (with what tools). Each gates the next.
 
 #### Step 1.1. PRD: write a PRD engineering can build from
 
@@ -219,11 +219,11 @@ Sub-steps:
 5. **Tradeoff narratives.** Per-bundle "what flips this" and scale ceiling. Load `references/planning/tradeoff-narratives.md`.
 6. **Migration paths.** What it takes to leave the bundle if scale or team or domain changes. Load `references/planning/migration-paths.md`.
 7. **ADR emission.** S-prefix ADRs for every load-bearing tech pick. Cross-link to architecture ADRs.
-8. **Decision artifact.** Ranked shortlist with scores, weighted rationale, named flip points. Output `.stack-ready/DECISION.md`.
+8. **Decision artifact.** Ranked shortlist with scores, weighted rationale, named flip points. Output `.stack-ready/STACK.md`.
 
 The worked example is `references/planning/EXAMPLE-STACK.md`.
 
-**Passes when:** every score has stated weights the user can override; every recommendation has a named flip point; the bundle pairs (frontend, backend, data, hosting, observability, etc.) compose without compatibility-violating overlap; the migration path is documented. The artifact at `.stack-ready/DECISION.md` is non-empty and the have-nots check returns clean.
+**Passes when:** every score has stated weights the user can override; every recommendation has a named flip point; the bundle pairs (frontend, backend, data, hosting, observability, etc.) compose without compatibility-violating overlap; the migration path is documented. The artifact at `.stack-ready/STACK.md` is non-empty and the have-nots check returns clean.
 
 ### Tier 2: Building
 
@@ -235,7 +235,7 @@ Load `references/building/questioning.md` for the pre-flight question protocol. 
 
 Sub-steps:
 
-1. **Stack detection.** Read existing files to detect the stack. If stack-ready ran (Step 1.4), consume `.stack-ready/DECISION.md`. If not, run a detection pass per the existing-codebase mode.
+1. **Stack detection.** Read existing files to detect the stack. If stack-ready ran (Step 1.4), consume `.stack-ready/STACK.md`. If not, run a detection pass per the existing-codebase mode.
 2. **Project profile.** Type (CLI, library, app, API, monorepo, etc.) x stage (prototype, beta, production) x audience (internal, OSS, commercial). Determines which files are scaffolded.
 3. **Repo structure.** Standard top-level layout for the chosen stack. Load `references/building/repo-structure.md`.
 4. **README.** Adapted to project type and audience. Load `references/building/readme-craft.md`.
@@ -569,7 +569,7 @@ A gate must pass before the next tier begins. Skips are recorded; silence is not
 | Tier 1.1 -> Tier 1.2 | `.prd-ready/PRD.md` exists, non-empty; three-label test passes on every sentence; substitution test passes on Problem and Target User; sign-off recorded; downstream handoff block filled. |
 | Tier 1.2 -> Tier 1.3 | `.architecture-ready/ARCH.md` exists, non-empty; every box/arrow/ADR has a flip point; substitution test passes on component names and rationales; trust boundaries mapped to specific files/configs; component dependency graph in `.architecture-ready/HANDOFF.md`. |
 | Tier 1.3 -> Tier 1.4 | `.roadmap-ready/ROADMAP.md` exists, non-empty; every row labeled (commitment, direction, open question); every commitment grounded in upstream artifact; parallel tracks <= team size; handoff section filled. |
-| Tier 1.4 -> Tier 2 | `.stack-ready/DECISION.md` exists, non-empty; weights stated; flip points named; pairing-rules check clean; migration paths documented; ADRs cross-linked to architecture. |
+| Tier 1.4 -> Tier 2 | `.stack-ready/STACK.md` exists, non-empty; weights stated; flip points named; pairing-rules check clean; migration paths documented; ADRs cross-linked to architecture. |
 | Tier 2.1 -> Tier 2.2 | Repo scaffolded for the detected stack and project profile; README is project-specific; CI runs and passes on a fresh clone; Pillars-compatible AGENTS.md and floor pillars exist or adoption is blocked with reason; no placeholder-in-production files. |
 | Tier 2.2 -> Tier 3 | Slice queue from roadmap is processed; every shipped slice is end-to-end-wired; no-scaffold-no-placeholder grep clean; `.production-ready/STATE.md` records progress. |
 | Tier 3.1 -> Tier 3.2 | Pipeline promotes the same artifact through environments; expand/contract calendars exist for data-forward changes; canary stop rules are concrete; rollback paths proven; secrets vault-injected. |
@@ -580,7 +580,7 @@ A gate must pass before the next tier begins. Skips are recorded; silence is not
 
 ## Reference files: load on demand
 
-The reference catalog is organized by tier. Load on demand per the workflow above. Eighty-plus files at ~5-15K each preserves the agent attention budget; loading them all at once is a known anti-pattern.
+The reference catalog is organized by tier. Load on demand per the workflow above. The catalog is large (160-plus files across five tiers); most references are 5-15K, but a handful of catalog-style files (for example `references/building/domain-considerations.md` and `references/building/login-and-auth-pages.md`) are considerably larger and remain split candidates. Load individual files on demand per the per-tier tables below; loading the whole catalog at once is a known anti-pattern.
 
 ### Orchestration
 
@@ -810,7 +810,7 @@ arc-ready produces the arc artifacts at canonical `.<tier>-ready/` paths. Downst
 | Product Requirements | `.prd-ready/PRD.md` (+ HANDOFF.md, AUDIT.md) | Tier 1.1 |
 | Architecture | `.architecture-ready/ARCH.md` (+ HANDOFF.md, adr/NNN-*.md) | Tier 1.2 |
 | Roadmap | `.roadmap-ready/ROADMAP.md` (+ HANDOFF.md, retrospectives/) | Tier 1.3 |
-| Stack decision | `.stack-ready/STACK.md` (or `DECISION.md`; `.stack-ready/STATE.md` for ongoing work) | Tier 1.4 |
+| Stack decision | `.stack-ready/STACK.md` (`.stack-ready/STATE.md` for ongoing work) | Tier 1.4 |
 | Repo scaffold report | `.repo-ready/SCAFFOLD.md` (or `AUDIT-REPORT.md` for Mode B audits), plus the scaffolded files at repo root | Tier 2.1 |
 | Production state | `.production-ready/STATE.md` | Tier 2.2 |
 | Deploy plan and state | `.deploy-ready/DEPLOY.md` (current ship), `.deploy-ready/PLAN.md` (next ship), `.deploy-ready/TOPOLOGY.md` (environments), `.deploy-ready/STATE.md` (resume state) | Tier 3.1 |
@@ -1213,9 +1213,14 @@ The gate is the default. Security-sensitive projects (healthcare, finance, regul
 The grep test:
 
 ```bash
+# Canonical FINDINGS.md finding shape: a `severity: <level>` line immediately
+# followed by a `status: <state>` line (matches the actionable-findings format
+# and the dogfood-smoke fixture). The gate scans FORWARD from each Critical to
+# read its status; using `-B 1` here would read the line above severity and the
+# gate would never fire.
 critical_count=$(grep -cE '^severity: critical$' .harden-ready/FINDINGS.md)
 if [ "$critical_count" -gt 0 ]; then
-  unresolved=$(grep -B 1 'severity: critical' .harden-ready/FINDINGS.md | grep -cE '^status: (open|wip)')
+  unresolved=$(grep -A 1 'severity: critical' .harden-ready/FINDINGS.md | grep -cE '^status: (open|wip)')
   accepted=$(grep -A 5 'risk-acceptance:' .arc-ready/PROGRESS.md | grep -c '^owner:')
   if [ "$unresolved" -gt 0 ] && [ "$accepted" -lt "$unresolved" ]; then
     echo "[block] launch held by critical-finding gate"
@@ -1267,7 +1272,9 @@ test -f .arc-ready/PROGRESS.md && cat .arc-ready/PROGRESS.md > /tmp/progress.txt
 
 # 2. Drift check: every "done" or "imported" tier must have its artifact on disk.
 for tier in prd architecture roadmap stack repo production deploy observe launch harden; do
-  if grep -qE "^- [0-9.]+ \(${tier^^}\): (done|imported)" /tmp/progress.txt 2>/dev/null \
+  tier_uc=$(printf '%s' "$tier" | tr 'a-z' 'A-Z')   # Bash 3.2 (macOS default) has no ${tier^^}
+  [ "$tier" = architecture ] && tier_uc=ARCH        # ledger label is (ARCH), dir is .architecture-ready
+  if grep -qE "^- [0-9.]+ \(${tier_uc}\): (done|imported)" /tmp/progress.txt 2>/dev/null \
      || grep -qiE "^- ${tier}-ready: (done|imported)" /tmp/progress.txt; then
     if [ ! -d ".${tier}-ready" ] || [ -z "$(ls .${tier}-ready 2>/dev/null)" ]; then
       echo "[drift] PROGRESS.md says ${tier} done/imported but .${tier}-ready/ is missing or empty"
@@ -1333,7 +1340,7 @@ Each tier's `.<tier>-ready/STATE.md` is the durable record of where the tier is 
 ```markdown
 # arc-ready PROGRESS
 
-## Skill version: 0.1.1
+## Skill version: 1.0.1
 ## Last update: <ISO-8601 timestamp>
 ## Mode: A | B | C | D
 ## Harness: claude-code | codex | cursor | windsurf | antigravity | pi | openclaw | generic

@@ -36,7 +36,7 @@ Pillars is a downstream memory layer. The arc-ready artifact remains authoritati
 |---|---|---|
 | `agents/context.md` | `.prd-ready/PRD.md` | Always when adopting Pillars. |
 | `agents/repo.md` | Tier 2.1 repo scaffold and README | Always when adopting Pillars. |
-| `agents/stack.md` | `.stack-ready/DECISION.md` | When stack-ready ran or stack was detected. |
+| `agents/stack.md` | `.stack-ready/STACK.md` | When stack-ready ran or stack was detected. |
 | `agents/arch.md` | `.architecture-ready/ARCH.md` and HANDOFF | When architecture-ready ran. |
 | `agents/quality.md` | CI, lint, test, formatter config | When Tier 2.1 configures quality tooling. |
 | `agents/deploy.md` | `.deploy-ready/STATE.md` or deploy workflow files | When deploy-ready ran or deploy workflows exist. |
@@ -77,7 +77,7 @@ This project was shaped via arc-ready. For source-of-truth planning and launch d
 | PRD | `.prd-ready/PRD.md` |
 | Architecture | `.architecture-ready/ARCH.md` |
 | Roadmap | `.roadmap-ready/ROADMAP.md` |
-| Stack | `.stack-ready/DECISION.md` |
+| Stack | `.stack-ready/STACK.md` |
 | Progress ledger | `.arc-ready/PROGRESS.md` |
 ```
 

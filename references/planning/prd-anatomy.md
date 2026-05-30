@@ -500,7 +500,7 @@ The test: hand the PRD to an engineer or designer who was not in any of the plan
 
 ## 22. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 3: canonical PRD literature.
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 3: canonical PRD literature.
 - Amazon PR-FAQ: Colin Bryar and Bill Carr, *Working Backwards* (2021).
 - Atlassian PRD template: https://www.atlassian.com/software/confluence/templates/product-requirements
 - HashiCorp PRD (markdown, problem-first): https://www.hashicorp.com/en/how-hashicorp-works/articles/prd-template

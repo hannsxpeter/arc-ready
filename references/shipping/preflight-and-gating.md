@@ -101,7 +101,7 @@ If the user says "deploy this to prod" and nothing else, pick these defaults, st
 | What is shipping | The diff from the last successful prod ship to HEAD; summarized. |
 | Build provenance | Mode B: same artifact promoted from staging. If the pipeline rebuilds, flag it. |
 | Target environments | The path recorded in `.deploy-ready/TOPOLOGY.md`. If none, `staging -> prod` as a minimum. |
-| Topology | Quoted from `.deploy-ready/TOPOLOGY.md` or `.stack-ready/DECISION.md`. |
+| Topology | Quoted from `.deploy-ready/TOPOLOGY.md` or `.stack-ready/STACK.md`. |
 | Data-layer involvement | Inspected from the diff. Any migration file present means data-forward until proven otherwise. |
 | Stateful side effects | None, unless the diff touches email, payment, webhook, or third-party API code. Flag any such path. |
 | Blast radius | All prod users of the affected surface. Cannot be smaller by assumption. |

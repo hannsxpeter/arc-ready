@@ -234,8 +234,8 @@ The sum of the above: specificity at every layer. The specific user, the specifi
 
 ## 9. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 3: canonical PRD literature (Cagan, Horowitz, Lenny, Intercom, Shape Up, Amazon Working Backwards, Biddle, Reforge, Atlassian, HashiCorp, Fishman, Aakash).
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 1.7: the solution-in-search-of-a-problem failure mode with citations.
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 3: canonical PRD literature (Cagan, Horowitz, Lenny, Intercom, Shape Up, Amazon Working Backwards, Biddle, Reforge, Atlassian, HashiCorp, Fishman, Aakash).
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 1.7: the solution-in-search-of-a-problem failure mode with citations.
 - April Dunford, *Obviously Awesome* (2019), chapter 3: competitive-alternative framing.
 - Intercom, *Intercom on Product: Start with the problem* (2017).
 - Shape Up, chapter 6, *Write the Pitch* (Singer, 2019).

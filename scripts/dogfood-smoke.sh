@@ -87,7 +87,9 @@ EOF
 printf "%sTest 1: drift-detection (happy path; no drift)%s\n" "$C_BOLD" "$C_RESET"
 drift_count=0
 for tier in prd architecture roadmap stack repo production deploy observe launch harden; do
-  if grep -qE "^- [0-9.]+ \(${tier})*\): (done|imported)" .arc-ready/PROGRESS.md 2>/dev/null; then
+  upper=$(echo "$tier" | tr 'a-z' 'A-Z')
+  [ "$tier" = architecture ] && upper=ARCH   # ledger label is (ARCH), dir is .architecture-ready
+  if grep -qE "^- [0-9.]+ \(${upper}.*\): (done|imported)" .arc-ready/PROGRESS.md 2>/dev/null; then
     if [ ! -d ".${tier}-ready" ] || [ -z "$(ls .${tier}-ready 2>/dev/null)" ]; then
       drift_count=$((drift_count + 1))
     fi
@@ -102,6 +104,7 @@ sed -i.bak 's|^- 1.3 (ROADMAP): pending|- 1.3 (ROADMAP): done|' .arc-ready/PROGR
 detected=0
 for tier in prd architecture roadmap stack repo production deploy observe launch harden; do
   upper=$(echo "$tier" | tr 'a-z' 'A-Z')
+  [ "$tier" = architecture ] && upper=ARCH   # ledger label is (ARCH), dir is .architecture-ready
   if grep -qE "^- [0-9.]+ \(${upper}.*\): (done|imported)" .arc-ready/PROGRESS.md 2>/dev/null; then
     if [ ! -d ".${tier}-ready" ] || [ -z "$(ls .${tier}-ready 2>/dev/null)" ]; then
       detected=$((detected + 1))

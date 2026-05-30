@@ -237,7 +237,7 @@ Occasionally a signer attests to something that turns out to be wrong (eng lead 
 
 ## 13. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 7.4 (sign-off protocols, signers per role).
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 7.4 (sign-off protocols, signers per role).
 - Ben Horowitz, *Good Product Manager, Bad Product Manager* (1998) on broadcast discipline.
 - Andy Grove, *High Output Management* (1983) on who-signs-off-on-what.
 - Perforce, *How to Write a PRD* on sign-off rosters.

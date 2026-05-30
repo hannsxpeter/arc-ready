@@ -101,9 +101,11 @@ If a release is created without a tag (rare), the lint surfaces it; create the t
 |---|---|
 | `unicode-clean` | Em-dash, en-dash, arrow, box-drawing absent from load-bearing files (SKILL.md, README.md, AGENTS.md, CLAUDE.md, SECURITY.md, CONTRIBUTING.md, MAINTAINING.md, MIGRATION.md, top CHANGELOG entry). Inherited reference files are exempt. |
 | `frontmatter-version` | SKILL.md `version:` field matches the top CHANGELOG entry version. |
+| `skill-version-body` | Every `## Skill version:` line in the SKILL.md body matches the frontmatter `version:`. Catches stale template version strings. |
 | `tag-release-parity` | Every git tag has a matching GitHub Release. Requires `gh` authenticated. Runs only in CI or when `gh` is available. |
 | `compatible-with` | SKILL.md `compatible_with:` frontmatter contains the standards-level harness names (claude-code, codex, cursor, windsurf, pi, openclaw, any-agentskills-compatible-harness). antigravity is allowed but not required. |
 | `references-exist` | Every reference path mentioned in SKILL.md (`references/<tier>/<file>.md`) exists in the file system. Detects broken links from SKILL.md to references. |
+| `relative-links-resolve` | Every markdown link to a real reference file inside `references/` resolves from the linking file's directory. Catches cross-tier links written with the wrong relative path. |
 | `tier-folders-populated` | `references/{orchestration,planning,building,shipping,shared}` each have at least one file. Detects accidental directory deletions. |
 
 `bash scripts/lint.sh --help` lists individual checks.

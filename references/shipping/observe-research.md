@@ -12,7 +12,7 @@ Five modes drive the rest of the session. Pick one; every step after this adjust
 
 - List the services the app is running (from `.deploy-ready/TOPOLOGY.md` if present).
 - List the user journeys the app serves (from `.production-ready/STATE.md` if present, or name them from the running surface).
-- Confirm the observability tool family in use or being chosen. If `.stack-ready/DECISION.md` names one, read it.
+- Confirm the observability tool family in use or being chosen. If `.stack-ready/STACK.md` names one, read it.
 - Declare the starting tier: Tier 0 (no observability) or Tier 1 partial (some logging exists).
 
 **Next step:** proceed to Step 1 (service inventory) and Step 2 (logging baseline). Do not jump to SLOs until the signal plumbing exists to measure against.

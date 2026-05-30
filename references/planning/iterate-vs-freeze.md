@@ -305,7 +305,7 @@ The difference compounds over weeks. A well-maintained living PRD stays useful f
 
 ## 13. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 7 (lifecycle patterns).
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 7 (lifecycle patterns).
 - Ben Horowitz / David Weiden, *Good Product Manager, Bad Product Manager* (1998).
 - Ryan Singer, *Shape Up* (2019), on appetite and fixed-time-variable-scope as change-control discipline.
 - Reforge, *Evolving Product Requirements Documents* (2021), three-stage evolution model.

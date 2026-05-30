@@ -282,7 +282,7 @@ If a signer cannot attest because an open question in their territory is unresol
 
 ## 11. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 1.4 (assumption-soup failure mode).
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 1.4 (assumption-soup failure mode).
 - Ben Horowitz, *Good Product Manager, Bad Product Manager* (1998) on naming risks and owners.
 - Ed Catmull, *Creativity, Inc.* (2014) on the Braintrust's role in surfacing project risks.
 - Atul Gawande, *The Checklist Manifesto* (2009) for the discipline of structured risk lists vs. narrative.
