@@ -1,7 +1,7 @@
 ---
 name: arc-ready
 description: "Take a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, and adversarial hardening. The full arc, mechanically enforced, in one skill. Triggers on 'kickoff,' 'I have an idea,' 'walk me through idea to launch,' 'orchestrate the whole arc,' 'help me ship it end-to-end,' 'new project from scratch,' 'write a PRD,' 'product spec,' 'design the architecture,' 'system design,' 'monolith or microservices,' 'C4 diagram,' 'ADR,' 'build a roadmap,' 'milestone plan,' 'quarterly plan,' 'sequence the work,' 'Now-Next-Later,' 'Shape Up cycle,' 'what stack should I use,' 'pick a database,' 'which framework,' 'set up a repo,' 'add CI,' 'GitHub Actions,' 'configure linting,' 'add a README,' 'adopt Pillars,' 'task-routed agent memory,' 'dashboard,' 'admin panel,' 'internal tool,' 'back office,' 'CRUD app,' 'deploy this,' 'CI/CD pipeline,' 'promote to staging,' 'zero-downtime migration,' 'expand-contract,' 'rollback,' 'canary,' 'blue/green,' 'add monitoring,' 'define an SLO,' 'alerts when X,' 'write a runbook,' 'structured logging,' 'distributed tracing,' 'error budget policy,' 'launch my product,' 'build a landing page,' 'Product Hunt,' 'Show HN,' 'waitlist,' 'OG card,' 'launch-day SEO,' 'press kit,' 'adversarial review,' 'pen-test prep,' 'OWASP walkthrough,' 'SOC 2 / HIPAA / PCI-DSS / GDPR gap check,' 'responsible disclosure,' 'bug bounty,' 'post-incident hardening,' 'security review before launch.' Refuses scope leak (one tier doing another tier's work), AI-slop output (PRDs/architectures/roadmaps/launches that read the same across any product), hollow output (sections filled, decisions absent), feature-factory output (un-prioritized feature lists), paper SLOs (numbers with no error budget), paper canaries (deploy mechanics absent under canary labels), AI-slop landings (substitution-test failures), scanner-only security (Snyk-passed-but-front-door-exploitable), rubber-stamp orchestration (advancing without artifact verification), and ghost handoff (a tier consuming an absent upstream artifact). Greenfield projects use Mode A (full arc); existing-codebase work uses Mode B (specific tiers); audit work uses Mode C (retroactive review); multi-repo collections use Mode D (suite-layout patterns). Successor to and consolidation of the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready). Full trigger list and mode-routing table in README."
-version: 1.0.1
+version: 1.0.2
 updated: 2026-05-30
 changelog: CHANGELOG.md
 tier: arc
@@ -294,7 +294,7 @@ Sub-steps:
 20. **Expansion and scalability.** Multi-tenant, multi-region, internationalization-ready. Load `references/building/expansion-and-scalability.md`.
 21. **File management and uploads.** Upload UI, virus scanning, signed URLs, retention. Load `references/building/file-management-and-uploads.md`.
 22. **Internationalization.** i18n framework, locale negotiation, RTL support. Load `references/building/internationalization.md`.
-23. **Login and auth pages.** Sign-up, sign-in, password reset, magic link, MFA, SSO. Load `references/building/login-and-auth-pages.md`.
+23. **Login and auth pages.** Sign-up, sign-in, password reset, magic link, MFA, SSO. Load `references/building/login-pages.md` (sign-in surfaces) and `references/building/registration-pages.md` (sign-up surfaces).
 24. **Marketing and landing pages.** Pre-product marketing surfaces inside the app shell. Load `references/building/marketing-and-landing-pages.md`. (Standalone marketing-launch surfaces are Tier 3 launch's job; this is the in-app subset.)
 25. **Migration and data import.** CSV/JSON import, pipeline-driven migration, dry-run mode. Load `references/building/migration-and-data-import.md`.
 26. **Notifications and email.** In-app notifications, transactional email, digest patterns. Load `references/building/notifications-and-email.md` and `references/building/email-template-design.md`.
@@ -580,7 +580,7 @@ A gate must pass before the next tier begins. Skips are recorded; silence is not
 
 ## Reference files: load on demand
 
-The reference catalog is organized by tier. Load on demand per the workflow above. The catalog is large (160-plus files across five tiers); most references are 5-15K, but a handful of catalog-style files (for example `references/building/domain-considerations.md` and `references/building/login-and-auth-pages.md`) are considerably larger and remain split candidates. Load individual files on demand per the per-tier tables below; loading the whole catalog at once is a known anti-pattern.
+The reference catalog is organized by tier. Load on demand per the workflow above. The catalog is large (160-plus files across five tiers); most references are 5-15K, but a catalog-style file like `references/building/domain-considerations.md` is considerably larger and remains a split candidate. Load individual files on demand per the per-tier tables below; loading the whole catalog at once is a known anti-pattern.
 
 ### Orchestration
 
@@ -699,7 +699,8 @@ The reference catalog is organized by tier. Load on demand per the workflow abov
 | `references/building/expansion-and-scalability.md` | Step 2.2 sub-step 20. |
 | `references/building/file-management-and-uploads.md` | Step 2.2 sub-step 21. |
 | `references/building/internationalization.md` | Step 2.2 sub-step 22. |
-| `references/building/login-and-auth-pages.md` | Step 2.2 sub-step 23. |
+| `references/building/login-pages.md` | Step 2.2 sub-step 23 (login / sign-in surfaces). |
+| `references/building/registration-pages.md` | Step 2.2 sub-step 23 (registration / sign-up surfaces). |
 | `references/building/marketing-and-landing-pages.md` | Step 2.2 sub-step 24. |
 | `references/building/migration-and-data-import.md` | Step 2.2 sub-step 25. |
 | `references/building/notifications-and-email.md` | Step 2.2 sub-step 26. |
@@ -1340,7 +1341,7 @@ Each tier's `.<tier>-ready/STATE.md` is the durable record of where the tier is 
 ```markdown
 # arc-ready PROGRESS
 
-## Skill version: 1.0.1
+## Skill version: 1.0.2
 ## Last update: <ISO-8601 timestamp>
 ## Mode: A | B | C | D
 ## Harness: claude-code | codex | cursor | windsurf | antigravity | pi | openclaw | generic
