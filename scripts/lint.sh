@@ -24,6 +24,9 @@
 #   relative-links-resolve every markdown link to a real reference file inside
 #                          references/ resolves from the linking file's directory
 #                          (guards cross-tier links written with the wrong path).
+#   reference-citations    every `references/<basename>.md` inline-code/prose
+#                          citation names a real reference (basenames are unique;
+#                          this is the dominant in-repo cross-reference form).
 #   tier-folders-populated `references/{orchestration,planning,building,shipping,
 #                          shared}` each have at least one .md file.
 #   tag-release-parity     every git tag has a matching GitHub Release.
@@ -80,6 +83,7 @@ Checks:
                          standards-level harness names
   references-exist       every references/<tier>/*.md path in SKILL.md exists
   relative-links-resolve reference cross-links resolve from their own dir
+  reference-citations    references/<basename>.md citations name a real file
   tier-folders-populated all five tier folders have at least one file
   tag-release-parity     every git tag has a matching GitHub Release
                          (CI-only by default; requires gh auth)
@@ -406,6 +410,40 @@ check_relative_links() {
   fi
 }
 
+# ---------- check: reference-citations ----------
+# Every inline-code / prose citation of the form `references/<basename>.md`
+# inside references/ must name a real reference file. Reference basenames are
+# globally unique, so this tier-agnostic citation form is the dominant in-repo
+# convention; this check guards it against a rename or typo that would silently
+# break ~200 citations. (Clickable [..](..) links are handled by
+# relative-links-resolve instead.)
+check_reference_citations() {
+  printf "%s== reference-citations ==%s\n" "$C_BOLD" "$C_RESET"
+  cd "$REPO_DIR"
+
+  local refnames="/tmp/arc-ready-refnames2.txt"
+  find references -name '*.md' -exec basename {} \; | sort -u > "$refnames"
+
+  local local_fail=0 b
+  for b in $(grep -rhoE 'references/[a-z][a-z0-9-]+\.md' references/ 2>/dev/null | sed 's|references/||' | sort -u); do
+    if grep -qx "$b" "$refnames"; then
+      [ "$VERBOSE" = "1" ] && printf "  %s[ok] references/%s%s\n" "$C_GREEN" "$b" "$C_RESET"
+    else
+      printf "  %s[fail] cited 'references/%s' but no such reference exists:%s\n" "$C_RED" "$b" "$C_RESET"
+      grep -rn "references/$b" references/ | head -5 | sed 's/^/      /'
+      local_fail=1
+    fi
+  done
+  rm -f "$refnames"
+
+  if [ "$local_fail" = "1" ]; then
+    mark_fail
+    printf "  %s[reference-citations] FAILED%s\n\n" "$C_RED" "$C_RESET"
+  else
+    printf "  %s[reference-citations] passed%s\n\n" "$C_GREEN" "$C_RESET"
+  fi
+}
+
 # ---------- run ----------
 run_all() {
   check_unicode_clean
@@ -414,6 +452,7 @@ run_all() {
   check_compatible_with
   check_references_exist
   check_relative_links
+  check_reference_citations
   check_tier_folders_populated
   check_tag_release_parity
 }
@@ -426,6 +465,7 @@ case "$SELECTED" in
   compatible-with) check_compatible_with ;;
   references-exist) check_references_exist ;;
   relative-links-resolve) check_relative_links ;;
+  reference-citations) check_reference_citations ;;
   tier-folders-populated) check_tier_folders_populated ;;
   tag-release-parity) check_tag_release_parity ;;
   *) printf "%sunknown check: %s%s\n" "$C_RED" "$SELECTED" "$C_RESET" >&2; usage >&2; exit 2 ;;

@@ -27,7 +27,7 @@ This is a documentation-only repository. The only "code" is `scripts/lint.sh` (B
 - **Em-dashes, en-dashes, arrows, box-drawing characters in load-bearing files** (SKILL.md, README.md, top CHANGELOG entry, MAINTAINING.md, MIGRATION.md, AGENTS.md, CONTRIBUTING.md, SECURITY.md). The lint enforces this. Use ASCII hyphen and `->` arrow form. Reference files inherited from the source ready-suite skills may contain em-dashes from their original authoring; do not introduce new ones in those files when editing.
 - **Emojis anywhere.** No emoji characters in any markdown, code, or commit message. Use words, plain ASCII markers (`-`, `*`, `[x]`, `[ ]`), or proper icons in any UI surface.
 - **Adding new failure-mode patterns the source ready-suite did not enforce.** arc-ready is faithful consolidation, not v2. New patterns dilute the moat the eleven-skill version produced.
-- **Collapsing references that have load-on-demand value.** Many small, single-topic references (most at ~5-15K) are correct; collapsing them into fewer large files blows the agent attention budget. The catalog is currently ~165 files. A few catalog-style references (for example `references/building/domain-considerations.md` at ~125K and `references/building/login-and-auth-pages.md` at ~78K) already run large; those are split candidates, not merge candidates.
+- **Collapsing references that have load-on-demand value.** Many small, single-topic references (most at ~5-15K) are correct; collapsing them into fewer large files blows the agent attention budget. The catalog is currently ~167 files. A catalog-style reference like `references/building/domain-considerations.md` (~125K) runs large and is a split candidate; do not merge small single-topic references to reduce the count.
 - **Skipping the lint or bypassing CI.** No `--no-verify` on commits.
 - **Editing `references/<tier>/*.md` to "improve" content lifted from source skills.** Faithful copies. Cross-reference updates are allowed; content rewrites are not.
 
@@ -41,7 +41,7 @@ See `MAINTAINING.md` for the release rituals.
 
 ### Cross-references
 
-- `references/<tier>/foo.md` files use **relative paths** to other references: same-tier as `bar.md`, cross-tier as `../<other-tier>/bar.md`.
+- `references/<tier>/foo.md` files cite sibling references two ways, both lint-guarded. Clickable `[text](relative.md)` markdown links must resolve from the linking file's own directory (checked by `relative-links-resolve`). Inline-code and prose citations use the tier-agnostic form `references/<basename>.md`: reference basenames are globally unique, so the tier qualifier is omitted and a reference can move tiers without breaking citations, and the basename must name a real reference (checked by `reference-citations`). The `references/<basename>.md` form is the dominant in-repo convention (~200 citations); do not mass-rewrite it into per-file relative paths.
 - `SKILL.md` references use the full path from repo root: `references/<tier>/foo.md`.
 - Artifact paths (`.prd-ready/PRD.md`, etc.) are stable; do not rewrite these into arc-ready paths. They are the contract with downstream consumers.
 

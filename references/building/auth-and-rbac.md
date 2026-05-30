@@ -4,7 +4,7 @@ Authentication answers "who are you." Authorization answers "what are you allowe
 
 The single most important principle: **enforce on the server, reflect on the client.** The client never decides whether something is allowed — the client only decides whether to *show* the option. The server is the source of truth for every permission decision. Treat the client as untrusted, because it is.
 
-**Canonical scope:** authentication mechanisms (passkeys, magic links, OAuth, sessions), RBAC role design, multi-tenant auth, impersonation. **See also:** `login-and-auth-pages.md` for login and signup UX, `security-deep-dive.md` for session hardening and incident response.
+**Canonical scope:** authentication mechanisms (passkeys, magic links, OAuth, sessions), RBAC role design, multi-tenant auth, impersonation. **See also:** `login-pages.md` and `registration-pages.md` for login and signup UX, `security-deep-dive.md` for session hardening and incident response.
 
 ## Quick decision: which auth method?
 

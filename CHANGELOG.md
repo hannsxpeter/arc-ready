@@ -4,6 +4,29 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [1.0.2] - 2026-05-30
+
+Patch release. Resolves the two items v1.0.1 deferred and adds a third lint guard. No discipline change, no new failure-mode patterns, no artifact-path contract change.
+
+### Added
+
+- `references/building/login-pages.md` and `references/building/registration-pages.md`: the 78K `login-and-auth-pages.md` split at its existing H1 boundary into its two constituent documents (login / sign-in surfaces; registration / sign-up surfaces) so an agent loads only the relevant half. Cite sites updated in `SKILL.md` (sub-step 23 and the load-on-demand table) and `references/building/auth-and-rbac.md`; the two intra-document back-references now name the sibling file. `domain-considerations.md` (125K) is intentionally left whole (it is a grep-friendly per-domain lookup catalog).
+- `scripts/lint.sh` gains a `reference-citations` check: every `references/<basename>.md` inline-code or prose citation inside `references/` must name a real reference. Reference basenames are globally unique, which makes this tier-agnostic form the dominant in-repo convention (~200 citations); the check guards it against a rename or typo.
+
+### Changed
+
+- `AGENTS.md` cross-references section now documents the actual two-form citation convention (file-relative `[..](..)` links guarded by `relative-links-resolve`; tier-agnostic `references/<basename>.md` citations guarded by `reference-citations`) instead of a `../tier/bar.md` convention the corpus used exactly once.
+- Reference-budget guidance (`AGENTS.md`, `SKILL.md`) updated for the new catalog size (167 files) and to name `domain-considerations.md` as the remaining split candidate.
+
+### Notes
+
+- The em-dashes in the inherited `building/` references (53 files) are intentionally left per the faithful-copy rule; the lint continues to exempt reference files from `unicode-clean`.
+- `references/building/security-setup.md`'s apparent duplicate `## Reporting a vulnerability` heading was confirmed a false positive (the second is inside a fenced code example), so no change was made.
+
+### Why a patch, not a minor
+
+Structural and tooling consistency only. The file split is a faithful bisection at an existing document boundary (no prose rewritten beyond two back-reference pointers); the lint addition guards an existing convention. No new content, no contract change.
+
 ## [1.0.1] - 2026-05-30
 
 Patch release. Contract-consistency and mechanical-correctness fixes across the orchestrator, the dogfood smoke test, the reference cross-links, and a repo-wide documentation-drift audit. No discipline change, no new failure-mode patterns, no artifact-path contract change.

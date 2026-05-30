@@ -1,8 +1,8 @@
 # arc-ready
 
 [![lint](https://github.com/aihxp/arc-ready/actions/workflows/lint.yml/badge.svg)](https://github.com/aihxp/arc-ready/actions/workflows/lint.yml)
-[![release](https://img.shields.io/badge/release-v1.0.1-blue)](https://github.com/aihxp/arc-ready/releases/tag/v1.0.1)
-[![version](https://img.shields.io/badge/version-1.0.1-blue)](CHANGELOG.md)
+[![release](https://img.shields.io/badge/release-v1.0.2-blue)](https://github.com/aihxp/arc-ready/releases/tag/v1.0.2)
+[![version](https://img.shields.io/badge/version-1.0.2-blue)](CHANGELOG.md)
 [![agent skills](https://img.shields.io/badge/Agent%20Skills-compatible-2f6fed)](SKILL.md)
 [![aihxp/pillars](https://img.shields.io/badge/aihxp%2Fpillars-standard-0f766e)](https://github.com/aihxp/pillars)
 [![smoke](https://img.shields.io/badge/smoke-9%2F9-brightgreen)](scripts/dogfood-smoke.sh)
@@ -144,7 +144,7 @@ The intended 1.0 contract is stable and intentionally small:
 
 ## Status
 
-arc-ready is at v1.0.1. The initial consolidation from aihxp/ready-suite is complete, Tier 2.1 standardizes on Pillars for task-routed agent memory, and the 1.0 stability promise is documented above. Every named failure mode from the eleven source skills is preserved in the consolidated reference catalog under `references/<tier>/<skill>-antipatterns.md`.
+arc-ready is at v1.0.2. The initial consolidation from aihxp/ready-suite is complete, Tier 2.1 standardizes on Pillars for task-routed agent memory, and the 1.0 stability promise is documented above. Every named failure mode from the eleven source skills is preserved in the consolidated reference catalog under `references/<tier>/<skill>-antipatterns.md`.
 
 The eleven-skill suite at [aihxp/ready-suite](https://github.com/aihxp/ready-suite) remains available and supported for users who prefer the multi-repo footprint.
 
