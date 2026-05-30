@@ -202,7 +202,7 @@ When the anti-pairing rules bend. Note these explicitly when they apply.
 
 ### Migration in progress
 
-A codebase mid-migration legitimately has both (old + new) tools. This is not an architecture; it is a temporary state. The `DECISION.md` must declare the cutover plan and date.
+A codebase mid-migration legitimately has both (old + new) tools. This is not an architecture; it is a temporary state. The `STACK.md` must declare the cutover plan and date.
 
 ### Specialist secondary tool
 

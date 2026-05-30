@@ -56,7 +56,7 @@ Ready to feed stack-ready's Step 1 pre-flight.
 
 **What stack-ready does with this.** stack-ready reads cadence, horizon, and time-to-ship to set its "Time-to-ship" pre-flight answer. The stack-level commitments feed the "Scale ceiling" and "Regulatory constraints" constraints for candidate evaluation.
 
-If stack-ready has already run, this sub-section simply notes "stack-ready has run; DECISION.md is at `[path]`." The roadmap consumes downstream of stack-ready in that case; no new inputs are required.
+If stack-ready has already run, this sub-section simply notes "stack-ready has run; STACK.md is at `[path]`." The roadmap consumes downstream of stack-ready in that case; no new inputs are required.
 
 ## 3. To `production-ready`
 
@@ -229,7 +229,7 @@ For a trivial project, the HANDOFF.md is short but complete:
 **Project:** echo-service example (traced echo service)
 
 ## To stack-ready
-Stack-ready has run at v1.1.5; DECISION.md documented. No new inputs needed.
+Stack-ready has run at v1.1.5; STACK.md documented. No new inputs needed.
 
 ## To production-ready
 Slice queue (single-component, solo team):

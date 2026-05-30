@@ -96,7 +96,7 @@ Mitigations: archive the prior PRD as "pivoted," link forward; new Brief starts 
 
 ### Mode F block
 
-Rescue. Engineering started building and stopped because the PRD is underspecified. Diagnose the dominant cause first; the research section [research pass section 1, Failure modes](RESEARCH-2026-04.md#1-ai-generated-prd-failure-modes) enumerates the six primary dominant causes:
+Rescue. Engineering started building and stopped because the PRD is underspecified. Diagnose the dominant cause first; the research section [research pass section 1, Failure modes](../shared/RESEARCH-2026-04.md#1-ai-generated-prd-failure-modes) enumerates the six primary dominant causes:
 
 | Dominant cause | Symptom |
 |---|---|

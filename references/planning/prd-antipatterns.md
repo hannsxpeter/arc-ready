@@ -312,7 +312,7 @@ When classifying the dominant failure, look for the cluster; the fix addresses t
 
 ## 8. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 1 (ten failure modes) and section 2 (named-term survey).
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 1 (ten failure modes) and section 2 (named-term survey).
 - Aakash Gupta, *Modern PRD Guide* (2024, news.aakashg.com).
 - Tom Leung, *I tested 5 AI tools to write a PRD* (Fireside PM, 2024).
 - Chris Warren, *Product Requirements Documents: A Perspective from an Engineering Leader* (Medium, 2023).

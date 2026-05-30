@@ -35,7 +35,7 @@ Anti-recommendation:
 - **Over 1,000 subs with revenue already:** Kit or Beehiiv.
 - **Self-host requirement:** Plunk.
 
-Record the choice in `stack-ready/DECISION.md` if stack-ready is in use; otherwise in `.launch-ready/STATE.md`.
+Record the choice in `stack-ready/STACK.md` if stack-ready is in use; otherwise in `.launch-ready/STATE.md`.
 
 ## 2. Double opt-in
 

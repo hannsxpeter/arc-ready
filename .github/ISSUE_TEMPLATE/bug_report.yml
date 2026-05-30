@@ -13,7 +13,7 @@ body:
     attributes:
       label: arc-ready version
       description: The output of `grep '^version:' SKILL.md`. Required.
-      placeholder: "0.1.5"
+      placeholder: "1.0.1"
     validations:
       required: true
   - type: dropdown

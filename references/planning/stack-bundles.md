@@ -1037,4 +1037,4 @@ For PHP teams shipping SaaS with Livewire (62%) or Inertia (48%) per State of La
 
 ## Using a bundle
 
-The bundle is a starting shortlist, not a verdict. In Step 5, score each candidate against the pre-flight answers. In Step 6, name the flip point for the bundle the user is leaning toward. In Step 8, the chosen bundle plus its rationale becomes `.stack-ready/DECISION.md`.
+The bundle is a starting shortlist, not a verdict. In Step 5, score each candidate against the pre-flight answers. In Step 6, name the flip point for the bundle the user is leaning toward. In Step 8, the chosen bundle plus its rationale becomes `.stack-ready/STACK.md`.

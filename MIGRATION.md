@@ -102,7 +102,7 @@ Each former skill's content is preserved in arc-ready under the corresponding ti
 | `ready-suite/ORCHESTRATORS.md` | `references/shared/ORCHESTRATORS.md` |
 | `ready-suite/MAINTAINING.md` | `MAINTAINING.md` (rewritten for single-repo rituals; the v2.5.12 precedent recovery story and multi-repo coordinated-patch matrix are removed). |
 | `ready-suite/scripts/lint.sh` | `scripts/lint.sh` (rewritten for single-repo checks; suite-md-sync removed; trigger-overlap removed). |
-| `ready-suite/references/TRIGGER-DISAMBIGUATION.md` | Folded into `SKILL.md` mode-detection and tier-dispatch sections. |
+| `ready-suite/references/TRIGGER-DISAMBIGUATION.md` | Folded into `SKILL.md` mode-detection and tier-dispatch sections; retained as `references/orchestration/trigger-disambiguation.md`. |
 | `ready-suite/install.sh`, `uninstall.sh` | Not needed. Standard Agent Skills install applies. |
 
 ## Artifact contract: unchanged
@@ -112,11 +112,11 @@ The most important property of the migration is that artifact paths are identica
 - `.prd-ready/PRD.md`
 - `.architecture-ready/ARCH.md`
 - `.roadmap-ready/ROADMAP.md`
-- `.stack-ready/DECISION.md`
-- `.repo-ready/AUDIT-REPORT.md`
+- `.stack-ready/STACK.md`
+- `.repo-ready/SCAFFOLD.md` (or `.repo-ready/AUDIT-REPORT.md` for Mode B audits)
 - `.production-ready/STATE.md`
-- `.deploy-ready/STATE.md`
-- `.observe-ready/STATE.md`
+- `.deploy-ready/DEPLOY.md`
+- `.observe-ready/OBSERVE.md`
 - `.launch-ready/STATE.md`
 - `.harden-ready/FINDINGS.md`
 

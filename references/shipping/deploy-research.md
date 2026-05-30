@@ -60,7 +60,7 @@ Mode B is the common case. The shortcut in `preflight-and-gating.md` applies: th
 - No pipeline file exists in the repo (`.github/workflows/`, `.gitlab-ci.yml`, Jenkins file, Buildkite pipeline).
 - The existing pipeline builds, tests, and pushes to prod in a single job with no gate.
 - The user is asking "how do I set up CI/CD," "wire up deploys," "add staging to the pipeline."
-- `.stack-ready/DECISION.md` names a host and topology, but there is no deploy automation against it.
+- `.stack-ready/STACK.md` names a host and topology, but there is no deploy automation against it.
 
 Mode D focuses on Steps 3 and 4. The other steps run as a dry walkthrough against a representative change so the pipeline gets validated end to end before the first real ship.
 

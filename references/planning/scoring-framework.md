@@ -120,7 +120,7 @@ The anti-scoring camp (Dan McKinley's "Choose Boring Technology," DHH's "one-per
 2. The decision is reversible within ~4 weeks if wrong (see pre-flight question 7).
 3. No hard constraints are in flux (compliance posture unchanged, scale ceiling same order of magnitude).
 
-In that case, run a compact pre-flight + constraint check only (5 minutes, not 30). Confirm the stated pick against the domain's hard constraints. If it passes, write the DECISION.md with "Bundle chosen by experience-based preference; full scoring pass skipped per §skip-scoring-pass in scoring-framework.md."
+In that case, run a compact pre-flight + constraint check only (5 minutes, not 30). Confirm the stated pick against the domain's hard constraints. If it passes, write the STACK.md with "Bundle chosen by experience-based preference; full scoring pass skipped per §skip-scoring-pass in scoring-framework.md."
 
 **Do not skip** when:
 - The decision is foundational (database, compliance posture, hosting platform for a multi-year product).
@@ -225,6 +225,6 @@ State when scoring is skipped and why. "Skipped scoring on Framework, Language, 
 
 ## What to do with scores going forward
 
-The scores inform Tier 4 `.stack-ready/DECISION.md`. Every dimension in the chosen bundle carries its score forward. Rejected bundles preserve their aggregate so a future reader can see how close the call was.
+The scores inform Tier 4 `.stack-ready/STACK.md`. Every dimension in the chosen bundle carries its score forward. Rejected bundles preserve their aggregate so a future reader can see how close the call was.
 
 Scores are not timestamped at the individual-score level (that's too much work). The skill version and date on the document are the timestamp. When the user re-runs this in 6 months, the scoring may shift materially; that's expected and why Step 9 exists.

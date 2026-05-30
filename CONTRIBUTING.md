@@ -27,7 +27,7 @@ Read in this order:
 - New named failure-mode patterns the source suite did not enforce. arc-ready is faithful consolidation, not v2.
 - Workflow restructures that change the artifact contract (the canonical `.<tier>-ready/<ARTIFACT>.md` paths). Downstream consumers depend on these paths.
 - A non-Pillars variant of the emitted project memory layer. Pillars is the default standard; exceptions are recorded blockers, not a separate distribution.
-- Deletion or merging of references that have load-on-demand value. Eighty references at ~5-15K each are correct.
+- Deletion or merging of references that have load-on-demand value. The 160-plus single-topic references (most at ~5-15K) are correct as-is; a few catalog-style files run larger and are split candidates, not merge candidates.
 - Em-dashes, en-dashes, arrows, or box-drawing characters in load-bearing files (lint enforces).
 - Emojis anywhere (lint enforces).
 

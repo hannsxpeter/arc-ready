@@ -1,6 +1,6 @@
 # Architecture Research
 
-The Step 0 protocol. Load at the start of every architecture-ready session. Lighter than [RESEARCH-2026-04.md](RESEARCH-2026-04.md), which is the full 35K-token dossier; this file is ~5K tokens and supports mode detection, load-bearing triage, and the canonical-sources index.
+The Step 0 protocol. Load at the start of every architecture-ready session. Lighter than [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md), which is the full 35K-token dossier; this file is ~5K tokens and supports mode detection, load-bearing triage, and the canonical-sources index.
 
 **Scope owned by this file:** mode detection (A through F), the research block each mode writes into STATE.md, the architecture-load-bearing quick check, the 2026 industry posture in three paragraphs, the canonical-sources index, staleness triggers, AI-slop architecture signature, and the ARCH.md / HANDOFF.md output schema. Deep reasoning on each lives in the topical reference files and in RESEARCH-2026-04.md.
 

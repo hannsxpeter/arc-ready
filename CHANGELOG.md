@@ -4,6 +4,34 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [1.0.1] - 2026-05-30
+
+Patch release. Contract-consistency and mechanical-correctness fixes across the orchestrator, the dogfood smoke test, the reference cross-links, and a repo-wide documentation-drift audit. No discipline change, no new failure-mode patterns, no artifact-path contract change.
+
+### Fixed
+
+- **Critical-finding gate grep** (`SKILL.md`): the documented gate read the line *before* each `severity: critical` for its status (`grep -B 1`), so an open Critical never blocked launch. Corrected to scan forward (`grep -A 1`) and pinned the canonical FINDINGS.md finding shape (a `severity:` line followed by a `status:` line). The dogfood smoke test (Test 9) already used correct logic; the documented snippet now matches it.
+- **Resume-protocol drift check** (`SKILL.md`): the snippet used `${tier^^}` (Bash 4+), which fails on the Bash 3.2 the project targets (macOS default). Replaced with a `tr`-based uppercase.
+- **Drift detection missed the architecture tier** (`SKILL.md`, `scripts/dogfood-smoke.sh`): the loop variable `architecture` never matched the ledger label `(ARCH)`, so architecture-tier drift went undetected. Added the `architecture` to `ARCH` label mapping in the resume snippet and both smoke-test drift checks.
+- **Dogfood smoke Test 1 was a vacuous pass** (`scripts/dogfood-smoke.sh`): the happy-path drift check used a malformed, case-mismatched regex that matched nothing, so the test could not fail regardless of disk state. Rewritten to mirror Test 2's correct uppercased check.
+- **Stale template version** (`SKILL.md`): the PROGRESS.md schema example hardcoded `## Skill version: 0.1.1`. Bumped to the current version, now guarded by the new `skill-version-body` lint check.
+- **Broken reference cross-links** (`references/`): rewrote 14 `RESEARCH-2026-04.md` markdown links in `references/planning/` to `../shared/RESEARCH-2026-04.md` (the file lives in `references/shared/`), including one anchored link. Fixed two self-directory `ORCHESTRATORS.md` links in `references/shared/RESEARCH-2026-04.md`. Cross-reference corrections only; reference prose is unchanged.
+
+### Changed
+
+- **Stack artifact filename reconciled to `.stack-ready/STACK.md` repo-wide.** The Tier 1 prose, the Tier 1.4 gate, the output instruction, the README artifact map, and the resume example said `DECISION.md`, contradicting the grep tests, the worked example, the dogfood, and the v0.1.1 decision record. Swept `DECISION.md` to `STACK.md` across `SKILL.md`, `README.md`, the orchestration sequencing rules and PROGRESS schema, `pillars-integration.md`, the stack-tier deep-dives, six shipping references, and `MIGRATION.md` (24 occurrences across 14 reference files plus the root docs). `STACK.md` is the canonical write name; `DECISION.md` is still accepted on import for externally-authored artifacts; `STATE.md` remains the ongoing-work file. The historical provenance mentions in `references/shared/RESEARCH-2026-04.md` are left intact (they describe the source skill). This aligns drifted documentation to the already-canonical name; it does not move the contract.
+- **Artifact-map alignment** across `README.md`, `MIGRATION.md`, and `SKILL.md`: the repo artifact now reads `.repo-ready/SCAFFOLD.md` (scaffold mode) with `.repo-ready/AUDIT-REPORT.md` noted for Mode B audits; the deploy and observe primaries now read `.deploy-ready/DEPLOY.md` and `.observe-ready/OBSERVE.md` (previously simplified to `STATE.md` in README and MIGRATION), matching SKILL.md's produces table.
+- **Reference-budget guidance** (`AGENTS.md`, `SKILL.md`, `CONTRIBUTING.md`): the "~80 references at 5-15K" claim was inaccurate (the catalog is ~165 files, several well over 25K). Reworded to reflect reality and to name `domain-considerations.md` and `login-and-auth-pages.md` as split candidates.
+- **Documentation drift fixes**: corrected the `CODE_OF_CONDUCT.md` enforcement links from the stale `aihxp/repo-ready` slug to `aihxp/arc-ready`; added the two new lint checks to the `MAINTAINING.md` lint-checks table; refreshed the `0.1.5` version placeholder in the bug-report issue template to `1.0.1`; clarified in `MIGRATION.md` that `trigger-disambiguation.md` is retained as a reference rather than removed.
+
+### Added
+
+- `scripts/lint.sh` gains two checks: `relative-links-resolve` (every markdown link to a real reference resolves from the linking file's directory) and `skill-version-body` (SKILL.md body version strings match the frontmatter). Both run in CI on push and pull request.
+
+### Why a patch, not a minor
+
+Bug-fix and consistency release. No new content, no new failure-mode patterns, no change to the discipline or the artifact-path contract. The stack-filename reconciliation aligns drifted documentation to the `STACK.md` name the dogfood and the v0.1.1 decision record already established.
+
 ## [1.0.0] - 2026-05-14
 
 Stable contract release. Makes Pillars the standard agent-memory layer for file-system projects shaped by arc-ready, while keeping every canonical `.<tier>-ready/` artifact authoritative.

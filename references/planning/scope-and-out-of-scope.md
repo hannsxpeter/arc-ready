@@ -212,7 +212,7 @@ Stakeholder management tip: when a stakeholder pushes back on a no-go, the answe
 
 ## 13. Further reading
 
-- [RESEARCH-2026-04.md](RESEARCH-2026-04.md) section 1.3 (missing non-goals failure mode) and section 3 (Shape Up on no-gos and rabbit holes).
+- [RESEARCH-2026-04.md](../shared/RESEARCH-2026-04.md) section 1.3 (missing non-goals failure mode) and section 3 (Shape Up on no-gos and rabbit holes).
 - Ryan Singer, *Shape Up* (2019), chapters 4-6 on appetite, pitches, rabbit holes, no-gos.
 - Kevin Yien (Square) PRD template -- prodmgmt.world PRD template guide -- on non-goals as a first-class section.
 - Basecamp, *It Doesn't Have to be Crazy at Work* (2018) on scope discipline.

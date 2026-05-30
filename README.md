@@ -1,8 +1,8 @@
 # arc-ready
 
 [![lint](https://github.com/aihxp/arc-ready/actions/workflows/lint.yml/badge.svg)](https://github.com/aihxp/arc-ready/actions/workflows/lint.yml)
-[![release](https://img.shields.io/badge/release-v1.0.0-blue)](https://github.com/aihxp/arc-ready/releases/tag/v1.0.0)
-[![version](https://img.shields.io/badge/version-1.0.0-blue)](CHANGELOG.md)
+[![release](https://img.shields.io/badge/release-v1.0.1-blue)](https://github.com/aihxp/arc-ready/releases/tag/v1.0.1)
+[![version](https://img.shields.io/badge/version-1.0.1-blue)](CHANGELOG.md)
 [![agent skills](https://img.shields.io/badge/Agent%20Skills-compatible-2f6fed)](SKILL.md)
 [![aihxp/pillars](https://img.shields.io/badge/aihxp%2Fpillars-standard-0f766e)](https://github.com/aihxp/pillars)
 [![smoke](https://img.shields.io/badge/smoke-9%2F9-brightgreen)](scripts/dogfood-smoke.sh)
@@ -120,11 +120,11 @@ arc-ready writes to canonical `.<tier>-ready/` directories. The contract is unch
 | 1.1 | Product Requirements | `.prd-ready/PRD.md` (+ HANDOFF, AUDIT) |
 | 1.2 | Architecture | `.architecture-ready/ARCH.md` (+ HANDOFF, adr/) |
 | 1.3 | Roadmap | `.roadmap-ready/ROADMAP.md` (+ HANDOFF, retrospectives/) |
-| 1.4 | Stack decision | `.stack-ready/DECISION.md` |
-| 2.1 | Repo scaffolding | repo root (`.github/`, `package.json`, README, etc.) + `.repo-ready/AUDIT-REPORT.md` |
+| 1.4 | Stack decision | `.stack-ready/STACK.md` |
+| 2.1 | Repo scaffolding | repo root (`.github/`, `package.json`, README, etc.) + `.repo-ready/SCAFFOLD.md` (or `.repo-ready/AUDIT-REPORT.md` for Mode B audits) |
 | 2.2 | Production state | `.production-ready/STATE.md` |
-| 3.1 | Deploy state | `.deploy-ready/STATE.md` (+ runbook, calendar) |
-| 3.2 | Observe state | `.observe-ready/STATE.md` (+ runbook, dashboards) |
+| 3.1 | Deploy state | `.deploy-ready/DEPLOY.md` (+ PLAN, TOPOLOGY, STATE) |
+| 3.2 | Observe state | `.observe-ready/OBSERVE.md` (+ SLOs, INDEPENDENCE, STATE) |
 | 3.3 | Launch state | `.launch-ready/STATE.md` (+ runbook, copy) |
 | 3.4 | Hardening findings | `.harden-ready/FINDINGS.md` (+ remediation) |
 | 0/2.1 | Cross-tool agent brief | Pillars-compatible `AGENTS.md` at project root |
@@ -144,7 +144,7 @@ The intended 1.0 contract is stable and intentionally small:
 
 ## Status
 
-arc-ready is at v1.0.0. The initial consolidation from aihxp/ready-suite is complete, Tier 2.1 standardizes on Pillars for task-routed agent memory, and the 1.0 stability promise is documented above. Every named failure mode from the eleven source skills is preserved in the consolidated reference catalog under `references/<tier>/<skill>-antipatterns.md`.
+arc-ready is at v1.0.1. The initial consolidation from aihxp/ready-suite is complete, Tier 2.1 standardizes on Pillars for task-routed agent memory, and the 1.0 stability promise is documented above. Every named failure mode from the eleven source skills is preserved in the consolidated reference catalog under `references/<tier>/<skill>-antipatterns.md`.
 
 The eleven-skill suite at [aihxp/ready-suite](https://github.com/aihxp/ready-suite) remains available and supported for users who prefer the multi-repo footprint.
 

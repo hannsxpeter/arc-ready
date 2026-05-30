@@ -2,7 +2,7 @@
 
 Named-failure-mode catalog for roadmap-ready. Each antipattern has a name, source (coiner or emergence), shape (how to recognize it), concrete example, and fix. The catalog is grep-testable: every item has a marker the skill checks for at tier gates.
 
-Full citations live in [`RESEARCH-2026-04.md`](RESEARCH-2026-04.md); this file is the operational reference.
+Full citations live in [`RESEARCH-2026-04.md`](../shared/RESEARCH-2026-04.md); this file is the operational reference.
 
 ## 1. The three-label test procedure
 

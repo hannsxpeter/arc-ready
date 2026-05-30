@@ -46,12 +46,12 @@ This is the data arc-ready uses to verify the ghost-handoff guard. Before invoki
 | 1 | prd-ready | (none) | `.prd-ready/PRD.md` |
 | 2 | architecture-ready | `.prd-ready/PRD.md` | `.architecture-ready/ARCH.md` |
 | 3 | roadmap-ready | `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md` | `.roadmap-ready/ROADMAP.md` |
-| 4 | stack-ready | `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md` (recommended; not required) | `.stack-ready/DECISION.md` |
-| 5 | repo-ready | (none formally; benefits from `.stack-ready/DECISION.md`) | Repo scaffolding presence: README.md at repo root AND any of (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `.editorconfig`, `.repo-ready/SECURITY.md`). repo-ready does not produce a single canonical STATE.md; verification is a multi-file scaffolding check. |
-| 6 | production-ready | `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, `.roadmap-ready/ROADMAP.md`, `.stack-ready/DECISION.md` | `.production-ready/STATE.md` |
-| 7 | deploy-ready | `.production-ready/STATE.md`, `.stack-ready/DECISION.md`, repo scaffolding (per row 5) | `.deploy-ready/STATE.md` |
-| 8 | observe-ready | `.production-ready/STATE.md`, `.stack-ready/DECISION.md`, `.deploy-ready/STATE.md`, repo scaffolding (per row 5) | `.observe-ready/STATE.md` |
-| 9 | launch-ready | `.production-ready/STATE.md`, `.stack-ready/DECISION.md`, `.deploy-ready/STATE.md`, `.observe-ready/STATE.md` | `.launch-ready/STATE.md` |
+| 4 | stack-ready | `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md` (recommended; not required) | `.stack-ready/STACK.md` |
+| 5 | repo-ready | (none formally; benefits from `.stack-ready/STACK.md`) | Repo scaffolding presence: README.md at repo root AND any of (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `.editorconfig`, `.repo-ready/SECURITY.md`). repo-ready does not produce a single canonical STATE.md; verification is a multi-file scaffolding check. |
+| 6 | production-ready | `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, `.roadmap-ready/ROADMAP.md`, `.stack-ready/STACK.md` | `.production-ready/STATE.md` |
+| 7 | deploy-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, repo scaffolding (per row 5) | `.deploy-ready/STATE.md` |
+| 8 | observe-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, `.deploy-ready/STATE.md`, repo scaffolding (per row 5) | `.observe-ready/STATE.md` |
+| 9 | launch-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, `.deploy-ready/STATE.md`, `.observe-ready/STATE.md` | `.launch-ready/STATE.md` |
 | 10 | harden-ready | `.architecture-ready/ARCH.md`, `.production-ready/STATE.md`, `.deploy-ready/STATE.md`, `.observe-ready/STATE.md`, `.repo-ready/SECURITY.md` (the specific repo-ready file harden-ready consumes) | `.harden-ready/STATE.md` and `.harden-ready/FINDINGS.md` |
 
 The upstream lists come directly from each tier's `upstream:` frontmatter and "Consumes from upstream" sections. Two notes on the rough edges this dogfood walk surfaced:
