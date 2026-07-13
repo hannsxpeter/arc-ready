@@ -4,6 +4,39 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [1.1.0] - 2026-07-13
+
+Minor release. Broadens arc-ready from a web-dashboard-biased workflow into an explicit multi-form software delivery system, adds reproducible evaluation evidence, and aligns the skill with the current Agent Skills specification. Canonical artifact paths remain unchanged.
+
+### Added
+
+- An explicit product-form router for web applications, APIs or services, CLIs or SDKs, mobile or desktop applications, data or ML systems, and infrastructure or IaC projects. Each form has build concerns, evidence expectations, and completion gates.
+- A four-axis domain composition model: project form, product archetype, industry overlay, and regulatory overlay. The registry maps 37 focused build profiles into the existing 12 stack profiles without treating stack candidates as final decisions.
+- Focused domain profiles for Data / Analytics / BI, Manufacturing / MES / Industrial Operations, Developer Platform / API / SDK, and Research / Lab / LIMS.
+- `scripts/eval.sh`, ten live-harness cases, scoring rubrics, and `EVALS.md`. The 14-case deterministic suite covers modes, dependency routing, disk drift, artifact stability, product forms, domain composition, progressive disclosure, state-schema clarity, observability maturity, current OWASP routing, and the public activation race.
+- Current OWASP Top 10:2025 web-risk routing, including the new Software Supply Chain Failures and Mishandling of Exceptional Conditions categories, while preserving the inherited 2021 walkthrough as historical evidence.
+- A pinned official Agent Skills validator dependency, `scripts/release-check.sh`, and CI validation against the absolute repository path.
+- A reviewed inherited Unicode baseline that rejects count increases while preserving unchanged source-suite reference content.
+
+### Changed
+
+- `SKILL.md` is now a 175-line activation and routing surface with detailed procedures moved into focused, load-on-demand tier references. Frontmatter uses only specification-supported top-level fields, with project metadata nested under `metadata`.
+- The former 125K domain catalog is now a compact router plus 37 focused domain references. The inherited domain prose was mechanically split rather than rewritten.
+- Launch asset preparation and hardening may run concurrently, but public activation is serial. A fresh `.launch-ready/PREPUBLICATION.md` must record the checked hardening revision, timestamp, finding counts, policy, and pass verdict immediately before publication. Any later hardening change invalidates that pass.
+- Repository lint now checks Agent Skills shape and budgets, metadata versioning, direct and indirect references, globally unique reference basenames, shell syntax, deterministic evaluations, and net-new inherited Unicode or emoji counts.
+- CI uses immutable action SHAs, installs the pinned validator, runs Bash syntax checks, lint, dogfood smoke, deterministic evaluations, and official validation on every push and pull request.
+
+### Validated
+
+- Official `skills-ref validate` against the absolute repository path.
+- 14 deterministic evaluations, 12 operational dogfood smoke tests, and ten independent Codex live-harness cases scoring 100/100 with every gate invariant passed.
+- Focused rerun evidence confirming the state-schema, canonical shipping-path, and observability-maturity ambiguities found by strict review were resolved.
+- Stable canonical `.<tier>-ready/` artifact paths and Pillars project-memory behavior.
+
+### Why a minor, not a patch or major
+
+This release adds substantive routing, domain, evaluation, and release-gate capabilities, so it is larger than a bug-fix patch. It does not break the artifact-path contract or the four-mode workflow shape, so a major release is not warranted.
+
 ## [1.0.2] - 2026-05-30
 
 Patch release. Resolves the two items v1.0.1 deferred and adds a third lint guard. No discipline change, no new failure-mode patterns, no artifact-path contract change.
@@ -45,7 +78,7 @@ Patch release. Contract-consistency and mechanical-correctness fixes across the 
 - **Stack artifact filename reconciled to `.stack-ready/STACK.md` repo-wide.** The Tier 1 prose, the Tier 1.4 gate, the output instruction, the README artifact map, and the resume example said `DECISION.md`, contradicting the grep tests, the worked example, the dogfood, and the v0.1.1 decision record. Swept `DECISION.md` to `STACK.md` across `SKILL.md`, `README.md`, the orchestration sequencing rules and PROGRESS schema, `pillars-integration.md`, the stack-tier deep-dives, six shipping references, and `MIGRATION.md` (24 occurrences across 14 reference files plus the root docs). `STACK.md` is the canonical write name; `DECISION.md` is still accepted on import for externally-authored artifacts; `STATE.md` remains the ongoing-work file. The historical provenance mentions in `references/shared/RESEARCH-2026-04.md` are left intact (they describe the source skill). This aligns drifted documentation to the already-canonical name; it does not move the contract.
 - **Artifact-map alignment** across `README.md`, `MIGRATION.md`, and `SKILL.md`: the repo artifact now reads `.repo-ready/SCAFFOLD.md` (scaffold mode) with `.repo-ready/AUDIT-REPORT.md` noted for Mode B audits; the deploy and observe primaries now read `.deploy-ready/DEPLOY.md` and `.observe-ready/OBSERVE.md` (previously simplified to `STATE.md` in README and MIGRATION), matching SKILL.md's produces table.
 - **Reference-budget guidance** (`AGENTS.md`, `SKILL.md`, `CONTRIBUTING.md`): the "~80 references at 5-15K" claim was inaccurate (the catalog is ~165 files, several well over 25K). Reworded to reflect reality and to name `domain-considerations.md` and `login-and-auth-pages.md` as split candidates.
-- **Documentation drift fixes**: corrected the `CODE_OF_CONDUCT.md` enforcement links from the stale `aihxp/repo-ready` slug to `aihxp/arc-ready`; added the two new lint checks to the `MAINTAINING.md` lint-checks table; refreshed the `0.1.5` version placeholder in the bug-report issue template to `1.0.1`; clarified in `MIGRATION.md` that `trigger-disambiguation.md` is retained as a reference rather than removed.
+- **Documentation drift fixes**: corrected the `CODE_OF_CONDUCT.md` enforcement links from the stale `hannsxpeter/repo-ready` slug to `hannsxpeter/arc-ready`; added the two new lint checks to the `MAINTAINING.md` lint-checks table; refreshed the `0.1.5` version placeholder in the bug-report issue template to `1.0.1`; clarified in `MIGRATION.md` that `trigger-disambiguation.md` is retained as a reference rather than removed.
 
 ### Added
 
@@ -172,7 +205,7 @@ Path-rewrite cleanup. No content discipline change; no new failure-mode patterns
 
 - CI lint workflow no longer fails on `push` events. The `tag-release-parity` check is now run only on `schedule` and `workflow_dispatch`, because tag pushes trigger CI before the matching GitHub Release is created (chicken-and-egg). Push and pull-request runs run every other check; the daily schedule run catches missing releases. Local `bash scripts/lint.sh --all` continues to run the full check.
 - Hardcoded local-clone paths (`/Users/hprincivil/Projects/<skill>-ready/SKILL.md`) in `references/planning/trust-boundaries.md` and `references/shared/RESEARCH-2026-04.md` rewritten to skill-relative references. These were inherited from source authoring and survived the v0.1.0 cross-reference sweep.
-- Broken external link in `references/shared/RESEARCH-2026-04.md` from `aihxp/production-ready/blob/main/SUITE.md` (no longer the canonical hub) to `aihxp/ready-suite/blob/main/SUITE.md` with a "(predecessor)" annotation.
+- Broken external link in `references/shared/RESEARCH-2026-04.md` from `hannsxpeter/production-ready/blob/main/SUITE.md` (no longer the canonical hub) to `hannsxpeter/ready-suite/blob/main/SUITE.md` with a "(predecessor)" annotation.
 
 ### Why a patch, not a minor
 
@@ -183,7 +216,7 @@ Bug-fix release. CI was structurally broken; published references contained user
 ### Added
 
 - SKILL.md expansion to spec target (~1,500-2,000 lines). Adds Mode B existing-codebase routing decision tree with concrete gap-to-tier mapping, Mode C retroactive audit procedure with severity vocabulary and per-tier audit-output canonical paths, Mode D multi-repo suite layout dispatch, per-tier inline grep test snippets (PRD, architecture, roadmap, stack, repo, production, deploy, observe, launch, harden), per-harness integration notes (Claude Code, Codex, Cursor, Windsurf, Antigravity, Pi, OpenClaw, generic chat frontend), worked-example narrative tracing the Pulse arc through every tier, "common failure modes that fire here" symptom-to-pattern lookup table, critical-finding gate logic and grep test, AGENTS.md emit-and-respect rules across Tier 0 and Tier 2.1, elaborated resume protocol with shell-snippet examples and disk-wins semantics.
-- Artifact map alignment with the dogfood (`aihxp/ready-suite-example`): `.stack-ready/STACK.md` (alongside `DECISION.md` variant), `.repo-ready/SCAFFOLD.md` (alongside `AUDIT-REPORT.md` for Mode B), `.deploy-ready/DEPLOY.md`/`PLAN.md`/`TOPOLOGY.md`/`STATE.md` (multi-artifact reality), `.observe-ready/OBSERVE.md`/`SLOs.md`/`INDEPENDENCE.md`/`STATE.md` (multi-artifact reality). The Consumes-from-upstream and Produces-for-downstream tables now match the canonical names the source eleven-skill suite established and the dogfood uses.
+- Artifact map alignment with the dogfood (`hannsxpeter/ready-suite-example`): `.stack-ready/STACK.md` (alongside `DECISION.md` variant), `.repo-ready/SCAFFOLD.md` (alongside `AUDIT-REPORT.md` for Mode B), `.deploy-ready/DEPLOY.md`/`PLAN.md`/`TOPOLOGY.md`/`STATE.md` (multi-artifact reality), `.observe-ready/OBSERVE.md`/`SLOs.md`/`INDEPENDENCE.md`/`STATE.md` (multi-artifact reality). The Consumes-from-upstream and Produces-for-downstream tables now match the canonical names the source eleven-skill suite established and the dogfood uses.
 
 ### Why a patch, not a minor
 
@@ -193,7 +226,7 @@ Content deepening, not contract change. The artifact-map clarification reflects 
 
 ### Added
 
-- Initial consolidation of the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready) into a single arc-ready skill.
+- Initial consolidation of the eleven-skill hannsxpeter/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready) into a single arc-ready skill.
 - `SKILL.md`: tier-structured orchestrator body. Mode A/B/C/D detection. Tier 0 (orchestration), Tier 1 (planning: PRD, ARCH, ROADMAP, STACK), Tier 2 (building: REPO, PRODUCTION), Tier 3 (shipping: DEPLOY, OBSERVE, LAUNCH, HARDEN). Consolidated have-nots catalog covering every named failure mode from the source eleven skills. Tier completion gates, references table, suite-membership block, consumes/produces tables, session-state and resume protocol.
 - 164 reference files organized by tier under `references/{orchestration,planning,building,shipping,shared}/`. Faithful preservation of every named pattern, grep test, and worked example from the source skills. Cross-references rewritten from sibling-skill paths to tier-relative paths.
 - `references/shared/RESEARCH-2026-04.md`: consolidated source-citations file from the eleven per-skill research dumps.
@@ -202,9 +235,9 @@ Content deepening, not contract change. The artifact-map clarification reflects 
 - `.github/workflows/lint.yml`: CI workflow running the lint on push, PR, and a daily schedule.
 - `README.md`, `AGENTS.md`, `CLAUDE.md` (symlink to AGENTS.md), `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE` (MIT), `.gitignore`, `.github/CODEOWNERS`.
 - `MAINTAINING.md`: single-repo release rituals (patch / minor / major / tag-release parity / unicode discipline).
-- `MIGRATION.md`: one-page guide for aihxp/ready-suite users covering install change, trigger surface, where each former skill's content now lives.
+- `MIGRATION.md`: one-page guide for hannsxpeter/ready-suite users covering install change, trigger surface, where each former skill's content now lives.
 
-### Inherited from aihxp/ready-suite
+### Inherited from hannsxpeter/ready-suite
 
 The discipline of arc-ready is the discipline the eleven-skill suite produced. Specifically:
 
@@ -218,13 +251,13 @@ The discipline of arc-ready is the discipline the eleven-skill suite produced. S
 ### Compatibility
 
 - Compatible with: claude-code, codex, cursor, windsurf, antigravity, pi, openclaw, any-agentskills-compatible-harness.
-- Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The aihxp/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
+- Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The hannsxpeter/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
 
-[1.0.0]: https://github.com/aihxp/arc-ready/releases/tag/v1.0.0
-[0.1.6]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.6
-[0.1.5]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.5
-[0.1.4]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.4
-[0.1.3]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.3
-[0.1.2]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.2
-[0.1.1]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.1
-[0.1.0]: https://github.com/aihxp/arc-ready/releases/tag/v0.1.0
+[1.0.0]: https://github.com/hannsxpeter/arc-ready/releases/tag/v1.0.0
+[0.1.6]: https://github.com/hannsxpeter/arc-ready/releases/tag/v0.1.6
+[0.1.5]: https://github.com/hannsxpeter/arc-ready/releases/tag/v0.1.5
+[0.1.4]: https://github.com/hannsxpeter/arc-ready/releases/tag/v0.1.4
+[0.1.3]: https://github.com/hannsxpeter/arc-ready/releases/tag/v0.1.3
+[0.1.2]: https://github.com/hannsxpeter/arc-ready/releases/tag/v0.1.2
+[0.1.1]: https://github.com/hannsxpeter/arc-ready/releases/tag/v0.1.1
+[0.1.0]: https://github.com/hannsxpeter/arc-ready/releases/tag/v0.1.0

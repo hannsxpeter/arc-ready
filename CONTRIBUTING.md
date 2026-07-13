@@ -1,6 +1,6 @@
 # Contributing to arc-ready
 
-arc-ready is the consolidated successor to the eleven-skill aihxp/ready-suite. The discipline of arc-ready is the discipline of the suite, preserved verbatim. Contributions that add new failure-mode patterns the source suite did not enforce will be rejected; contributions that clarify, fix, or extend the existing pattern catalog within its established shape are welcome.
+arc-ready is the consolidated successor to the eleven-skill hannsxpeter/ready-suite. The discipline of arc-ready is the discipline of the suite, preserved verbatim. Contributions that add new failure-mode patterns the source suite did not enforce will be rejected; contributions that clarify, fix, or extend the existing pattern catalog within its established shape are welcome.
 
 Pillars is the standard agent-memory layer arc-ready emits for file-system projects. Changes that touch `AGENTS.md` emission, repo scaffolding, or ongoing-agent context must preserve that contract: canonical arc artifacts remain authoritative, and Pillars carries task-routed operating memory.
 
@@ -10,7 +10,7 @@ Read in this order:
 
 1. `README.md` (5 minutes; what arc-ready is and why).
 2. `SKILL.md` (15 minutes; the workflow body).
-3. `MIGRATION.md` (5 minutes; the relationship to aihxp/ready-suite).
+3. `MIGRATION.md` (5 minutes; the relationship to hannsxpeter/ready-suite).
 4. `MAINTAINING.md` (5 minutes; release rituals).
 5. `AGENTS.md` (5 minutes; project conventions and forbidden actions).
 
@@ -27,7 +27,7 @@ Read in this order:
 - New named failure-mode patterns the source suite did not enforce. arc-ready is faithful consolidation, not v2.
 - Workflow restructures that change the artifact contract (the canonical `.<tier>-ready/<ARTIFACT>.md` paths). Downstream consumers depend on these paths.
 - A non-Pillars variant of the emitted project memory layer. Pillars is the default standard; exceptions are recorded blockers, not a separate distribution.
-- Deletion or merging of references that have load-on-demand value. The 160-plus single-topic references (most at ~5-15K) are correct as-is; a few catalog-style files run larger and are split candidates, not merge candidates.
+- Deletion or merging of references that have load-on-demand value. The focused catalog is intentionally large in file count and small in per-task load. Extend routers and focused profiles instead of rebuilding monolithic catalogs.
 - Em-dashes, en-dashes, arrows, or box-drawing characters in load-bearing files (lint enforces).
 - Emojis anywhere (lint enforces).
 
@@ -36,9 +36,9 @@ Read in this order:
 1. Fork the repository on GitHub.
 2. Create a branch with a descriptive name: `fix/typo-in-prd-anatomy`, `lint/add-frontmatter-check`, `docs/update-stack-bundles-2026-Q3`.
 3. Make the change.
-4. Run the lint locally: `bash scripts/lint.sh`. Fix any failures.
+4. Run `bash scripts/lint.sh --all --verbose`, `bash scripts/dogfood-smoke.sh --verbose`, and `bash scripts/eval.sh --verbose`. Fix any failures.
 5. Update `CHANGELOG.md` with a top entry. Use the format from existing entries.
-6. Bump the `version:` field in `SKILL.md` frontmatter to match the new CHANGELOG entry.
+6. Bump `metadata.version` and `metadata.updated` in `SKILL.md` to match the new CHANGELOG entry.
 7. Commit with a message following the pattern `<scope>: <imperative summary>`. Examples: `lint: add unicode check for AGENTS.md`, `references/planning: fix cross-reference to risks-and-assumptions`.
 8. Push the branch to your fork.
 9. Open a pull request. The PR template (see `.github/pull_request_template.md` if present) lists the checks; cover them in the description.
@@ -53,6 +53,8 @@ Documentation is load-bearing in this repo. Before merging a docs-only change, c
 - Release rituals or versioning policy.
 
 If it touches any of those, update `CHANGELOG.md`, run `bash scripts/lint.sh --all`, and run `bash scripts/dogfood-smoke.sh --verbose`. If it changes Pillars wording, make sure the docs still say one thing: arc artifacts are authoritative, Pillars is the project-memory layer, and blockers are recorded instead of creating a non-Pillars variant.
+
+Changes to routing, form gates, domain composition, completion behavior, or standards metadata must also update or add a deterministic check in `scripts/eval.sh` and a live-harness case under `evals/cases/`. Release candidates must pass the official `skills-ref validate` command against the absolute repository path.
 
 ## Versioning
 
@@ -79,7 +81,8 @@ See `MAINTAINING.md` for the release rituals.
 
 Use GitHub Issues. Include:
 
-- arc-ready version (`grep '^version:' SKILL.md`).
+- arc-ready version (`metadata.version` in `SKILL.md`).
+- Primary project form and any product, industry, or regulatory overlays.
 - The harness you are running (Claude Code, Codex, Cursor, etc.).
 - The mode (A/B/C/D) you were in.
 - Reproduction steps.

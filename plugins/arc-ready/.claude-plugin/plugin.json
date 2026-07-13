@@ -1,10 +1,10 @@
 {
   "name": "arc-ready",
-  "description": "Take a software project from raw idea through PRD, architecture, roadmap, stack pick, repo scaffolding, application build, deploy pipeline, observability, launch, adversarial hardening, and a Pillars agent-memory layer. The full arc, mechanically enforced, in one skill. Consolidated successor to the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready). Same discipline, same artifacts, one install. Refuses scope leak, AI-slop output, hollow output, feature-factory output, paper SLOs, paper canaries, AI-slop landings, scanner-only security, rubber-stamp orchestration, ghost handoff. Modes A (full arc, greenfield), B (specific tier, existing codebase), C (retroactive audit), D (multi-repo suite layout).",
-  "version": "1.0.2",
-  "author": { "name": "aihxp", "url": "https://github.com/aihxp" },
-  "homepage": "https://github.com/aihxp/arc-ready",
-  "repository": "https://github.com/aihxp/arc-ready",
+  "description": "Plan, build, ship, and audit software across the full idea-to-launch arc. Routes greenfield, brownfield, audit, and multi-repo work by product form, product archetype, industry, and regulatory overlay while preserving stable artifacts, Pillars agent memory, disk-backed gates, and a fresh hardening check before public activation.",
+  "version": "1.1.0",
+  "author": { "name": "hannsxpeter", "url": "https://github.com/hannsxpeter" },
+  "homepage": "https://github.com/hannsxpeter/arc-ready",
+  "repository": "https://github.com/hannsxpeter/arc-ready",
   "license": "MIT",
   "keywords": ["arc-ready", "ai-skill", "ready-suite-successor", "pillars", "agent-memory", "prd", "architecture", "roadmap", "stack", "repo-scaffolding", "application-build", "deploy", "observability", "launch", "security-hardening", "owasp", "slo", "agent-skills"]
 }

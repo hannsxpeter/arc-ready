@@ -1,6 +1,6 @@
 # RESEARCH-2026-04: Source citations and prior-art map (consolidated)
 
-Originally maintained as eleven separate per-skill research dumps in the aihxp/ready-suite. Consolidated here for arc-ready. Each section preserves the original skills sources, attributions, and citation chains. Section anchors match the upstream skill name.
+Originally maintained as eleven separate per-skill research dumps in the hannsxpeter/ready-suite. Consolidated here for arc-ready. Each section preserves the original skills sources, attributions, and citation chains. Section anchors match the upstream skill name.
 
 
 ---
@@ -759,7 +759,7 @@ For each downstream ready-suite skill, what the PRD must supply to let that skil
 
 ### 6.1 architecture-ready needs (planning tier, not yet released)
 
-`architecture-ready` owns "design how the big pieces fit together" ([ready-suite SUITE.md (predecessor)](https://github.com/aihxp/ready-suite/blob/main/SUITE.md)). From the PRD it needs:
+`architecture-ready` owns "design how the big pieces fit together" ([ready-suite SUITE.md (predecessor)](https://github.com/hannsxpeter/ready-suite/blob/main/SUITE.md)). From the PRD it needs:
 
 - **Entities** (the nouns: users, orders, documents, sensors, etc.) with their key attributes and identifiers.
 - **Flows** (the verbs: sign up, checkout, approve, escalate, refund, audit). Primary happy-path flow and at least two error/edge flows per feature.
@@ -784,7 +784,7 @@ For each downstream ready-suite skill, what the PRD must supply to let that skil
 
 ### 6.3 stack-ready needs (live, v1.1.4)
 
-`stack-ready` has six pre-flight questions that drive its scoring ([stack-ready SKILL.md](https://github.com/aihxp/stack-ready/blob/main/SKILL.md)). The PRD should pre-fill all six so `stack-ready` does not start from scratch:
+`stack-ready` has six pre-flight questions that drive its scoring ([stack-ready SKILL.md](https://github.com/hannsxpeter/stack-ready/blob/main/SKILL.md)). The PRD should pre-fill all six so `stack-ready` does not start from scratch:
 
 1. **Domain.** "What real-world job does this stack serve?" PRD's Problem section plus target-user section should name the domain clearly enough that it maps to one of stack-ready's 12 domain profiles (SaaS/multi-tenant, e-commerce, healthcare, fintech, etc.).
 2. **Team.** "How many engineers, what language depth, who is on call?" PRD should include a Team & Constraints section with this information, even if it's "unknown at this stage."
@@ -797,7 +797,7 @@ If the PRD produces all six, `stack-ready` skips interrogation and goes straight
 
 ### 6.4 production-ready needs (live, v2.5.5)
 
-`production-ready` has 12 pre-flight questions ([production-ready SKILL.md](https://github.com/aihxp/production-ready/blob/main/SKILL.md)). It also requires an Architecture Note (Step 2) with specific bullets: stack, data source, auth model, permission model, route map, threat model, visual identity. The PRD should supply:
+`production-ready` has 12 pre-flight questions ([production-ready SKILL.md](https://github.com/hannsxpeter/production-ready/blob/main/SKILL.md)). It also requires an Architecture Note (Step 2) with specific bullets: stack, data source, auth model, permission model, route map, threat model, visual identity. The PRD should supply:
 
 - **Requirements stated concretely enough to build and test against.** "User can reset their password via email link within 10 minutes; link expires after 1 hour; rate-limited to 3 per user per hour." Not "secure password reset."
 - **Entities and their CRUD surface.** Tier 1 of production-ready demands "create/edit/delete one entity" works end-to-end; the PRD must name the entity and specify what operations it supports.
@@ -5093,7 +5093,7 @@ Organized by authority level. Every link in this section was checked live in Apr
 
 **OWASP projects.** The OWASP Foundation publishes free reference projects that are the lingua franca of appsec. Cite the project pages, not secondhand summaries.
 
-- **OWASP Top 10 Web 2021 edition.** [OWASP Top 10:2021](https://owasp.org/Top10/2021/). The 2021 edition is still current as of April 2026; a 2025 release candidate exists and is referenced at [A01 Broken Access Control - OWASP Top 10:2025 RC1](https://owasp.org/Top10/A01_2021-Broken_Access_Control/). harden-ready should cite the 2021 numbering and note the RC1 exists.
+- **OWASP Top 10 Web 2025 edition.** [OWASP Top 10:2025](https://owasp.org/Top10/2025/). This supersedes the 2021 edition. Current hardening work uses the 2025 numbering through `references/owasp-web-top-10-2025.md`; the later 2021 research catalog remains historical evidence for reusable manual tests.
 - **OWASP API Security Top 10 2023.** [OWASP API Security Top 10 - 2023](https://owasp.org/API-Security/editions/2023/en/0x11-t10/), [header](https://owasp.org/API-Security/editions/2023/en/0x00-header/), [project root](https://owasp.org/www-project-api-security/). Current stable. Notable: API1 Broken Object Level Authorization (BOLA), API3 Broken Object Property Level Authorization (BOPLA, merged from 2019's Excessive Data Exposure and Mass Assignment).
 - **OWASP Top 10 for LLM Applications 2025.** [OWASP GenAI project: LLM Top 10 2025](https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/), [PDF v4.2.0a](https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-v2025.pdf). Current. New 2025 categories: LLM07 System Prompt Leakage, LLM08 Vector and Embedding Weaknesses, LLM09 Misinformation, LLM10 Unbounded Consumption.
 - **OWASP ASVS (Application Security Verification Standard) 4.0.3.** [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/). Organized into three levels (L1 opportunistic, L2 standard, L3 advanced). harden-ready's tiered completion structure maps cleanly to ASVS L1/L2/L3.
@@ -5617,7 +5617,7 @@ CVSS gives severity assuming exploitation; EPSS gives probability of exploitatio
 
 ## Section 7: OWASP Top 10 systematic walkthrough
 
-For each category in (a) Web Top 10 2021, (b) API Top 10 2023, and (c) LLM Top 10 2025, the entry covers: category definition, the common AI-generated code failure, what tooling catches it, what tooling misses it, the manual audit step that catches the tool miss.
+This inherited April 2026 research snapshot catalogs (a) Web Top 10 2021, (b) API Top 10 2023, and (c) LLM Top 10 2025. Each entry covers the category definition, the common AI-generated code failure, what tooling catches it, what tooling misses it, and the manual audit step that catches the tool miss. Current web hardening uses the 2025 category router at `references/owasp-web-top-10-2025.md`, which reuses these manual tests without treating the historical numbering as current.
 
 ### 7.1 OWASP Web Top 10 (2021 edition)
 

@@ -1,135 +1,120 @@
 # Maintaining arc-ready
 
-Procedural guide for the arc-ready maintainer. Single-repo rituals, version-bump rules, release discipline. The eleven-skill aihxp/ready-suite required coordinated patches across twelve repos and a byte-identical SUITE.md ritual; arc-ready is one repo and the rituals collapse accordingly.
+Procedural guide for the arc-ready maintainer. arc-ready has one repository, one skill version, one changelog, one tag stream, and one release stream. The coordinated multi-repository rituals from hannsxpeter/ready-suite do not apply.
 
-For the contributor-facing version of these conventions, see `CONTRIBUTING.md`.
+For contributor guidance, see `CONTRIBUTING.md`. For evaluation policy, see `EVALS.md`.
 
-## The repo
+## Release contract
 
-One repo, one SKILL.md, one CHANGELOG.md, one tag stream, one release stream. The eleven-skill suite's coordinated-patch rituals do not apply.
+| Surface | Contract |
+|---|---|
+| `SKILL.md` | Official Agent Skills activation surface. Version lives at `metadata.version`; update date lives at `metadata.updated`. |
+| `CHANGELOG.md` | Top version must match `metadata.version`. |
+| Canonical artifacts | Stable `.<tier>-ready/<ARTIFACT>.md` paths. Breaking changes require a major release. |
+| Pillars memory | Project-root `AGENTS.md` plus `agents/context.md` and `agents/repo.md` when adoption is not blocked. Arc artifacts remain authoritative. |
+| Public activation | `.launch-ready/PREPUBLICATION.md` must be newer than the checked hardening revision and have a pass verdict. |
+| References | Focused, load-on-demand files. Inherited source prose remains faithful; cross-reference corrections are allowed. |
+| Evaluations | Deterministic suite, operational smoke, official validator, and scored live-harness cases. |
 
-Pillars is now part of the emitted project contract for file-system projects. Release work that touches Tier 0 Pillars-compatible AGENTS.md emission, Tier 2.1 repo scaffolding, or onboarding docs must verify the Pillars loader plus `agents/context.md` and `agents/repo.md` floor files.
+## Versioning
 
-| File | Versioned | Notes |
-|---|---|---|
-| `SKILL.md` | Yes (frontmatter `version:` field) | The skill body. Lint checks `version:` matches CHANGELOG top entry. |
-| `CHANGELOG.md` | Yes (top entry) | Keep a Changelog format. Top entry is checked by lint for unicode cleanliness and version-shape. |
-| `README.md`, `AGENTS.md`, `CLAUDE.md` (symlink), `SECURITY.md`, `CONTRIBUTING.md`, `MAINTAINING.md`, `MIGRATION.md` | No (load-bearing surfaces; lint checks unicode cleanliness) | |
-| `LICENSE` | No | MIT. |
-| `scripts/lint.sh`, `scripts/dogfood-smoke.sh`, `.github/workflows/lint.yml`, `.github/CODEOWNERS`, `.gitignore` | No | Smoke test covers operational behavior including Pillars floor emission and source-backed pillar provenance. |
-| `references/<tier>/*.md` | No | Inherited from source skills; faithful copies. Cross-reference updates allowed; content rewrites are not. |
+- Patch releases (`vX.Y.Z`) fix bugs, typos, cross-references, or lint behavior without adding workflow capability.
+- Minor releases (`vX.Y.0`) add non-breaking routing, references, sub-steps, ecosystem guidance, or evaluation coverage.
+- Major releases (`vX.0.0`) break canonical artifact paths or the workflow shape. Coordinate downstream consumers and update `MIGRATION.md` before publication.
 
-## The four rituals
+The 1.1.0 product-form, domain-composition, evaluation, and pre-publication additions are minor because the canonical artifact contract and Modes A-D remain stable.
 
-### Ritual 1: patch release (v0.x.y)
+## Prepare a release candidate
 
-For bug fixes, typo corrections, broken cross-reference fixes, lint improvements that catch documented failure modes.
-
-Steps:
+1. Choose the version and update `metadata.version` and `metadata.updated` in `SKILL.md`.
+2. Add the matching top CHANGELOG entry with patch, minor, or major rationale.
+3. Update public version surfaces, plugin metadata, migration notes, and issue or PR templates when affected.
+4. Add or update deterministic evaluations and live-harness cases for behavior changes.
+5. Install the pinned official validator in an isolated environment:
 
 ```bash
-cd ~/Projects/arc-ready
-VERSION=1.0.1
-# 1. Make the change.
-# 2. Bump SKILL.md frontmatter version (e.g., 1.0.0 -> 1.0.1) and updated date.
-# 3. Prepend a CHANGELOG entry. Pattern:
-#       ## [$VERSION] - YYYY-MM-DD
-#       <one-paragraph problem-and-fix>
-#       ### Fixed
-#       - bullet
-#       ### Why a patch
-#       <one-paragraph rationale>
-# 4. Run lint:
-bash scripts/lint.sh
-# 5. Commit, push, tag, release:
-git add -A  # or specific files
-git commit -m "v$VERSION: <imperative summary>"
+python3 -m venv .venv-skills-ref
+.venv-skills-ref/bin/pip install -r requirements/skills-ref.txt
+```
+
+6. Run the release evidence command with an absolute validator path:
+
+```bash
+SKILLS_REF_BIN="$PWD/.venv-skills-ref/bin/skills-ref" bash scripts/release-check.sh
+```
+
+7. Run every live-harness case claimed for the release. Record scores with `evals/RESULTS-TEMPLATE.md`. No case may score below 8/10, and no gate invariant may score zero.
+8. Inspect `git diff --check`, the full diff, new reference routes, and the inherited Unicode baseline. A baseline update is allowed only for a reviewed mechanical move of existing source text.
+
+Do not publish a release candidate with a skipped official validator, failing deterministic check, unresolved dogfood failure, or unsupported live-harness claim.
+
+## Publish after evidence passes
+
+Publication is a maintainer action, separate from release preparation:
+
+```bash
+VERSION=1.1.0
+git add -A
+git commit -m "v$VERSION: prepare release"
 git push origin HEAD
 git tag "v$VERSION"
 git push origin "v$VERSION"
 gh release create "v$VERSION" --title "v$VERSION" --notes-from-tag
 ```
 
-The lint enforces the `version:` in SKILL.md matches the top CHANGELOG entry. If the CI lint fails after push, fix and ship a new patch (do not amend or force-push the tag).
+Never bypass hooks. If CI fails after a tag is published, fix forward with a new patch version. Do not move a published tag.
 
-### Ritual 2: minor release (v0.x.0)
-
-For new content within the established pattern catalog (refinements, additions for new ecosystem developments, new references that supplement existing tiers).
-
-Same steps as Ritual 1 with version bumped at the minor position (e.g., 1.0.5 -> 1.1.0). The CHANGELOG entry uses `### Added` and `### Changed` sections instead of `### Fixed`.
-
-### Ritual 3: major release (vX.0.0)
-
-For breaking changes to the artifact contract or the workflow shape.
-
-A 1.0.0 release can also be used to declare the existing contract stable. In that case, it is not a breaking release, but it still needs the same evidence standard because downstream agents and orchestrators will treat the contract as durable.
-
-Major releases require coordination:
-
-1. Open a discussion thread (GitHub Discussions or Issues) at least 30 days before tag.
-2. Update `MIGRATION.md` with the breaking-change matrix.
-3. Verify the dogfood (`aihxp/ready-suite-example`) still works against the new arc-ready, or coordinate the dogfood update.
-4. Notify downstream orchestrator authors (GSD, BMAD, Spec Kit, Superpowers, etc.) if the artifact paths or contracts change.
-5. Tag and release per Ritual 1, with a long-form CHANGELOG entry covering the breaking changes and migration steps.
-
-For a non-breaking 1.0.0 stabilization release, use this checklist instead of the breaking-change matrix:
-
-1. Run `bash scripts/lint.sh --all --verbose`.
-2. Run `bash scripts/dogfood-smoke.sh --verbose`; the smoke must verify resume, artifact paths, AGENTS.md respect, Pillars floor files, at least one source-backed pillar, and the critical-finding gate.
-3. Run one live or synthetic user journey that covers greenfield Pillars adoption and existing-AGENTS.md blocker behavior.
-4. Confirm `README.md` states the stability promise for canonical `.<tier>-ready/` artifacts and Pillars memory files.
-5. Confirm `MIGRATION.md` explains that Pillars adoption is additive for projects imported from the eleven-skill suite.
-6. Confirm the top CHANGELOG entry says why 1.0.0 is stable and names any remaining live-harness validation limits.
-
-### Ritual 4: tag-release parity
-
-Every git tag must have a matching GitHub Release. The lint includes a `tag-release-parity` check that walks `git tag` and verifies each tag has a release.
-
-If a tag is missing a release, run:
+## Validation commands
 
 ```bash
-gh release create <tag> --title "<tag>" --notes-from-tag
+bash -n scripts/*.sh
+bash scripts/lint.sh --all --verbose
+bash scripts/dogfood-smoke.sh --verbose
+bash scripts/eval.sh --verbose
+SKILLS_REF_BIN="$PWD/.venv-skills-ref/bin/skills-ref" bash scripts/lint.sh official-validator --verbose
+bash scripts/lint.sh tag-release-parity --verbose
 ```
 
-If a release is created without a tag (rare), the lint surfaces it; create the tag from the release commit.
+`scripts/release-check.sh` runs all of these evidence surfaces. Tag-release parity is read-only and requires an authenticated GitHub CLI.
 
 ## Lint checks
 
-`bash scripts/lint.sh --all` runs:
-
-| Check | What it does |
+| Check | What it proves |
 |---|---|
-| `unicode-clean` | Em-dash, en-dash, arrow, box-drawing absent from load-bearing files (SKILL.md, README.md, AGENTS.md, CLAUDE.md, SECURITY.md, CONTRIBUTING.md, MAINTAINING.md, MIGRATION.md, top CHANGELOG entry). Inherited reference files are exempt. |
-| `frontmatter-version` | SKILL.md `version:` field matches the top CHANGELOG entry version. |
-| `skill-version-body` | Every `## Skill version:` line in the SKILL.md body matches the frontmatter `version:`. Catches stale template version strings. |
-| `tag-release-parity` | Every git tag has a matching GitHub Release. Requires `gh` authenticated. Runs only in CI or when `gh` is available. |
-| `compatible-with` | SKILL.md `compatible_with:` frontmatter contains the standards-level harness names (claude-code, codex, cursor, windsurf, pi, openclaw, any-agentskills-compatible-harness). antigravity is allowed but not required. |
-| `references-exist` | Every reference path mentioned in SKILL.md (`references/<tier>/<file>.md`) exists in the file system. Detects broken links from SKILL.md to references. |
-| `relative-links-resolve` | Every markdown link to a real reference file inside `references/` resolves from the linking file's directory. Catches cross-tier links written with the wrong relative path. |
-| `tier-folders-populated` | `references/{orchestration,planning,building,shipping,shared}` each have at least one file. Detects accidental directory deletions. |
+| `unicode-clean` | Load-bearing authored files contain no forbidden dash, arrow, or box characters. |
+| `unicode-baseline` | Existing inherited punctuation and emoji counts did not increase in any tracked file. |
+| `frontmatter-version` | `metadata.version` matches the top CHANGELOG entry. |
+| `skill-version-body` | Every embedded progress-schema version matches `metadata.version`. |
+| `compatible-with` | Compatibility metadata names the supported standards-level clients. |
+| `standards-shape` | Top-level Agent Skills fields and scalar limits match the current specification. |
+| `skill-size-budget` | `SKILL.md` remains below 500 lines and 5000 words. |
+| `references-exist` | Every direct `SKILL.md` reference exists. |
+| `reference-basenames` | Reference basenames remain globally unique. |
+| `relative-links-resolve` | Markdown links among references resolve from the source file. |
+| `reference-citations` | Tier-agnostic `references/<basename>.md` citations name real files. |
+| `tier-folders-populated` | Every reference tier remains populated. |
+| `shell-syntax` | Every repository Bash script parses under Bash. |
+| `eval-suite` | Deterministic behavioral invariants pass. |
+| `official-validator` | The current official `skills-ref` validator accepts the repository when installed. |
+| `tag-release-parity` | Every existing tag has a matching GitHub Release. Release-only check. |
 
-`bash scripts/lint.sh --help` lists individual checks.
+## Inherited Unicode policy
 
-## Em-dash discipline
+Load-bearing authored surfaces must remain clean. Some references inherited punctuation and emoji from the source suite. `config/unicode-baseline.txt` records per-file counts so CI rejects increases without rewriting faithful copies.
 
-The hub (predecessor: `aihxp/ready-suite/scripts/lint.sh`) enforced em-dash cleanliness on a defined set of "suite-authored" files. arc-ready does the same:
+After a reviewed mechanical split or move, regenerate and inspect the baseline:
 
-**Enforced**: `SKILL.md` (whole file), `README.md` (whole file), `AGENTS.md`, `CLAUDE.md` (symlink target), `SECURITY.md`, `CONTRIBUTING.md`, `MAINTAINING.md`, `MIGRATION.md`, top CHANGELOG entry only.
+```bash
+bash scripts/update-unicode-baseline.sh
+git diff -- config/unicode-baseline.txt
+```
 
-**Exempt**: `references/<tier>/*.md`. These are faithful copies of the source skills' references, which contain em-dashes from their original authoring. Removing them would alter the inherited content and violate the "faithful consolidation, not v2" principle.
+Never use baseline regeneration to approve newly authored symbols.
 
-If you edit a reference file, do not introduce new em-dashes. The existing ones are inherited; the new ones would be net-new authoring.
+## Tag-release parity
 
-## Predecessor: aihxp/ready-suite
+Every tag must have a matching GitHub Release. Scheduled and manually dispatched CI runs the read-only parity check. If a tag lacks a release, investigate the tag and evidence before creating the missing release.
 
-The eleven-skill suite remains available and supported. arc-ready does not deprecate it. If a critical bug affects both, fix it in arc-ready first (single-repo patch) and port to the relevant suite skill (per-skill patch).
+## Predecessor and downstream coordination
 
-The dogfood example (`aihxp/ready-suite-example`) is the integration test surface for both. If a change to arc-ready breaks the dogfood, the dogfood is the authority; revisit the change.
-
-## Release announcements
-
-Major and minor releases get a release announcement (GitHub Discussions, blog post, or Twitter/X thread). Patch releases do not, unless the patch closes a security issue (then coordinate with `SECURITY.md` disclosure).
-
-## What this file is not
-
-This file is **not** the equivalent of `aihxp/ready-suite/MAINTAINING.md`. The hub maintained twelve repos, a byte-identical SUITE.md ritual, the v2.5.12 precedent recovery story, and the multi-repo coordinated-patch matrix. None of that applies to arc-ready. arc-ready is one repo; the rituals are correspondingly small. If you need the multi-repo discipline (because you are scaffolding a different multi-repo collection), see `references/building/multi-repo-suite-layout.md`.
+The eleven-skill hannsxpeter/ready-suite remains available. When a defect affects both products, repair arc-ready first and port the smallest relevant change to the predecessor. If canonical artifact paths, Pillars behavior, or orchestration semantics change, coordinate the dogfood example and downstream orchestrators before a major release.

@@ -4,7 +4,7 @@ Loaded at Tier 2 (Step 3). The load-bearing adversarial-review step. This refere
 
 The skill walks three lists, in order:
 
-1. **OWASP Web Top 10 (2021 edition).** Still current as of April 2026; 2025 RC1 tracked. [OWASP Top 10:2021](https://owasp.org/Top10/2021/).
+1. **OWASP Web Top 10 (2025 edition).** Current. Load `owasp-web-top-10-2025.md` for the authoritative category order and the mapping to manual tests in the inherited 2021 material below. [OWASP Top 10:2025](https://owasp.org/Top10/2025/).
 2. **OWASP API Security Top 10 (2023 edition).** Current. [OWASP API Security Top 10 - 2023](https://owasp.org/API-Security/editions/2023/en/0x11-t10/).
 3. **OWASP Top 10 for LLM Applications (2025).** Current. Apply only if the app integrates LLMs. [OWASP Top 10 for LLM Applications 2025 PDF](https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-v2025.pdf).
 
@@ -12,7 +12,7 @@ For every category, the walkthrough produces a row:
 
 | Field | Value |
 |---|---|
-| Category | e.g., A01:2021 Broken Access Control |
+| Category | e.g., A01:2025 Broken Access Control |
 | AI-code failure pattern | The common failure shape (from the research catalog) |
 | Scanner gap | What SAST/DAST/SCA typically miss in this category |
 | Manual test performed | Exact command, request, or procedure |
@@ -23,7 +23,9 @@ A walkthrough without the Manual Test row is not a walkthrough; it is a self-rep
 
 ---
 
-## Part 1: OWASP Web Top 10 (2021)
+## Part 1: inherited OWASP Web Top 10 (2021) manual-test catalog
+
+This section preserves the source-suite walkthrough. Do not use its numbering as the current web checklist. Use `owasp-web-top-10-2025.md`, which maps the current 2025 categories to the reusable tests below and adds the new exceptional-conditions test.
 
 ### A01:2021 Broken Access Control
 

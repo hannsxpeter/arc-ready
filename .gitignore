@@ -25,3 +25,9 @@ Thumbs.db
 .observe-ready/
 .launch-ready/
 .harden-ready/
+
+# Local agent orchestration state
+.godpowers/
+
+# Local official-validator environment
+.venv-skills-ref/

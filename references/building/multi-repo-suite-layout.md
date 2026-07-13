@@ -4,7 +4,7 @@ Loaded when SKILL.md Step 0 routes to **Mode D (Multi-repo suite)**: the user is
 
 This file documents the canonical multi-repo-suite layout pattern: the discipline above per-repo hygiene that keeps an N-repo collection coherent. Single-repo work uses Modes A / B / C. Mode D is for the layer above.
 
-The pattern is generalized from the [aihxp/ready-suite](https://github.com/aihxp/ready-suite) suite (12 repos: 11 specialist skills + 1 hub). The pattern applies to any multi-repo collection where: (a) the repos ship together as a logical unit, (b) at least one cross-repo invariant exists (a file that must be byte-identical, a version table that must agree, a release ritual that must propagate), and (c) the maintainer wants the discipline mechanically enforced rather than documented-and-hoped-for.
+The pattern is generalized from the [hannsxpeter/ready-suite](https://github.com/hannsxpeter/ready-suite) suite (12 repos: 11 specialist skills + 1 hub). The pattern applies to any multi-repo collection where: (a) the repos ship together as a logical unit, (b) at least one cross-repo invariant exists (a file that must be byte-identical, a version table that must agree, a release ritual that must propagate), and (c) the maintainer wants the discipline mechanically enforced rather than documented-and-hoped-for.
 
 ## When Mode D applies
 
@@ -226,11 +226,11 @@ The lint check enforces parity. Backfill missing releases by re-running this com
 
 ## Worked example
 
-The aihxp/ready-suite suite implements this pattern across 12 repos. See:
+The hannsxpeter/ready-suite suite implements this pattern across 12 repos. See:
 
-- [aihxp/ready-suite/SUITE.md](https://github.com/aihxp/ready-suite/blob/main/SUITE.md) - the byte-identical collection map.
-- [aihxp/ready-suite/scripts/lint.sh](https://github.com/aihxp/ready-suite/blob/main/scripts/lint.sh) - the meta-linter.
-- [aihxp/ready-suite/MAINTAINING.md](https://github.com/aihxp/ready-suite/blob/main/MAINTAINING.md) - the maintainer rituals (Ritual 1 through Ritual 5).
-- [aihxp/ready-suite/.github/workflows/lint.yml](https://github.com/aihxp/ready-suite/blob/main/.github/workflows/lint.yml) - the CI workflow that clones N siblings and runs the meta-linter.
+- [hannsxpeter/ready-suite/SUITE.md](https://github.com/hannsxpeter/ready-suite/blob/main/SUITE.md) - the byte-identical collection map.
+- [hannsxpeter/ready-suite/scripts/lint.sh](https://github.com/hannsxpeter/ready-suite/blob/main/scripts/lint.sh) - the meta-linter.
+- [hannsxpeter/ready-suite/MAINTAINING.md](https://github.com/hannsxpeter/ready-suite/blob/main/MAINTAINING.md) - the maintainer rituals (Ritual 1 through Ritual 5).
+- [hannsxpeter/ready-suite/.github/workflows/lint.yml](https://github.com/hannsxpeter/ready-suite/blob/main/.github/workflows/lint.yml) - the CI workflow that clones N siblings and runs the meta-linter.
 
 The pattern is reproducible. A new collection can scaffold the hub and the first specialist by following Ritual 5 against this reference, then add specialists one at a time. The maintenance burden scales sublinearly with N once the meta-linter is in place: the hub's daily lint run catches drift across N repos with the same effort as catching drift in 2 repos.

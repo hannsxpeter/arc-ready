@@ -1,7 +1,7 @@
 <!--
 Thanks for contributing to arc-ready.
 
-arc-ready is faithful consolidation of the eleven-skill aihxp/ready-suite. Net-new
+arc-ready is faithful consolidation of the eleven-skill hannsxpeter/ready-suite. Net-new
 failure-mode patterns and net-new discipline rules will be rejected; refinements
 within the established pattern catalog are welcome. See CONTRIBUTING.md.
 
@@ -19,6 +19,8 @@ Please cover the items below in your description. Lint must pass before merge.
 - [ ] Worked-example refinement (EXAMPLE-PRD.md, EXAMPLE-ARCH.md, etc.)
 - [ ] Cross-tier consistency fix
 - [ ] Lint or CI improvement
+- [ ] Product-form or domain-routing refinement
+- [ ] Evaluation case or rubric
 - [ ] Documentation (README, AGENTS.md, MAINTAINING.md, MIGRATION.md, CONTRIBUTING.md, SECURITY.md)
 - [ ] Other (please describe)
 
@@ -31,7 +33,7 @@ Please cover the items below in your description. Lint must pass before merge.
 
 ## Versioning
 
-- [ ] SKILL.md `version:` bumped (X.Y.Z) - patch / minor / major rationale stated below.
+- [ ] SKILL.md `metadata.version` bumped (X.Y.Z) - patch / minor / major rationale stated below.
 - [ ] CHANGELOG.md top entry added with the same version and a "Why a patch / minor / major" paragraph.
 - [ ] If minor or major: MIGRATION.md updated if the artifact contract or workflow shape changed.
 
@@ -40,12 +42,16 @@ Please cover the items below in your description. Lint must pass before merge.
 ## Lint
 
 - [ ] `bash scripts/lint.sh --all` passes locally.
+- [ ] `bash scripts/dogfood-smoke.sh --verbose` passes locally.
+- [ ] `bash scripts/eval.sh --verbose` passes locally.
+- [ ] Official `skills-ref validate` passes against the absolute repository path.
 
 ## Cross-references
 
-- [ ] Any new references registered in SKILL.md references table.
+- [ ] Any new direct workflow references are routed from SKILL.md or a focused router.
 - [ ] Cross-references between reference files use tier-relative paths (same-tier as `bar.md`, cross-tier as `../<other-tier>/bar.md`).
 - [ ] Artifact paths (`.<tier>-ready/<ARTIFACT>.md`) preserved.
+- [ ] Product form, domain composition, and public activation behavior remain covered by evaluations.
 
 ## Related issues
 

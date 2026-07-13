@@ -4,15 +4,15 @@
 # Builds a synthetic project mid-arc, runs arc-ready's resume protocol logic
 # against it, and verifies:
 #
-#   1. The drift-detection check correctly catches PROGRESS.md vs disk drift.
-#   2. The next-sub-step heuristic resolves to the correct tier in dependency
-#      order (not file order).
-#   3. The artifact-path contract is reachable: each tier's canonical .{tier}-
-#      ready/ path is creatable and writable in a project workspace.
-#   4. AGENTS.md emit-respect logic: respect existing, emit if absent.
-#   5. Pillars memory-layer emit creates the required loader and floor pillars.
-#   6. Source-backed Pillars carry artifact-backed decisions, not only stubs.
-#   7. The critical-finding gate logic correctly halts on unresolved Critical.
+#   1. Happy-path and failure-path disk drift detection.
+#   2. Dependency-ordered next-sub-step selection.
+#   3. Reachable canonical artifact paths.
+#   4. AGENTS.md respect and emission behavior.
+#   5. Pillars floor and source-backed memory behavior.
+#   6. Critical-finding publication blocking.
+#   7. Product-form routing coverage.
+#   8. Four-axis domain registry coverage.
+#   9. Late hardening changes invalidate a stale publication pass.
 #
 # This is a STRUCTURAL smoke test, not a functional test of an agent loaded
 # with arc-ready's SKILL.md. Functional testing requires an actual harness
@@ -319,6 +319,44 @@ else
 fi
 [ "$unresolved" -gt "$accepted" ] && mark_pass "gate held: $unresolved unresolved Critical, $accepted accepted -> launch blocked" \
   || mark_fail "gate did not hold (expected to block; unresolved=$unresolved accepted=$accepted)"
+
+# ---------- Test 10: product-form routing ----------
+printf "%sTest 10: six product forms have explicit gates%s\n" "$C_BOLD" "$C_RESET"
+form_ok=true
+for form in "Web application" "API or service" "CLI or SDK" "Mobile or desktop" "Data or ML" "Infrastructure or IaC"; do
+  grep -Fq "## $form" "$REPO_DIR/references/building/product-form-router.md" || form_ok=false
+done
+[ "$form_ok" = "true" ] && mark_pass "all six primary product forms are routed" \
+  || mark_fail "product-form router is incomplete"
+
+# ---------- Test 11: domain composition registry ----------
+printf "%sTest 11: four-axis domain composition and stack mapping%s\n" "$C_BOLD" "$C_RESET"
+registry="$REPO_DIR/references/building/domain-registry.md"
+registry_rows=$(grep -cE '^\| [0-9]+ \|' "$registry")
+registry_ok=true
+for axis in "Project form" "Product archetype" "Industry overlay" "Regulatory overlay"; do
+  grep -Fq "$axis" "$registry" || registry_ok=false
+done
+[ "$registry_ok" = "true" ] && [ "$registry_rows" = "37" ] && mark_pass "37 profiles compose across four explicit axes" \
+  || mark_fail "domain registry is incomplete (rows=$registry_rows)"
+
+# ---------- Test 12: late hardening change invalidates gate ----------
+printf "%sTest 12: stale pre-publication gate is invalidated%s\n" "$C_BOLD" "$C_RESET"
+mkdir -p .launch-ready
+cat > .harden-ready/STATE.md <<'EOF'
+hardening_revision: 2
+updated_at: 2026-07-13T12:05:00Z
+EOF
+cat > .launch-ready/PREPUBLICATION.md <<'EOF'
+checked_at: 2026-07-13T12:00:00Z
+hardening_revision: 1
+unresolved_critical: 0
+verdict: pass
+EOF
+finding_revision=$(awk -F': *' '/^hardening_revision:/{print $2; exit}' .harden-ready/STATE.md)
+checked_revision=$(awk -F': *' '/^hardening_revision:/{print $2; exit}' .launch-ready/PREPUBLICATION.md)
+[ "$finding_revision" != "$checked_revision" ] && mark_pass "late hardening revision invalidates stale pass" \
+  || mark_fail "stale pre-publication pass was not invalidated"
 
 # ---------- Summary ----------
 printf "\n"

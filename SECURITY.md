@@ -17,7 +17,7 @@ This skill is **markdown-only content** (a `SKILL.md` file plus references and a
 
 ## Supported versions
 
-The skill follows semantic versioning. Security fixes land on the latest minor release; older minors do not receive backports. Users are encouraged to track the latest release via the `aihxp/arc-ready/releases` feed.
+The skill follows semantic versioning. Security fixes land on the latest minor release; older minors do not receive backports. Users are encouraged to track the latest release via the `hannsxpeter/arc-ready/releases` feed.
 
 ## Known non-issues
 
@@ -25,6 +25,6 @@ The skill is documentation plus a Bash lint script; it does not execute code at 
 
 ## Predecessor
 
-arc-ready is the consolidated successor to the eleven-skill aihxp/ready-suite. Vulnerabilities affecting both arc-ready and the predecessor suite should be reported here; the maintainer will coordinate disclosure across both.
+arc-ready is the consolidated successor to the eleven-skill hannsxpeter/ready-suite. Vulnerabilities affecting both arc-ready and the predecessor suite should be reported here; the maintainer will coordinate disclosure across both.
 
 If a report affects emitted Pillars agent memory (`AGENTS.md` or `agents/*.md`) in a way that could steer agents toward unsafe behavior, treat it as in scope. Include the generated files and the source arc artifacts that informed them.

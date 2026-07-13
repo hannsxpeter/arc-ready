@@ -92,10 +92,10 @@ These look like arc-ready triggers but are NOT. Route elsewhere:
 
 When a new ambiguity case is observed (the agent or a user surfaces a phrase that plausibly fits two or more tier sub-steps), this file gets a new row.
 
-The grep test for completeness: every row's "User phrase" column should be either a direct trigger phrase from arc-ready's `description` frontmatter, or a synonym a real user is likely to type. Phrases that match exactly one tier sub-step's triggers and have no plausible cross-tier confusion do not need a row here; rows exist for ambiguity, not for documentation.
+The grep test for completeness: every row's "User phrase" column should be either a phrase covered by arc-ready's frontmatter description and README trigger surface, or a synonym a real user is likely to type. Phrases with no plausible cross-tier confusion do not need a row here; rows exist for ambiguity, not for documentation.
 
 ## See also
 
 - `../shared/ORCHESTRATORS.md`: cross-orchestrator composition with GSD, BMAD, Spec Kit, Superpowers, plain harnesses.
 - `../../README.md`: the four-tier diagram and the install entry point.
-- arc-ready's `SKILL.md`: the workflow body. Each tier sub-step's triggers are in the `description:` frontmatter and in the README's trigger surface.
+- arc-ready's `SKILL.md`: the activation and tier-routing body. The compact description covers activation; the README provides expanded trigger examples.
