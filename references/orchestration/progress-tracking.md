@@ -25,13 +25,14 @@ intent: <one-paragraph project description, quoted verbatim from the user's requ
 arc_started: <ISO8601 timestamp of first arc-ready turn>
 last_turn: <ISO8601 timestamp of most recent arc-ready turn>
 harness: <claude-code | codex | antigravity | cursor | windsurf | chat-frontend>
-mode: <new | resume | import>
+arc_mode: <A | B | C | D>
+session_kind: <new | resume | import>
 appetite: <optional time budget; e.g., "2 weeks", "exploring", "1-day prototype">
 skill_version: <arc-ready version>
 ---
 ```
 
-The `last_turn` field updates every turn. Used by the resume protocol to detect "did we crash mid-turn" cases.
+The `last_turn` field updates every turn. Used by the resume protocol to detect "did we crash mid-turn" cases. `arc_mode` is the behavioral router defined by arc-ready. `session_kind` describes how this session entered the workflow. Never use `mode` for both meanings.
 
 ### Section 2: Kickoff intent (Step 2 output, stable thereafter)
 
@@ -86,7 +87,7 @@ Example:
 | 2 | architecture-ready | done | .architecture-ready/ARCH.md | 2026-05-06T14:21:00Z | 2026-05-06T14:39:14Z | 1746541654 | |
 | 3 | roadmap-ready | done | .roadmap-ready/ROADMAP.md | 2026-05-06T14:42:00Z | 2026-05-06T14:55:08Z | 1746542508 | |
 | 4 | stack-ready | done | .stack-ready/STACK.md | 2026-05-06T14:57:30Z | 2026-05-06T15:08:42Z | 1746543122 | |
-| 5 | repo-ready | done | .repo-ready/STATE.md | 2026-05-06T15:11:00Z | 2026-05-06T15:34:22Z | 1746544462 | |
+| 5 | repo-ready | done | .repo-ready/SCAFFOLD.md + repo root | 2026-05-06T15:11:00Z | 2026-05-06T15:34:22Z | 1746544462 | |
 | 6 | production-ready | in-flight | .production-ready/STATE.md | 2026-05-06T15:36:00Z | | | running tier 1 |
 | 7 | deploy-ready | pending | | | | | |
 | 8 | observe-ready | pending | | | | | |
@@ -124,8 +125,9 @@ Run **every turn**, not just on explicit `/resume`. This is non-optional and is 
 
 ```
 1. Read .arc-ready/PROGRESS.md.
-   If absent: arc-ready is in `new` mode (Step 0 of workflow).
-   If present: arc-ready is in `resume` mode.
+   If absent: `session_kind` is `new` (Step 0 of workflow).
+   If present: `session_kind` is `resume`.
+   Derive `arc_mode` independently as A, B, C, or D from project state and intent.
 
 2. For every row in the step ledger with status `done` or `imported`:
    a. Check that `artifact_path` exists on disk.
@@ -183,14 +185,14 @@ The default on a fresh kickoff is to import existing artifacts (option a). The u
 | architecture-ready | `.architecture-ready/ARCH.md` |
 | roadmap-ready | `.roadmap-ready/ROADMAP.md` |
 | stack-ready | `.stack-ready/STACK.md` |
-| repo-ready | **Multi-file:** README.md at repo root AND any of (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `.editorconfig`, `.repo-ready/SECURITY.md`). repo-ready does not produce a single STATE.md. |
+| repo-ready | `.repo-ready/SCAFFOLD.md` plus the verified repo-root scaffold files. |
 | production-ready | `.production-ready/STATE.md` |
-| deploy-ready | `.deploy-ready/STATE.md` |
-| observe-ready | `.observe-ready/STATE.md` |
+| deploy-ready | `.deploy-ready/DEPLOY.md` (`.deploy-ready/STATE.md` is companion resume state) |
+| observe-ready | `.observe-ready/OBSERVE.md` (`.observe-ready/STATE.md` is companion resume state) |
 | launch-ready | `.launch-ready/STATE.md` |
-| harden-ready | `.harden-ready/STATE.md` (and `.harden-ready/FINDINGS.md` for the launch-gate check) |
+| harden-ready | `.harden-ready/FINDINGS.md` (`.harden-ready/STATE.md` is companion resume state) |
 
-When PROGRESS.md records `artifact_path` for a tier, it stores the canonical path string from this table. For repo-ready, the field stores the multi-file expression (e.g., `README.md + .github/workflows/`); the verification walks each file.
+When PROGRESS.md records `artifact_path` for a tier, it stores the canonical primary path from this table. Companion `STATE.md` files remain valid resume indexes but never replace the primary deliverable. For repo-ready, verification checks `.repo-ready/SCAFFOLD.md` and the scaffolded repo-root evidence.
 
 ## What PROGRESS.md is NOT
 
@@ -220,10 +222,10 @@ Arc completed on <ISO8601>. The project shipped with the following posture:
 | architecture-ready | done | .architecture-ready/ARCH.md | 2026-05-06T14:39:14Z |
 | roadmap-ready | done | .roadmap-ready/ROADMAP.md | 2026-05-06T14:55:08Z |
 | stack-ready | done | .stack-ready/STACK.md | 2026-05-06T15:08:42Z |
-| repo-ready | done | .repo-ready/STATE.md | 2026-05-06T15:34:22Z |
+| repo-ready | done | .repo-ready/SCAFFOLD.md + repo root | 2026-05-06T15:34:22Z |
 | production-ready | done | .production-ready/STATE.md | 2026-05-08T19:11:55Z |
-| deploy-ready | done | .deploy-ready/STATE.md | 2026-05-09T11:02:18Z |
-| observe-ready | done | .observe-ready/STATE.md | 2026-05-09T16:48:01Z |
+| deploy-ready | done | .deploy-ready/DEPLOY.md | 2026-05-09T11:02:18Z |
+| observe-ready | done | .observe-ready/OBSERVE.md | 2026-05-09T16:48:01Z |
 | launch-ready | done | .launch-ready/STATE.md | 2026-05-12T09:30:14Z |
 | harden-ready | deferred | (not yet produced) | - |
 

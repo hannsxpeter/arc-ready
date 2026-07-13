@@ -1,6 +1,6 @@
 # Domain Stacks
 
-Per-dimension picks for 12 domain profiles. This is the core data the skill draws candidates from in Step 3.
+Per-dimension picks for 12 stack profiles. This is the core candidate data the skill draws from after project-form and domain composition. Use `references/domain-registry.md` to map product archetypes and industry overlays into these profiles. A mapping narrows candidates; it does not replace weighted scoring, pairing checks, or freshness verification.
 
 **Scope owned by this file:** per-domain top picks across all 12 scoring dimensions, with one-line rationale and domain-specific flip points. Pre-combined bundles (Safe Default / Fast-to-Ship / Enterprise) live in `stack-bundles.md`. Anti-pairings live in `pairing-rules.md`. Scoring math lives in `scoring-framework.md`.
 

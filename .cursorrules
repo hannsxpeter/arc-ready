@@ -1,9 +1,7 @@
 # arc-ready (Cursor adaptation)
 #
-# This file is a slim Cursor-rule version of arc-ready's SKILL.md frontmatter.
-# Cursor's per-rule recommended limit is ~2KB; the full SKILL.md description
-# is over the threshold. This file gives Cursor a trimmed
-# trigger surface that still routes correctly.
+# This file is a slim Cursor-rule version of arc-ready's activation surface.
+# It keeps routing concise and sends execution to the full skill.
 #
 # For the full skill body, load arc-ready/SKILL.md.
 
@@ -15,7 +13,8 @@ When the user asks to do any of:
 - pick a stack, choose a database, frontend or backend framework decision
 - set up a repo, add CI, GitHub Actions, configure linting, README, license
 - Pillars, task-routed agent memory, steer future agent outputs
-- build a dashboard, admin panel, internal tool, back office, CRUD app
+- build a web app, API or service, CLI or SDK, mobile or desktop app, data or ML system, or infrastructure project
+- select product form, product archetype, industry overlay, or regulatory overlay
 - deploy, CI/CD pipeline, promote to staging, expand-contract, canary, rollback
 - add monitoring, define an SLO, alerts, write a runbook, error budget policy
 - launch, build a landing page, Product Hunt, Show HN, waitlist, OG card
@@ -27,6 +26,6 @@ Load `arc-ready/SKILL.md` and follow the tier-routed workflow.
 
 Modes: A (full arc, greenfield), B (specific tier, existing codebase), C (retroactive audit), D (multi-repo suite layout).
 
-Artifacts: written to canonical .{tier}-ready/{ARTIFACT}.md paths. File-system projects also get Pillars-compatible AGENTS.md plus agents/*.md memory. Refuses scope leak, AI-slop output, hollow output, paper SLOs, paper canaries, scanner-only security.
+Artifacts: written to canonical .{tier}-ready/{ARTIFACT}.md paths. File-system projects also get Pillars-compatible AGENTS.md plus agents/*.md memory. Public activation requires a fresh hardening recheck in .launch-ready/PREPUBLICATION.md. Refuses scope leak, AI-slop output, hollow output, paper SLOs, paper canaries, scanner-only security.
 
-Faithful consolidation of the eleven-skill aihxp/ready-suite into one repo. See arc-ready/MIGRATION.md.
+Faithful consolidation of the eleven-skill hannsxpeter/ready-suite into one repo. See arc-ready/MIGRATION.md.

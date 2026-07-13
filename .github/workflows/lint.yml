@@ -10,31 +10,42 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
+  verify:
     name: meta-linter
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
-      - name: Run lint (skip tag-release-parity on push; releases are created after the tag push)
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
-        run: |
-          bash scripts/lint.sh unicode-clean --verbose
-          bash scripts/lint.sh frontmatter-version --verbose
-          bash scripts/lint.sh compatible-with --verbose
-          bash scripts/lint.sh references-exist --verbose
-          bash scripts/lint.sh tier-folders-populated --verbose
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.13'
 
-      - name: Run full lint (schedule and manual)
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: bash scripts/lint.sh --all --verbose
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install pinned official validator
+        run: python -m pip install -r requirements/skills-ref.txt
+
+      - name: Check Bash syntax
+        run: bash -n scripts/*.sh
+
+      - name: Run full repository lint
+        run: SKILLS_REF_BIN="$(command -v skills-ref)" bash scripts/lint.sh --all --verbose
 
       - name: Run dogfood smoke test
         run: bash scripts/dogfood-smoke.sh --verbose
+
+      - name: Run deterministic evaluations
+        run: bash scripts/eval.sh --verbose
+
+      - name: Run official Agent Skills validation
+        run: skills-ref validate "$GITHUB_WORKSPACE"
+
+      - name: Check tag-release parity
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: bash scripts/lint.sh tag-release-parity --verbose
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

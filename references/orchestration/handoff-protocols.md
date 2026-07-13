@@ -160,7 +160,7 @@ The two-check verification (exists, non-empty) is invariant. Only the read mecha
 If arc-ready reaches a step where the next tier is not installed:
 
 1. **Detect.** The Skill tool errors (Claude Code, Codex, Antigravity), or the user reports the tier is not on disk (Cursor, Windsurf), or the user does not have access (chat-only).
-2. **Surface install instructions.** Each tier has a GitHub URL: https://github.com/aihxp/<tier-name>. The recommended install on Claude Code is symlinking the dev copy:
+2. **Surface install instructions.** Each tier has a GitHub URL: https://github.com/hannsxpeter/<tier-name>. The recommended install on Claude Code is symlinking the dev copy:
    ```bash
    ln -s ~/Projects/<tier-name> ~/.claude/skills/<tier-name>
    ```

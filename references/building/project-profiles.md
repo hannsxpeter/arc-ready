@@ -1,8 +1,8 @@
 # Project Profiles
 
-The master reference for determining what to generate. Every decision about which files to create, which tools to configure, and how much ceremony to apply flows through this matrix.
+The master reference for determining repository ceremony by stage and audience. Select the primary project form through `references/product-form-router.md` first, then apply this matrix to decide which files to create, which tools to configure, and how much ceremony is appropriate.
 
-**Usage:** When the skill triggers, look up the project type, stage, and audience. The intersection tells you exactly which files to generate and which tools to configure. Do not guess. Do not dump everything. Use this file.
+**Usage:** When the skill triggers, select project form, then look up stage and audience. The intersection tells you which repository files and controls to generate. Do not use web-application assumptions for an API, CLI or SDK, native client, data or ML system, or infrastructure project.
 
 ---
 

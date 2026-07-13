@@ -1,6 +1,6 @@
 # Pillars memory layer for arc-ready
 
-This reference defines the required bridge between arc-ready artifacts and the [Pillars](https://github.com/aihxp/pillars) standard for file-system projects.
+This reference defines the required bridge between arc-ready artifacts and the [Pillars](https://github.com/hannsxpeter/pillars) standard for file-system projects.
 
 Pillars is project memory for coding agents: a project-root `AGENTS.md` describes how to load task-routed files under `agents/*.md`. arc-ready is the artifact pipeline: PRD, architecture, roadmap, stack, repo, production, deploy, observe, launch, and harden. The memory layer distills stable decisions from arc-ready artifacts into Pillars so future implementation work loads the right facts without rereading every artifact on every task.
 

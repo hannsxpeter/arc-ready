@@ -26,7 +26,7 @@ Substitutions are double-braced. Resolve from PROGRESS.md and the artifact paths
 ````markdown
 # {{project_name}}
 
-This project follows the [Pillars](https://github.com/aihxp/pillars) standard. Coding agents working in this repository read the pillar files in `./agents/*.md` to stay aligned with the project's facts, decisions, and conventions.
+This project follows the [Pillars](https://github.com/hannsxpeter/pillars) standard. Coding agents working in this repository read the pillar files in `./agents/*.md` to stay aligned with the project's facts, decisions, and conventions.
 
 ## At the start of any task
 
@@ -56,7 +56,7 @@ excluded: []
 
 ## arc-ready artifacts
 
-This project was shaped via [arc-ready](https://github.com/aihxp/arc-ready). For source-of-truth planning, build, ship, and hardening decisions, consult the artifacts below before changing the related area.
+This project was shaped via [arc-ready](https://github.com/hannsxpeter/arc-ready). For source-of-truth planning, build, ship, and hardening decisions, consult the artifacts below before changing the related area.
 
 | Tier | Status | Artifact |
 |---|---|---|
@@ -192,7 +192,7 @@ Tier 0 may emit the loader and mandatory stubs. Tier 2.1 enriches the memory lay
 
 ## Cross-references
 
-- [Pillars standard](https://github.com/aihxp/pillars) - task-routed agent memory standard
+- [Pillars standard](https://github.com/hannsxpeter/pillars) - task-routed agent memory standard
 - [agents.md open standard](https://agents.md/) - the AGENTS.md ecosystem standard
 - `references/building/pillars-integration.md` - required memory-layer mapping from arc-ready artifacts to Pillars
 - `references/building/onboarding-dx.md` Section 9 - per-tool deltas and conventions

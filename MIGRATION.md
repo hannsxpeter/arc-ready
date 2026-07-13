@@ -1,8 +1,20 @@
-# Migration: from aihxp/ready-suite to arc-ready
+# Migration: from hannsxpeter/ready-suite to arc-ready
 
-If you currently use the eleven-skill aihxp/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready) and want to switch to arc-ready, this guide covers the install change, trigger surface, where each former skill's content now lives, and the artifact contract.
+If you currently use the eleven-skill hannsxpeter/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready) and want to switch to arc-ready, this guide covers the install change, trigger surface, where each former skill's content now lives, and the artifact contract.
 
 The TL;DR: same content, same discipline, same artifacts, one install. The eleven-skill suite remains available; arc-ready is the recommended starting point for new projects.
+
+## What changes in arc-ready 1.1
+
+The 1.1 source layout and routing are additive:
+
+- `SKILL.md` is now a concise activation and routing surface. Detailed tier procedures, schemas, examples, and grep tests live in focused references and load only when needed.
+- Project routing selects a primary form before domain guidance: web application, API or service, CLI or SDK, mobile or desktop, data or ML, or infrastructure or IaC.
+- Domain guidance composes project form, product archetype, industry overlay, and regulatory overlay. The split domain catalog preserves the inherited guidance while reducing per-task context load.
+- Public launch preparation can overlap hardening, but public activation requires a fresh `.launch-ready/PREPUBLICATION.md` tied to the latest hardening revision.
+- Repository releases now include deterministic evaluations and official Agent Skills validation.
+
+No existing project artifact must move. The frontmatter metadata change and progressive-disclosure refactor affect skill maintainers, not consumer project state.
 
 ## Install change
 
@@ -10,24 +22,24 @@ Before:
 
 ```bash
 # Eleven separate skills, each in its own repo.
-git clone https://github.com/aihxp/kickoff-ready ~/.claude/skills/kickoff-ready
-git clone https://github.com/aihxp/prd-ready ~/.claude/skills/prd-ready
-git clone https://github.com/aihxp/architecture-ready ~/.claude/skills/architecture-ready
-git clone https://github.com/aihxp/roadmap-ready ~/.claude/skills/roadmap-ready
-git clone https://github.com/aihxp/stack-ready ~/.claude/skills/stack-ready
-git clone https://github.com/aihxp/repo-ready ~/.claude/skills/repo-ready
-git clone https://github.com/aihxp/production-ready ~/.claude/skills/production-ready
-git clone https://github.com/aihxp/deploy-ready ~/.claude/skills/deploy-ready
-git clone https://github.com/aihxp/observe-ready ~/.claude/skills/observe-ready
-git clone https://github.com/aihxp/launch-ready ~/.claude/skills/launch-ready
-git clone https://github.com/aihxp/harden-ready ~/.claude/skills/harden-ready
+git clone https://github.com/hannsxpeter/kickoff-ready ~/.claude/skills/kickoff-ready
+git clone https://github.com/hannsxpeter/prd-ready ~/.claude/skills/prd-ready
+git clone https://github.com/hannsxpeter/architecture-ready ~/.claude/skills/architecture-ready
+git clone https://github.com/hannsxpeter/roadmap-ready ~/.claude/skills/roadmap-ready
+git clone https://github.com/hannsxpeter/stack-ready ~/.claude/skills/stack-ready
+git clone https://github.com/hannsxpeter/repo-ready ~/.claude/skills/repo-ready
+git clone https://github.com/hannsxpeter/production-ready ~/.claude/skills/production-ready
+git clone https://github.com/hannsxpeter/deploy-ready ~/.claude/skills/deploy-ready
+git clone https://github.com/hannsxpeter/observe-ready ~/.claude/skills/observe-ready
+git clone https://github.com/hannsxpeter/launch-ready ~/.claude/skills/launch-ready
+git clone https://github.com/hannsxpeter/harden-ready ~/.claude/skills/harden-ready
 ```
 
 After:
 
 ```bash
 # One skill.
-git clone https://github.com/aihxp/arc-ready ~/.claude/skills/arc-ready
+git clone https://github.com/hannsxpeter/arc-ready ~/.claude/skills/arc-ready
 ```
 
 For other harnesses (Codex, Cursor, Windsurf, Antigravity, Pi, OpenClaw), install per the harness's Agent Skills standard install path.
@@ -50,7 +62,7 @@ The eleven-skill suite had per-skill triggers ("write a PRD" routed to prd-ready
 | launch my product, build a landing page, Product Hunt | launch-ready | Tier 3.3 |
 | adversarial review, pen-test prep, OWASP walkthrough | harden-ready | Tier 3.4 |
 
-The full trigger list is in `SKILL.md` frontmatter and `README.md`.
+The activation summary is in the `SKILL.md` description; expanded examples are in `README.md`.
 
 ## Where former skill content lives now
 
@@ -60,7 +72,7 @@ Each former skill's content is preserved in arc-ready under the corresponding ti
 
 | Former path | New path |
 |---|---|
-| `kickoff-ready/SKILL.md` | Consolidated into `SKILL.md` Tier 0 (Steps 0.1 - 0.6) |
+| `kickoff-ready/SKILL.md` | Routed by `SKILL.md`; detailed Tier 0 procedures live in focused `references/orchestration/` files |
 | `kickoff-ready/references/kickoff-antipatterns.md` | `references/orchestration/kickoff-antipatterns.md` |
 | `kickoff-ready/references/sequencing-rules.md` | `references/orchestration/sequencing-rules.md` |
 | `kickoff-ready/references/handoff-protocols.md` | `references/orchestration/handoff-protocols.md` |
@@ -73,7 +85,7 @@ Each former skill's content is preserved in arc-ready under the corresponding ti
 
 | Former path pattern | New path pattern |
 |---|---|
-| `<planning-skill>/SKILL.md` | Consolidated into `SKILL.md` Tier 1.1 / 1.2 / 1.3 / 1.4 |
+| `<planning-skill>/SKILL.md` | Routed by `SKILL.md`; detailed procedures live in `references/planning/planning-workflow.md` |
 | `<planning-skill>/references/*.md` | `references/planning/*.md` (filenames preserved) |
 | `<planning-skill>/references/RESEARCH-2026-04.md` | `references/shared/RESEARCH-2026-04.md` (consolidated) |
 | `<planning-skill>/references/EXAMPLE-*.md` | `references/planning/EXAMPLE-*.md` |
@@ -82,7 +94,7 @@ Each former skill's content is preserved in arc-ready under the corresponding ti
 
 | Former path pattern | New path pattern |
 |---|---|
-| `<building-skill>/SKILL.md` | Consolidated into `SKILL.md` Tier 2.1 / 2.2 |
+| `<building-skill>/SKILL.md` | Routed by `SKILL.md`; detailed procedures live in `references/building/building-workflow.md` |
 | `<building-skill>/references/*.md` | `references/building/*.md` (filenames preserved) |
 | `production-ready/ORCHESTRATORS.md` | `references/shared/ORCHESTRATORS.md` |
 
@@ -90,11 +102,11 @@ Each former skill's content is preserved in arc-ready under the corresponding ti
 
 | Former path pattern | New path pattern |
 |---|---|
-| `<shipping-skill>/SKILL.md` | Consolidated into `SKILL.md` Tier 3.1 / 3.2 / 3.3 / 3.4 |
+| `<shipping-skill>/SKILL.md` | Routed by `SKILL.md`; detailed procedures live in `references/shipping/shipping-workflow.md` |
 | `<shipping-skill>/references/*.md` | `references/shipping/*.md` (filenames preserved) |
 | `<shipping-skill>/references/RESEARCH-2026-04.md` | `references/shared/RESEARCH-2026-04.md` (consolidated) |
 
-### Hub (aihxp/ready-suite)
+### Hub (hannsxpeter/ready-suite)
 
 | Former path | New equivalent |
 |---|---|
@@ -107,7 +119,7 @@ Each former skill's content is preserved in arc-ready under the corresponding ti
 
 ## Artifact contract: unchanged
 
-The most important property of the migration is that artifact paths are identical. Downstream consumers (orchestrators like GSD, BMAD, Spec Kit, Superpowers; the dogfood at `aihxp/ready-suite-example`) consume artifacts at:
+The most important property of the migration is that artifact paths are identical. Downstream consumers (orchestrators like GSD, BMAD, Spec Kit, Superpowers; the dogfood at `hannsxpeter/ready-suite-example`) consume artifacts at:
 
 - `.prd-ready/PRD.md`
 - `.architecture-ready/ARCH.md`
@@ -118,6 +130,7 @@ The most important property of the migration is that artifact paths are identica
 - `.deploy-ready/DEPLOY.md`
 - `.observe-ready/OBSERVE.md`
 - `.launch-ready/STATE.md`
+- `.launch-ready/PREPUBLICATION.md` (required companion only when public activation is in scope)
 - `.harden-ready/FINDINGS.md`
 
 These paths are stable across the eleven-skill suite and arc-ready. arc-ready also writes its own `.arc-ready/PROGRESS.md` for the cross-tier ledger.
@@ -158,7 +171,7 @@ Every named failure mode, every grep test, every workflow guard from the source 
 - `references/shipping/launch-antipatterns.md`
 - `references/shipping/harden-antipatterns.md`
 
-The "have-nots" sections in `SKILL.md` consolidate the load-bearing patterns from each catalog, with each pattern keeping its name and grep target.
+The load-bearing pattern catalog and grep tests remain available through `references/orchestration/failure-mode-catalog.md` and `references/orchestration/verification-grep-tests.md`, with per-tier antipattern references preserving each inherited pattern.
 
 ## Running both
 
@@ -185,5 +198,5 @@ Both are valid. arc-ready is the recommended path; the eleven-skill suite is the
 ## Open questions
 
 - **Trigger collision**: if both arc-ready and the eleven-skill suite are installed, the harness may route ambiguously. Recommended posture: install one or the other, not both, on a given machine.
-- **Dogfood maintenance**: `aihxp/ready-suite-example` continues to dogfood the eleven-skill suite. arc-ready's dogfood acceptance test is that the same artifacts (at the same paths) are reproducible from arc-ready. If they diverge, the dogfood is the authority.
+- **Dogfood maintenance**: `hannsxpeter/ready-suite-example` continues to dogfood the eleven-skill suite. arc-ready's dogfood acceptance test is that the same artifacts (at the same paths) are reproducible from arc-ready. If they diverge, the dogfood is the authority.
 - **Pillars adoption for imported projects**: a project started under the eleven-skill suite may not have `agents/*.md`. When arc-ready imports it, Tier 2.1 should add the Pillars memory layer unless an existing `AGENTS.md` blocks adoption.

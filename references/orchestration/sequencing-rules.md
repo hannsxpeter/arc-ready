@@ -28,14 +28,12 @@ architecture-ready
                           v
                        observe-ready
                           |
-                          +---> launch-ready -----+
-                          |                       |
-                          +---> harden-ready -----+ (parallel; harden-ready
-                                                    Critical findings gate
-                                                    launch-ready completion)
+                          +---> launch assets ----+
+                          |                       +---> pre-publication gate ---> public activation
+                          +---> harden-ready -----+
 ```
 
-Topological order: prd-ready, architecture-ready, (roadmap-ready, stack-ready), repo-ready, production-ready, deploy-ready, observe-ready, (launch-ready, harden-ready). Two pairs of nodes are technically parallelizable (roadmap-ready and stack-ready in planning; launch-ready and harden-ready in shipping). Production reality, parallelism rules, and gate logic are below.
+Topological order: prd-ready, architecture-ready, (roadmap-ready, stack-ready), repo-ready, production-ready, deploy-ready, observe-ready, (launch asset preparation, harden-ready), pre-publication gate, public activation. Two pairs of nodes are technically parallelizable (roadmap-ready and stack-ready in planning; launch asset preparation and harden-ready in shipping). Production reality, parallelism rules, and gate logic are below.
 
 ## Per-tier upstream contract
 
@@ -47,12 +45,12 @@ This is the data arc-ready uses to verify the ghost-handoff guard. Before invoki
 | 2 | architecture-ready | `.prd-ready/PRD.md` | `.architecture-ready/ARCH.md` |
 | 3 | roadmap-ready | `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md` | `.roadmap-ready/ROADMAP.md` |
 | 4 | stack-ready | `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md` (recommended; not required) | `.stack-ready/STACK.md` |
-| 5 | repo-ready | (none formally; benefits from `.stack-ready/STACK.md`) | Repo scaffolding presence: README.md at repo root AND any of (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `.editorconfig`, `.repo-ready/SECURITY.md`). repo-ready does not produce a single canonical STATE.md; verification is a multi-file scaffolding check. |
+| 5 | repo-ready | (none formally; benefits from `.stack-ready/STACK.md`) | `.repo-ready/SCAFFOLD.md` plus repo scaffolding presence: README.md at repo root AND any of (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `.editorconfig`, `.repo-ready/SECURITY.md`). |
 | 6 | production-ready | `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, `.roadmap-ready/ROADMAP.md`, `.stack-ready/STACK.md` | `.production-ready/STATE.md` |
-| 7 | deploy-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, repo scaffolding (per row 5) | `.deploy-ready/STATE.md` |
-| 8 | observe-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, `.deploy-ready/STATE.md`, repo scaffolding (per row 5) | `.observe-ready/STATE.md` |
-| 9 | launch-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, `.deploy-ready/STATE.md`, `.observe-ready/STATE.md` | `.launch-ready/STATE.md` |
-| 10 | harden-ready | `.architecture-ready/ARCH.md`, `.production-ready/STATE.md`, `.deploy-ready/STATE.md`, `.observe-ready/STATE.md`, `.repo-ready/SECURITY.md` (the specific repo-ready file harden-ready consumes) | `.harden-ready/STATE.md` and `.harden-ready/FINDINGS.md` |
+| 7 | deploy-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, repo scaffolding (per row 5) | `.deploy-ready/DEPLOY.md` (`STATE.md` is companion resume state) |
+| 8 | observe-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, `.deploy-ready/DEPLOY.md`, repo scaffolding (per row 5) | `.observe-ready/OBSERVE.md` (`STATE.md` is companion resume state) |
+| 9 | launch-ready | `.production-ready/STATE.md`, `.stack-ready/STACK.md`, `.deploy-ready/DEPLOY.md`, `.observe-ready/OBSERVE.md` | `.launch-ready/STATE.md` |
+| 10 | harden-ready | `.architecture-ready/ARCH.md`, `.production-ready/STATE.md`, `.deploy-ready/DEPLOY.md`, `.observe-ready/OBSERVE.md`, `.repo-ready/SECURITY.md` (the specific repo-ready file harden-ready consumes) | `.harden-ready/FINDINGS.md` (`STATE.md` is companion resume state) |
 
 The upstream lists come directly from each tier's `upstream:` frontmatter and "Consumes from upstream" sections. Two notes on the rough edges this dogfood walk surfaced:
 
@@ -77,17 +75,17 @@ Both list `pairs_with` each other. They write to different paths primarily (repo
 
 Both consume the same shipping-tier inputs (deployed app, monitored app). Neither lists the other as upstream.
 
-**Default: parallel with critical-finding gate.** harden-ready and launch-ready run concurrently after observe-ready completes. The critical-finding gate (Section 5 below) is the only synchronization point.
+**Default: parallel preparation with serial public activation.** harden-ready and launch asset preparation run concurrently after observe-ready completes. The timestamped pre-publication gate (Section 5 below) is the synchronization point immediately before public activation.
 
 **Reasons for parallel default:**
 
-- harden-ready's `pairs_with: [deploy-ready, observe-ready, launch-ready]` declares it is designed to run alongside, not as a launch gate.
+- harden-ready's historical pairing declaration means review and launch asset work can proceed together. It does not authorize public activation before the fresh gate.
 - The shipping tier already takes long enough; serializing harden-ready and launch-ready doubles the wall-clock time without proportional benefit.
 - Most projects benefit from a soft-launch (private alpha, invite-only beta) running concurrently with adversarial review, with a hard public-launch gate when a Critical finding lands.
 
 **Override option 1: gate-launch-on-hardening.** For security-sensitive projects (healthcare, finance, regulated industries), the user can declare in PROGRESS.md `harden_gate: launch-blocked-until-clean`. Then launch-ready does not start until harden-ready emits a clean (no-Critical, no-High) report.
 
-**Override option 2: skip harden-ready.** For one-day prototypes with no real user surface (internal demo, single-use proof-of-concept, throwaway script), the user can declare `harden-ready: skipped` with reason. PROGRESS.md records the skip explicitly. The skip is an audit-visible decision, not silence.
+**Override option 2: skip harden-ready.** For one-day prototypes with no real user surface (internal demo, single-use proof-of-concept, throwaway script), the user can declare `harden-ready: skipped` with reason. PROGRESS.md records the skip explicitly. This removes public activation from scope; it does not bypass the public gate.
 
 ### 4.3 Planning tier: roadmap-ready and stack-ready
 
@@ -102,7 +100,7 @@ The two are technically parallelizable; arc-ready does not initiate parallel by 
 
 ## Critical-finding gate logic
 
-The gate exists because harden-ready is the only tier whose output can require arc-ready to halt a tier that is already in-flight (launch-ready). Every other tier boundary is an upstream dependency, not a synchronization gate.
+The gate exists because harden-ready can change after launch assets are prepared. Every other tier boundary is an upstream dependency; public activation needs a freshness-checked synchronization gate.
 
 ### Gate inputs
 
@@ -112,12 +110,12 @@ The gate exists because harden-ready is the only tier whose output can require a
 ### Gate algorithm
 
 ```
-On every arc-ready turn during shipping tier:
+On every arc-ready turn during shipping tier and immediately before publication:
   1. Read .harden-ready/FINDINGS.md if present.
   2. Identify Critical findings with status != Closed.
   3. If any Critical findings are open:
-     a. If launch-ready is in-flight or done:
-        - Halt launch-ready (or note the violation if already done).
+     a. If launch asset preparation is in-flight or done:
+        - Allow asset work to continue but block public activation.
         - Surface the finding to the user.
         - Require either:
           (i) the finding to move to Closed (the fix lands and is verified),
@@ -125,9 +123,14 @@ On every arc-ready turn during shipping tier:
           (ii) an explicit risk acceptance in PROGRESS.md with named risk
                owner, justification, and dated acceptance per the
                harden-ready risk-register pattern.
-     b. If launch-ready is pending:
-        - Block launch-ready start until (i) or (ii) above.
-  4. If no Critical findings are open: launch-ready proceeds normally.
+     b. If launch asset preparation is pending:
+        - It may start, but it cannot publish.
+  4. Re-read hardening artifacts immediately before publication.
+  5. Record checked_at, hardening revision, finding counts, and verdict in
+     .launch-ready/PREPUBLICATION.md.
+  6. Publish only if the verdict passes and checked_at is later than the
+     latest hardening update.
+  7. If hardening changes, invalidate the gate and re-run it.
 ```
 
 ### Gate override
@@ -237,7 +240,7 @@ Two specific design choices are worth recording:
 
 1. **stack-ready after roadmap-ready, not before architecture-ready.** stack-ready's description explicitly accepts a project with only a one-paragraph idea; it does not require PRD + ARCH + ROADMAP. But within arc-ready's full chain, putting stack-ready after roadmap-ready means the stack decision is informed by the time horizon (the roadmap) and the system shape (the architecture). This produces better stack picks. A user with no PRD and no ARCH can invoke stack-ready directly outside arc-ready; that is graceful degradation, not an arc-ready optimization.
 
-2. **harden-ready in parallel with launch-ready, not before.** harden-ready's `pairs_with: [deploy-ready, observe-ready, launch-ready]` is the load-bearing signal. The skill is designed to run alongside the shipping tier. The critical-finding gate handles the case where adversarial review surfaces a launch-blocking issue.
+2. **harden-ready in parallel with launch asset preparation, followed by a serial public gate.** The historical pairing remains useful for wall-clock time. The fresh pre-publication check handles a late launch-blocking finding without racing publication.
 
 The full justification for each design choice is in `references/shared/RESEARCH-2026-04.md` Section 5.
 

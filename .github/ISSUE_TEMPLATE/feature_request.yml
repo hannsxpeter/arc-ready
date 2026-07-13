@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        arc-ready is faithful consolidation of the eleven-skill aihxp/ready-suite, not a v2.
+        arc-ready is faithful consolidation of the eleven-skill hannsxpeter/ready-suite, not a v2.
         Net-new failure-mode patterns and discipline rules will be rejected.
         Refinements within the established pattern catalog (clarifications, references for new
         ecosystem developments, lint improvements that catch documented modes) are welcome.
@@ -27,6 +27,31 @@ body:
       description: What specifically would change in SKILL.md, references, lint, or workflow?
     validations:
       required: true
+  - type: dropdown
+    id: product_form
+    attributes:
+      label: Affected project form
+      options:
+        - All forms
+        - Web application
+        - API or service
+        - CLI or SDK
+        - Mobile or desktop
+        - Data or ML
+        - Infrastructure or IaC
+        - Not applicable
+    validations:
+      required: true
+  - type: textarea
+    id: domain
+    attributes:
+      label: Domain or regulatory impact
+      description: Name any product archetype, industry overlay, regulatory overlay, or registry mapping affected.
+  - type: textarea
+    id: evaluation
+    attributes:
+      label: Evaluation evidence
+      description: Name the deterministic invariant or live-harness case that should prove the change.
   - type: dropdown
     id: scope
     attributes:

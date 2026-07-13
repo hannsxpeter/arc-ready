@@ -1,3 +1,31 @@
+# Global writing rules
+
+## Never use em dashes or en dashes
+
+Do not use the em dash character (U+2014) or en dash character (U+2013) in any output. This applies everywhere: chat responses, code comments, commit messages, docs, markdown files, PR descriptions, generated text, and any file you write or edit. Do not introduce them into files that don't already have them. When editing existing files that contain them, do not add new ones.
+
+Use these alternatives instead:
+- Comma, colon, or semicolon for a pause or aside
+- Parentheses for a parenthetical
+- Two separate sentences when the break is strong
+- Hyphen (`-`) for compound words and number ranges (e.g., write `pages 10-15` and never use the en dash character)
+
+This rule is absolute. It applies regardless of project, language, or file type.
+
+## Never use emojis
+
+Do not use emojis in any output. This applies everywhere: chat responses, code, comments, commit messages, docs, markdown files, PR descriptions, generated text, and any file you write or edit. Covers all emoji characters (faces, symbols, objects, flags, hands, hearts, checkmarks/crosses used decoratively, etc.) across all Unicode emoji blocks. Do not introduce them into files that don't already use emojis; when editing existing files that contain them, do not add new ones.
+
+Exceptions (narrow):
+- If the user explicitly asks for emojis in the current request, you may use them for that request only.
+- If the file being edited already uses emojis as a structural convention and the user wants consistency, match the existing pattern rather than introducing new ones.
+
+Default stance: no emojis. Use words, punctuation, or plain ASCII markers (`-`, `*`, `[x]`, `[ ]`) instead.
+
+**When a visual marker is genuinely needed (UI components, status indicators, buttons, nav items, toasts, etc.), use proper icons, not emojis.** Prefer a real icon library already present in the project (Lucide, Heroicons, Material Icons, Phosphor, Font Awesome, Radix Icons, Tabler, etc.) or an inline SVG. If no icon library is installed and one is warranted, suggest adding one rather than falling back to emojis. This applies to frontend code especially, but also anywhere a graphic symbol is appropriate.
+
+--- project-doc ---
+
 # arc-ready (project agent brief)
 
 This file is the cross-tool agent brief for the arc-ready repository itself. It is consumed by any harness that respects the Linux Foundation Agentic AI Foundation `AGENTS.md` standard (Codex CLI, GitHub Copilot, Cursor, Windsurf, Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin, and others).
@@ -6,19 +34,21 @@ This is **not** the Pillars-compatible AGENTS.md template arc-ready emits to con
 
 ## What this repo is
 
-arc-ready is a single AI skill that takes a software project from idea through launch, then emits Pillars agent memory for future coding work. It is the consolidated successor to the eleven-skill aihxp/ready-suite. See `README.md` for the full picture and `SKILL.md` for the workflow body.
+arc-ready is a single AI skill that takes a software project from idea through launch, then emits Pillars agent memory for future coding work. It is the consolidated successor to the eleven-skill hannsxpeter/ready-suite. See `README.md` for the full picture and `SKILL.md` for the workflow body.
 
 ## Project conventions
 
 ### Stack
 
-This is a documentation-only repository. The only "code" is `scripts/lint.sh` (Bash 3.2 compatible) and the GitHub Actions workflow at `.github/workflows/lint.yml`.
+This is a documentation-first repository. Its executable surfaces are Bash 3.2-compatible lint, smoke, evaluation, baseline, and release scripts plus the GitHub Actions workflow at `.github/workflows/lint.yml`.
 
 ### Commands
 
 - `bash scripts/lint.sh` runs the meta-linter. Equivalent: `bash scripts/lint.sh --all`.
 - `bash scripts/lint.sh --verbose` for verbose output.
 - `bash scripts/dogfood-smoke.sh --verbose` runs the operational smoke suite, including Pillars floor and source-backed pillar checks.
+- `bash scripts/eval.sh --verbose` runs the 14 deterministic behavioral evaluations.
+- `SKILLS_REF_BIN=<path> bash scripts/release-check.sh` runs release-grade validation with the pinned official validator.
 - `bash scripts/lint.sh --help` for individual checks.
 - CI runs `lint.sh` on every push and PR.
 
@@ -27,7 +57,7 @@ This is a documentation-only repository. The only "code" is `scripts/lint.sh` (B
 - **Em-dashes, en-dashes, arrows, box-drawing characters in load-bearing files** (SKILL.md, README.md, top CHANGELOG entry, MAINTAINING.md, MIGRATION.md, AGENTS.md, CONTRIBUTING.md, SECURITY.md). The lint enforces this. Use ASCII hyphen and `->` arrow form. Reference files inherited from the source ready-suite skills may contain em-dashes from their original authoring; do not introduce new ones in those files when editing.
 - **Emojis anywhere.** No emoji characters in any markdown, code, or commit message. Use words, plain ASCII markers (`-`, `*`, `[x]`, `[ ]`), or proper icons in any UI surface.
 - **Adding new failure-mode patterns the source ready-suite did not enforce.** arc-ready is faithful consolidation, not v2. New patterns dilute the moat the eleven-skill version produced.
-- **Collapsing references that have load-on-demand value.** Many small, single-topic references (most at ~5-15K) are correct; collapsing them into fewer large files blows the agent attention budget. The catalog is currently ~167 files. A catalog-style reference like `references/building/domain-considerations.md` (~125K) runs large and is a split candidate; do not merge small single-topic references to reduce the count.
+- **Collapsing references that have load-on-demand value.** The catalog is currently 220 focused files. The former large domain catalog has been split into a compact router plus 37 profiles under `references/building/domains/`. Preserve this progressive-disclosure shape.
 - **Skipping the lint or bypassing CI.** No `--no-verify` on commits.
 - **Editing `references/<tier>/*.md` to "improve" content lifted from source skills.** Faithful copies. Cross-reference updates are allowed; content rewrites are not.
 
@@ -67,11 +97,18 @@ See `MAINTAINING.md` for the release rituals.
 | `MAINTAINING.md` | Single-repo release rituals (patch / minor / major). |
 | `MIGRATION.md` | Guide for ready-suite users switching to arc-ready. |
 | `scripts/lint.sh` | The meta-linter. |
+| `scripts/eval.sh` | Deterministic behavioral evaluations. |
+| `scripts/dogfood-smoke.sh` | Operational synthetic-project smoke suite. |
+| `scripts/release-check.sh` | Release-grade evidence entry point. |
+| `EVALS.md`, `evals/cases/` | Evaluation policy, prompts, invariants, and rubrics. |
 | `.github/workflows/lint.yml` | CI workflow that runs the lint. |
 | `.github/CODEOWNERS` | Code ownership. |
 | `references/orchestration/` | Tier 0 references. |
 | `references/planning/` | Tier 1 references (PRD, ARCH, ROADMAP, STACK). |
 | `references/building/` | Tier 2 references (REPO, PRODUCTION). |
+| `references/building/product-form-router.md` | Form-specific concerns and build gates. |
+| `references/building/domain-registry.md` | Four-axis composition and stack-profile mapping. |
+| `references/building/domains/` | Focused product and industry profiles. |
 | `references/building/pillars-integration.md` | Required Pillars memory-layer mapping for consumer projects. |
 | `references/shipping/` | Tier 3 references (DEPLOY, OBSERVE, LAUNCH, HARDEN). |
 | `references/shared/` | Cross-tier references (RESEARCH, ORCHESTRATORS). |
@@ -82,7 +119,7 @@ A new contributor or agent working on arc-ready should read in this order:
 
 1. `README.md` (5 minutes; what arc-ready is and why it exists).
 2. `SKILL.md` (15 minutes; the workflow body and tier dispatch).
-3. `MIGRATION.md` (5 minutes; the relationship to aihxp/ready-suite).
+3. `MIGRATION.md` (5 minutes; the relationship to hannsxpeter/ready-suite).
 4. `MAINTAINING.md` (5 minutes; release rituals).
 5. `references/<relevant-tier>/<file>.md` (load on demand for the work at hand).
 
