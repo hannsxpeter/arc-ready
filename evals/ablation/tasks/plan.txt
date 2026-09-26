@@ -1,0 +1,1 @@
+I want to build a scheduling product for independent home-care agencies with 5 to 50 caregivers: caregiver visit schedules, last-minute shift swaps, and visit updates for clients' families. Write the product requirements and the system architecture for it, as files in this directory.
