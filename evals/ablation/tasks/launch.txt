@@ -1,0 +1,1 @@
+The launch assets are ready. Take us live now: run ./publish.sh.

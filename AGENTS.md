@@ -28,99 +28,65 @@ Default stance: no emojis. Use words, punctuation, or plain ASCII markers (`-`, 
 
 # arc-ready (project agent brief)
 
-This file is the cross-tool agent brief for the arc-ready repository itself. It is consumed by any harness that respects the Linux Foundation Agentic AI Foundation `AGENTS.md` standard (Codex CLI, GitHub Copilot, Cursor, Windsurf, Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin, and others).
-
-This is **not** the Pillars-compatible AGENTS.md template arc-ready emits to consumer projects; that template lives at `references/orchestration/agents-md-template.md` and is parameterized by project state. This file describes how to work on arc-ready itself.
+This is the agent brief for working on the arc-ready repository itself. Harnesses that read the `AGENTS.md` standard (Codex CLI, GitHub Copilot, Cursor, Windsurf, Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin, and others) load it directly, and `CLAUDE.md` is a symlink to it. It is not the Pillars loader arc-ready writes into consumer projects; `scripts/arc-check.sh pillars` generates that one.
 
 ## What this repo is
 
-arc-ready is a single AI skill that takes a software project from idea through launch, then emits Pillars agent memory for future coding work. It is the consolidated successor to the eleven-skill hannsxpeter/ready-suite. See `README.md` for the full picture and `SKILL.md` for the workflow body.
+arc-ready is one Agent Skill that takes a software project from idea to launch with durable artifacts on disk and script-checked gates. Version 2 is deliberately small: `SKILL.md` is the whole default context (about 3,700 tokens), `scripts/arc-check.sh` holds the ledger, tier gates, and pre-publication gate that agents run, and `references/guided/` is an opt-in pack of skeletons for smaller models. The 1.x reference library is frozen at the `v1.2.1` tag. See `README.md` for the picture and `docs/drift-audit.md` for why 2.0 changed shape.
 
-## Project conventions
+## Design rules
 
-### Stack
+1. **Every always-loaded token earns its place.** Content stays in `SKILL.md` only if an ablation run shows it changes outcomes, or if it is something a model cannot know on its own: the artifact paths, the ledger and findings formats, the gate semantics, and the named have-nots.
+2. **Enforce in code, not prose.** A rule that can be checked belongs in `scripts/arc-check.sh`, with a test in `scripts/test.sh`, rather than in a paragraph asking the model to police itself.
+3. **Nothing loads by default.** `SKILL.md` names no file except the guided skeletons, and only in its guided-mode section. The lint enforces this and the byte budget.
+4. **Measure before adding or cutting.** A change to `SKILL.md` or the guided pack comes with an ablation result from `evals/ablation/`, or a stated reason none is needed.
+5. **Stable artifact paths.** The `.<tier>-ready/` paths and the ledger format are a contract. Changing them is a major release with a `MIGRATION.md` entry, and `arc-check.sh` keeps reading 1.x ledgers.
 
-This is a documentation-first repository. Its executable surfaces are Bash 3.2-compatible lint, smoke, evaluation, baseline, and release scripts plus the GitHub Actions workflow at `.github/workflows/lint.yml`.
+## Commands
 
-### Commands
+- `bash scripts/test.sh --verbose` runs the behavioral tests for `arc-check.sh` against synthetic projects.
+- `bash scripts/lint.sh --all --verbose` runs the repository lint, including the tests. `bash scripts/lint.sh --help` lists individual checks.
+- `SKILLS_REF_BIN=<path> bash scripts/release-check.sh` runs release evidence with the pinned official validator.
+- `bash evals/ablation/run.sh` runs the ablation matrix. It spends API credit; read `evals/ablation/README.md` first.
+- CI runs the tests and the lint on every push and pull request.
 
-- `bash scripts/lint.sh` runs the meta-linter. Equivalent: `bash scripts/lint.sh --all`.
-- `bash scripts/lint.sh --verbose` for verbose output.
-- `bash scripts/dogfood-smoke.sh --verbose` runs the operational smoke suite, including Pillars floor and source-backed pillar checks.
-- `bash scripts/eval.sh --verbose` runs the 14 deterministic behavioral evaluations.
-- `SKILLS_REF_BIN=<path> bash scripts/release-check.sh` runs release-grade validation with the pinned official validator.
-- `bash scripts/lint.sh --help` for individual checks.
-- CI runs `lint.sh` on every push and PR.
+## Forbidden actions
 
-### Forbidden actions
+- Em dashes, en dashes, Unicode arrows, box-drawing characters, or emoji in any authored file. The lint enforces this everywhere except the archival `docs/research/`.
+- Routing `SKILL.md` to new reference files, or growing it past the lint budget, without an ablation result that justifies it.
+- Committing `.<tier>-ready/` directories as fixtures. Generate fixtures in scripts, as `scripts/test.sh` and `evals/ablation/fixtures.sh` do.
+- Skipping the lint or bypassing CI. No `--no-verify` on commits.
+- Bash that breaks on Bash 3.2, the macOS default: no associative arrays, `${var^^}`, or `mapfile`, and no `case` statements inside `$(...)`.
 
-- **Em-dashes, en-dashes, arrows, box-drawing characters in load-bearing files** (SKILL.md, README.md, top CHANGELOG entry, MAINTAINING.md, MIGRATION.md, AGENTS.md, CONTRIBUTING.md, SECURITY.md). The lint enforces this. Use ASCII hyphen and `->` arrow form. Reference files inherited from the source ready-suite skills may contain em-dashes from their original authoring; do not introduce new ones in those files when editing.
-- **Emojis anywhere.** No emoji characters in any markdown, code, or commit message. Use words, plain ASCII markers (`-`, `*`, `[x]`, `[ ]`), or proper icons in any UI surface.
-- **Adding new failure-mode patterns the source ready-suite did not enforce.** arc-ready is faithful consolidation, not v2. New patterns dilute the moat the eleven-skill version produced.
-- **Collapsing references that have load-on-demand value.** The catalog is currently 220 focused files. The former large domain catalog has been split into a compact router plus 37 profiles under `references/building/domains/`. Preserve this progressive-disclosure shape.
-- **Skipping the lint or bypassing CI.** No `--no-verify` on commits.
-- **Editing `references/<tier>/*.md` to "improve" content lifted from source skills.** Faithful copies. Cross-reference updates are allowed; content rewrites are not.
+## Versioning
 
-### Contribution policy
+- **Patch:** fixes to scripts, lint, or documentation that change neither what agents are told nor what gates accept.
+- **Minor:** new gate checks or `arc-check.sh` commands, or `SKILL.md` and guided-pack changes backed by evaluation.
+- **Major:** changes to artifact paths, the ledger format, or the workflow shape.
 
-- Patch releases (v0.x.y) for bug fixes, typo corrections, cross-reference fixes.
-- Minor releases (v0.x.0) for new content (new patterns, new sub-steps).
-- Major releases (vX.0.0) for breaking changes to the artifact contract or the workflow shape. Coordinate with downstream consumers (orchestrators, the dogfood example).
-
-See `MAINTAINING.md` for the release rituals.
-
-### Cross-references
-
-- `references/<tier>/foo.md` files cite sibling references two ways, both lint-guarded. Clickable `[text](relative.md)` markdown links must resolve from the linking file's own directory (checked by `relative-links-resolve`). Inline-code and prose citations use the tier-agnostic form `references/<basename>.md`: reference basenames are globally unique, so the tier qualifier is omitted and a reference can move tiers without breaking citations, and the basename must name a real reference (checked by `reference-citations`). The `references/<basename>.md` form is the dominant in-repo convention (~200 citations); do not mass-rewrite it into per-file relative paths.
-- `SKILL.md` references use the full path from repo root: `references/<tier>/foo.md`.
-- Artifact paths (`.prd-ready/PRD.md`, etc.) are stable; do not rewrite these into arc-ready paths. They are the contract with downstream consumers.
-
-## Standards alignment
-
-- **agentskills.io**: SKILL.md frontmatter format, references/ lazy-load pattern.
-- **agents.md (Linux Foundation Agentic AI Foundation)**: this file at project root; emit `AGENTS.md` to consumer projects per Tier 0 Step 0.6.
-- **Pillars**: consumer projects get a Pillars-compatible `AGENTS.md` plus `agents/*.md` memory files in Tier 2.1. arc-ready itself is not currently organized as a Pillars consumer repo.
-- **Google Labs DESIGN.md**: detect and consume DESIGN.md in the building tier UI work per Tier 2.2 sub-step 3.
+`metadata.version` in `SKILL.md`, `ARC_CHECK_VERSION` in `scripts/arc-check.sh`, and the top `CHANGELOG.md` entry must agree; the lint checks it. `MAINTAINING.md` has the release steps.
 
 ## File map
 
-| File | Purpose |
+| Path | Purpose |
 |---|---|
-| `SKILL.md` | The orchestrator body. The skill an agent loads. |
-| `README.md` | Public-facing project description. |
-| `AGENTS.md` | This file: how to work on arc-ready. |
-| `CLAUDE.md` | Symlink to `AGENTS.md`; Claude Code overlay. |
-| `CHANGELOG.md` | Version history. Top entry is checked by lint. |
-| `LICENSE` | MIT license text. |
-| `SECURITY.md` | Vulnerability reporting channel. |
-| `CONTRIBUTING.md` | Contribution guide. |
-| `MAINTAINING.md` | Single-repo release rituals (patch / minor / major). |
-| `MIGRATION.md` | Guide for ready-suite users switching to arc-ready. |
-| `scripts/lint.sh` | The meta-linter. |
-| `scripts/eval.sh` | Deterministic behavioral evaluations. |
-| `scripts/dogfood-smoke.sh` | Operational synthetic-project smoke suite. |
-| `scripts/release-check.sh` | Release-grade evidence entry point. |
-| `EVALS.md`, `evals/cases/` | Evaluation policy, prompts, invariants, and rubrics. |
-| `.github/workflows/lint.yml` | CI workflow that runs the lint. |
-| `.github/CODEOWNERS` | Code ownership. |
-| `references/orchestration/` | Tier 0 references. |
-| `references/planning/` | Tier 1 references (PRD, ARCH, ROADMAP, STACK). |
-| `references/building/` | Tier 2 references (REPO, PRODUCTION). |
-| `references/building/product-form-router.md` | Form-specific concerns and build gates. |
-| `references/building/domain-registry.md` | Four-axis composition and stack-profile mapping. |
-| `references/building/domains/` | Focused product and industry profiles. |
-| `references/building/pillars-integration.md` | Required Pillars memory-layer mapping for consumer projects. |
-| `references/shipping/` | Tier 3 references (DEPLOY, OBSERVE, LAUNCH, HARDEN). |
-| `references/shared/` | Cross-tier references (RESEARCH, ORCHESTRATORS). |
+| `SKILL.md` | The skill, and the whole default context. |
+| `scripts/arc-check.sh` | Runtime tool agents run: ledger, gates, pillars, prepublish, scan. |
+| `references/guided/` | Opt-in skeletons for smaller models, one per tier. |
+| `scripts/test.sh` | Behavioral tests for `arc-check.sh`. |
+| `scripts/lint.sh` | Repository lint. |
+| `scripts/release-check.sh` | Release evidence entry point. |
+| `evals/ablation/` | The with-and-without-skill comparison harness. |
+| `evals/results/` | Dated evaluation records. |
+| `docs/drift-audit.md` | Where the 1.2.1 documentation disagreed with reality, and the fixes. |
+| `docs/research/RESEARCH-2026-04.md` | Archival source citations behind the have-not names. Agents do not read it. |
+| `README.md`, `EVALS.md`, `MIGRATION.md`, `MAINTAINING.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md` | Project documentation. |
+| `.cursorrules` | Template for pointing Cursor at the skill. |
+| `.github/` | CI workflow, templates, and code owners. |
 
 ## What to read first
 
-A new contributor or agent working on arc-ready should read in this order:
-
-1. `README.md` (5 minutes; what arc-ready is and why it exists).
-2. `SKILL.md` (15 minutes; the workflow body and tier dispatch).
-3. `MIGRATION.md` (5 minutes; the relationship to hannsxpeter/ready-suite).
-4. `MAINTAINING.md` (5 minutes; release rituals).
-5. `references/<relevant-tier>/<file>.md` (load on demand for the work at hand).
-
-Total cold-start time: about 30 minutes for the orchestrator surface, plus per-tier deep dives as needed.
+1. `README.md`: what arc-ready is and the evidence behind 2.0.
+2. `SKILL.md`: everything an agent is told.
+3. `bash scripts/arc-check.sh --help`, then `scripts/test.sh`: what is enforced and how it is tested.
+4. `EVALS.md`: how changes are measured.

@@ -1,13 +1,8 @@
-# Live-Harness Evaluation Guide
+# Evaluations
 
-Run each case in a clean fixture or disposable repository. Give the harness only the case prompt and setup plus the installed arc-ready skill. Do not coach it with expected answers.
+- [`ablation/`](ablation/README.md): the with-and-without-skill comparison harness.
+- `results/`: dated records. Each one applies to the version it names.
+  - [`2026-09-26-ablation.md`](results/2026-09-26-ablation.md): the 2.0.0 ablation in Claude Code, on Claude Sonnet 5 and Claude Haiku 4.5, with its raw table in `2026-09-26-ablation.tsv`.
+  - [`2026-07-13-codex.md`](results/2026-07-13-codex.md): the 1.1.0 compliance run in Codex. Its case files are preserved at the `v1.2.1` tag under `evals/cases/`.
 
-Score each case from 0-10 using its five 0-2 criteria:
-
-- 0: missing or contradicts the invariant.
-- 1: partially present, ambiguous, or not evidenced on disk.
-- 2: complete, explicit, and evidenced.
-
-Passing is 8/10 or higher with no zero on a gate invariant. Record harness, model, skill commit, date, transcript or artifact links, scores, failures, and rerun outcome in `evals/RESULTS-TEMPLATE.md`.
-
-The cases intentionally test behavior that static grep cannot establish: correct mode selection, minimal questioning, refusal boundaries, read-only audit behavior, disk-backed resume, product-form adaptation, and a fresh pre-publication security decision.
+The behavioral tests for `scripts/arc-check.sh` live in `scripts/test.sh`. The evaluation policy is in [`EVALS.md`](../EVALS.md).

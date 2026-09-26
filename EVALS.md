@@ -1,42 +1,56 @@
 # Evaluations
 
-arc-ready has two evaluation layers: deterministic repository checks and live-harness behavioral cases.
+arc-ready has two evaluation layers: behavioral tests for the script, and an ablation that measures whether the skill changes outcomes.
 
-## Reproduce the deterministic evidence
-
-```bash
-bash scripts/eval.sh --verbose
-```
-
-The command covers Modes A-D, dependency-ordered routing, disk drift, canonical artifacts, product forms, domain composition, stack-profile mappings, added domain completeness, progressive-disclosure budgets, the late-Critical publication gate, direct references, current OWASP routing, and live-case inventory.
-
-Repository lint and dogfood smoke remain separate evidence surfaces:
+## 1. Behavioral tests (every change)
 
 ```bash
-bash scripts/lint.sh --all --verbose
-bash scripts/dogfood-smoke.sh --verbose
+bash scripts/test.sh --verbose
 ```
 
-Release validation also runs the pinned official Agent Skills validator through `scripts/release-check.sh`.
+The suite drives the shipped `scripts/arc-check.sh` against synthetic projects. It covers ledger creation, drift detection, dependency order and overrides, skip reasons, every tier gate with passing and failing fixtures, all three 1.x ledger shapes, the placeholder scan, Pillars emission and respect, the pre-publication gate (missing hardening, an open Critical, hand-written, edited, expired, and hard-policy acceptances, and stale records), the refusal of `accept` without a terminal, fail-closed reading of unusual findings files (tables, decorated keys, empty files, duplicate ids, unknown severities, and Critical mentioned outside a readable finding), real-date checks on acceptance expiries, refusal to write through symlinks, git runs that cannot execute project-configured commands, and a contract test that every guided skeleton passes its tier gate once filled. CI runs it on Linux and under the macOS system Bash 3.2 on every push and pull request, and the lint runs it too.
 
-## Live-harness evidence
+These tests prove the script behaves as documented. They cannot prove that a model follows `SKILL.md`, or that following it helps.
 
-Deterministic checks cannot prove that a model will route, ask, write, or refuse correctly in every client. The cases under `evals/cases/` provide prompts, setup, expected invariants, and a 10-point scoring rubric for those behaviors. Run each case in every harness for which the release claims live behavioral evidence and record the result with `evals/RESULTS-TEMPLATE.md`. Compatibility metadata describes structural support; it does not imply that every listed client received a live run.
+## 2. Ablation (content changes)
 
-Checked-in evidence:
+```bash
+bash evals/ablation/run.sh
+```
 
-- `evals/results/2026-07-13-codex.md`: ten independent Codex file-system cases, 100/100 total, all gate invariants passed, plus a focused rerun after strict-review remediation.
+`evals/ablation/` runs the same tasks with no skill, the lean 2.x core, guided mode, and the full 1.x library, on a frontier model and a small model. It scores outcomes on disk, has a separate model judge the planning documents blind, and records the cost of every run. See [`evals/ablation/README.md`](evals/ablation/README.md) for the arms, tasks, isolation, and settings.
+
+Run it for any change to `SKILL.md` or the guided pack, and commit the dated summary under `evals/results/`. A change that adds always-loaded context should show a gain on at least one model without a loss on the other.
+
+## Latest results
+
+From [`evals/results/2026-09-26-ablation.md`](evals/results/2026-09-26-ablation.md): 56 runs on Claude Sonnet 5 and Claude Haiku 4.5, plus a 9-run launch rerun.
+
+| | No skill | Lean 2.0 | Full 1.2.1 |
+|---|---:|---:|---:|
+| Planning quality, blinded judge (Sonnet / Haiku) | 7.25 / 5.75 | 10 / 10 | 10 / 8.25 |
+| Found the ledger's missing roadmap (Sonnet / Haiku) | 1 of 2 / 0 of 2 | 2 of 2 / 2 of 2 | 2 of 2 / 1 of 2 |
+| Built the slice end to end (all runs) | yes | yes | yes |
+| Planning cost per run (Sonnet) | $0.26 | $0.64 | $2.57 |
+| Mean cost per run, all tasks (Sonnet) | $0.29 | $0.41 | $1.00 |
+
+Held the launch over an open Critical finding:
+
+- Sonnet 5: every run, with or without the skill.
+- Haiku 4.5: neither no-skill run. Two of six skill-arm runs before the human-only acceptance change, and six of six after it.
+
+The lean core carries the gains, and the full library adds cost without adding quality. The runs also exposed a real loophole: agents could record their own risk acceptances. 2.0.0 closes it in `arc-check.sh`.
 
 ## Release standard
 
-A release candidate requires:
+- `bash scripts/test.sh` passes.
+- `bash scripts/lint.sh --all` passes, including the byte budgets, no default loads, and version parity.
+- The pinned official `skills-ref validate` passes against the absolute repository path.
+- Changes to `SKILL.md` or the guided pack carry an ablation record.
 
-- 14/14 deterministic evaluations.
-- All dogfood smoke tests passing.
-- Repository lint passing.
-- Official `skills-ref validate` passing against the absolute repository path.
-- No live case below 8/10.
-- No zero score on a gate invariant.
-- Any harness-specific limitation recorded, dated, and scoped.
+## Where live evidence exists
 
-Live behavior remains harness-dependent. This repository provides reproducible cases and rubrics, but it does not claim a live run occurred unless a completed results record is checked in or attached to the release evidence.
+- **Codex:** the 1.1.0 compliance cases, 2026-07-13 ([`evals/results/2026-07-13-codex.md`](evals/results/2026-07-13-codex.md)).
+- **Claude Code:** the 2.0.0 ablation, 2026-09-26, on Claude Sonnet 5 and Claude Haiku 4.5.
+
+The other harnesses in `metadata.compatible-with` are structurally compatible with the Agent Skills format but have no recorded live run.

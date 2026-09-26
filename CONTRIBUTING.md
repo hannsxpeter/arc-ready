@@ -1,98 +1,51 @@
 # Contributing to arc-ready
 
-arc-ready is the consolidated successor to the eleven-skill hannsxpeter/ready-suite. The discipline of arc-ready is the discipline of the suite, preserved verbatim. Contributions that add new failure-mode patterns the source suite did not enforce will be rejected; contributions that clarify, fix, or extend the existing pattern catalog within its established shape are welcome.
+arc-ready 2.x is small on purpose. `SKILL.md` is the entire default context an agent loads, so every sentence in it costs tokens on every run. Contributions are welcome when they make the skill more reliable without making it larger, or when evidence shows that added context changes outcomes.
 
-Pillars is the standard agent-memory layer arc-ready emits for file-system projects. Changes that touch `AGENTS.md` emission, repo scaffolding, or ongoing-agent context must preserve that contract: canonical arc artifacts remain authoritative, and Pillars carries task-routed operating memory.
+Pillars is the agent-memory layer arc-ready emits for file-system projects. Changes to `arc-check.sh pillars` or to the emitted `AGENTS.md` must keep that contract: the arc artifacts stay authoritative, an existing non-Pillars `AGENTS.md` is never overwritten, and a blocked adoption is recorded in the ledger.
 
 ## Before you contribute
 
-Read in this order:
+Read `README.md`, `SKILL.md`, `AGENTS.md` (conventions and forbidden actions), and `EVALS.md`.
 
-1. `README.md` (5 minutes; what arc-ready is and why).
-2. `SKILL.md` (15 minutes; the workflow body).
-3. `MIGRATION.md` (5 minutes; the relationship to hannsxpeter/ready-suite).
-4. `MAINTAINING.md` (5 minutes; release rituals).
-5. `AGENTS.md` (5 minutes; project conventions and forbidden actions).
+## What makes a good contribution
 
-## What is in scope
-
-- Bug fixes (typos, broken cross-references, formatting errors).
-- Lint improvements (new mechanical checks that catch documented failure modes).
-- Reference updates that reflect changes in the underlying technology landscape (e.g., a deprecated tool, a new compliance framework version).
-- Worked-example refinements (`EXAMPLE-PRD.md`, `EXAMPLE-ARCH.md`, etc.).
-- Cross-tier consistency fixes (a have-not in tier X that would also fire in tier Y, but is not currently named in tier Y's catalog).
+- A bug fix in `scripts/arc-check.sh`, with a test in `scripts/test.sh` that fails before the fix.
+- Moving a rule out of prose and into the script, where it is enforced instead of requested.
+- A new gate check that catches a documented have-not mechanically without rejecting legitimate artifacts. Add a passing and a failing fixture.
+- A `SKILL.md` or guided-pack change backed by an ablation run, for example a rule that closes a failure you observed in current models.
+- A correction where the documentation disagrees with actual behavior.
 
 ## What is out of scope
 
-- New named failure-mode patterns the source suite did not enforce. arc-ready is faithful consolidation, not v2.
-- Workflow restructures that change the artifact contract (the canonical `.<tier>-ready/<ARTIFACT>.md` paths). Downstream consumers depend on these paths.
-- A non-Pillars variant of the emitted project memory layer. Pillars is the default standard; exceptions are recorded blockers, not a separate distribution.
-- Deletion or merging of references that have load-on-demand value. The focused catalog is intentionally large in file count and small in per-task load. Extend routers and focused profiles instead of rebuilding monolithic catalogs.
-- Em-dashes, en-dashes, arrows, or box-drawing characters in load-bearing files (lint enforces).
-- Emojis anywhere (lint enforces).
+- Reference material a current model already knows: framework tutorials, general best practices, vendor comparisons. The 1.x library at the `v1.2.1` tag remains available for anyone who wants it.
+- Frozen data that goes stale, such as version numbers, prices, rankings, or survey statistics. `SKILL.md` tells agents to check current sources instead.
+- Changes to the `.<tier>-ready/` artifact paths or the ledger format outside a major release.
+- Em dashes, en dashes, arrows, box-drawing characters, or emoji (the lint enforces this).
 
 ## How to contribute
 
-1. Fork the repository on GitHub.
-2. Create a branch with a descriptive name: `fix/typo-in-prd-anatomy`, `lint/add-frontmatter-check`, `docs/update-stack-bundles-2026-Q3`.
-3. Make the change.
-4. Run `bash scripts/lint.sh --all --verbose`, `bash scripts/dogfood-smoke.sh --verbose`, and `bash scripts/eval.sh --verbose`. Fix any failures.
-5. Update `CHANGELOG.md` with a top entry. Use the format from existing entries.
-6. Bump `metadata.version` and `metadata.updated` in `SKILL.md` to match the new CHANGELOG entry.
-7. Commit with a message following the pattern `<scope>: <imperative summary>`. Examples: `lint: add unicode check for AGENTS.md`, `references/planning: fix cross-reference to risks-and-assumptions`.
-8. Push the branch to your fork.
-9. Open a pull request. The PR template (see `.github/pull_request_template.md` if present) lists the checks; cover them in the description.
-
-## Documentation changes
-
-Documentation is load-bearing in this repo. Before merging a docs-only change, check whether it touches one of the public contracts:
-
-- Artifact paths in `.<tier>-ready/`.
-- Pillars adoption rules for `AGENTS.md` and `agents/*.md`.
-- Tier gates, have-nots, or grep tests.
-- Release rituals or versioning policy.
-
-If it touches any of those, update `CHANGELOG.md`, run `bash scripts/lint.sh --all`, and run `bash scripts/dogfood-smoke.sh --verbose`. If it changes Pillars wording, make sure the docs still say one thing: arc artifacts are authoritative, Pillars is the project-memory layer, and blockers are recorded instead of creating a non-Pillars variant.
-
-Changes to routing, form gates, domain composition, completion behavior, or standards metadata must also update or add a deterministic check in `scripts/eval.sh` and a live-harness case under `evals/cases/`. Release candidates must pass the official `skills-ref validate` command against the absolute repository path.
-
-## Versioning
-
-arc-ready follows semantic versioning:
-
-- **Patch** (v0.x.y): bug fixes, typo corrections, cross-reference fixes, lint improvements.
-- **Minor** (v0.x.0): new content within the established pattern catalog (refinements, additions of references for new ecosystem developments).
-- **Major** (vX.0.0): breaking changes to the artifact contract or the workflow shape. Coordinate with downstream consumers and the dogfood example.
-
-See `MAINTAINING.md` for the release rituals.
+1. Fork the repository and create a descriptive branch, such as `fix/prepublish-expired-acceptance` or `gate/observe-runbook-date`.
+2. Make the change. Keep scripts Bash 3.2 compatible.
+3. Run `bash scripts/test.sh --verbose` and `bash scripts/lint.sh --all --verbose`.
+4. For `SKILL.md` or guided-pack changes, run the ablation harness, or the relevant subset (`TASKS=resume MODELS=claude-haiku-4-5 bash evals/ablation/run.sh`), and attach the summary.
+5. Add a top `CHANGELOG.md` entry, and bump `metadata.version` in `SKILL.md` and `ARC_CHECK_VERSION` in `scripts/arc-check.sh` together.
+6. Commit as `<scope>: <imperative summary>`, for example `arc-check: reject expired risk acceptances`.
+7. Open a pull request and cover the checklist in the template.
 
 ## Code style
 
-- Markdown only (plus the Bash lint script).
-- ASCII hyphen `-` for ranges and compounds; never em-dash or en-dash.
-- ASCII arrow `->` instead of unicode arrows.
-- No emojis. Use icons in any UI surface (this repo has none, so this rule applies to documentation snippets only).
-- Lists use `-` for unordered, `1.` for ordered.
-- Tables use Markdown pipe syntax.
-- Headings use `#` to `######`. No setext (underlined) headings.
-- Code blocks use triple backticks with a language tag (`bash`, `markdown`, etc.).
+- Bash 3.2 compatible scripts with no dependencies beyond POSIX tools, plus `perl` for the lint and `jq` and the `claude` CLI for the ablation harness.
+- Markdown: `-` for unordered lists, `1.` for ordered, pipe tables, `#` headings, and fenced code with a language tag.
+- ASCII hyphen for ranges and compounds, `->` instead of Unicode arrows, and no emoji.
 
 ## Reporting bugs
 
-Use GitHub Issues. Include:
+Use GitHub Issues with the bug template. Include the version (`bash scripts/arc-check.sh version`), the harness and model, the mode, and the output of `arc-check.sh status` or the failing gate. For security issues, see `SECURITY.md`.
 
-- arc-ready version (`metadata.version` in `SKILL.md`).
-- Primary project form and any product, industry, or regulatory overlays.
-- The harness you are running (Claude Code, Codex, Cursor, etc.).
-- The mode (A/B/C/D) you were in.
-- Reproduction steps.
-- Expected vs. actual behavior.
+## Taxonomy questions
 
-For security issues, see `SECURITY.md`.
-
-## Reporting taxonomy
-
-The named failure modes in the have-nots catalog are the load-bearing taxonomy. If you encounter a behavior that feels like a failure but does not map to a named mode, file an issue with the label `taxonomy-question`. The maintainer will either point you at the existing mode or, in rare cases, refine the catalog. Net-new pattern names require strong evidence that the behavior is distinct from every existing pattern.
+The have-nots in `SKILL.md` are arc-ready's named failure modes. If a behavior feels like a failure but matches none of them, file a taxonomy question. A new name needs evidence that current models produce the behavior and that it is distinct from the existing names.
 
 ## License
 

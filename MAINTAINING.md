@@ -1,122 +1,99 @@
 # Maintaining arc-ready
 
-Procedural guide for the arc-ready maintainer. arc-ready has one repository, one skill version, one changelog, one tag stream, and one release stream. The coordinated multi-repository rituals from hannsxpeter/ready-suite do not apply.
-
-For contributor guidance, see `CONTRIBUTING.md`. For evaluation policy, see `EVALS.md`.
+Release guide for the maintainer: one repository, one version, one changelog, one tag stream. Contributor guidance is in `CONTRIBUTING.md`; evaluation policy is in `EVALS.md`.
 
 ## Release contract
 
 | Surface | Contract |
 |---|---|
-| `SKILL.md` | Official Agent Skills activation surface. Version lives at `metadata.version`; update date lives at `metadata.updated`. |
-| `CHANGELOG.md` | Top version must match `metadata.version`. |
-| Canonical artifacts | Stable `.<tier>-ready/<ARTIFACT>.md` paths. Breaking changes require a major release. |
-| Pillars memory | Project-root `AGENTS.md` plus `agents/context.md` and `agents/repo.md` when adoption is not blocked. Arc artifacts remain authoritative. |
-| Public activation | `.launch-ready/PREPUBLICATION.md` must be newer than the checked hardening revision and have a pass verdict. |
-| References | Focused, load-on-demand files. Inherited source prose remains faithful; cross-reference corrections are allowed. |
-| Evaluations | Deterministic suite, operational smoke, official validator, and scored live-harness cases. |
+| `SKILL.md` | The whole default context. Version at `metadata.version`, date at `metadata.updated`. At most 16,384 bytes, and it names no file outside the guided pack. |
+| `scripts/arc-check.sh` | `ARC_CHECK_VERSION` equals `metadata.version`. Reads 1.x and 2.x ledgers. |
+| `CHANGELOG.md` | The top entry equals `metadata.version`. |
+| Artifact paths | Stable `.<tier>-ready/` paths and ledger format. Breaking either is a major release. |
+| Guided pack | Opt-in only. Each skeleton is at most 4,096 bytes and, once filled in, passes its tier gate. |
+| Evidence | `scripts/test.sh`, the lint, and the official validator for every release; an ablation record in `evals/results/` for content changes. |
+| Full library | `v1.2.1` stays tagged and installable. It receives no changes. |
 
 ## Versioning
 
-- Patch releases (`vX.Y.Z`) fix bugs, typos, cross-references, or lint behavior without adding workflow capability.
-- Minor releases (`vX.Y.0`) add non-breaking routing, references, sub-steps, ecosystem guidance, or evaluation coverage.
-- Major releases (`vX.0.0`) break canonical artifact paths or the workflow shape. Coordinate downstream consumers and update `MIGRATION.md` before publication.
+- **Patch:** fixes to scripts, lint, or documentation that change neither what agents are told nor what gates accept.
+- **Minor:** new gate checks or `arc-check.sh` commands, or `SKILL.md` and guided-pack changes backed by evaluation.
+- **Major:** changes to artifact paths, the ledger format, or the workflow shape. Update `MIGRATION.md` before publishing.
 
-The 1.1.0 product-form, domain-composition, evaluation, and pre-publication additions are minor because the canonical artifact contract and Modes A-D remain stable. The 1.2.0 planning-tier capacity-estimation addition is minor for the same reason: it adds reference content and leaves the artifact contract, the mode set, and the three-chain math-check gate unchanged.
+## Prepare a release
 
-## Prepare a release candidate
-
-1. Choose the version and update `metadata.version` and `metadata.updated` in `SKILL.md`.
-2. Add the matching top CHANGELOG entry with patch, minor, or major rationale.
-3. Update public version surfaces, plugin metadata, migration notes, and issue or PR templates when affected.
-4. Add or update deterministic evaluations and live-harness cases for behavior changes.
-5. Install the pinned official validator in an isolated environment:
+1. Update `metadata.version` and `metadata.updated` in `SKILL.md`, and `ARC_CHECK_VERSION` in `scripts/arc-check.sh`.
+2. Add the matching top `CHANGELOG.md` entry with its patch, minor, or major rationale.
+3. For content changes, run the ablation (`bash evals/ablation/run.sh`) and commit a dated record under `evals/results/`.
+4. Install the pinned validator in an isolated environment:
 
 ```bash
 python3 -m venv .venv-skills-ref
 .venv-skills-ref/bin/pip install -r requirements/skills-ref.txt
 ```
 
-6. Run the release evidence command with an absolute validator path:
+5. Run the release evidence:
 
 ```bash
 SKILLS_REF_BIN="$PWD/.venv-skills-ref/bin/skills-ref" bash scripts/release-check.sh
 ```
 
-7. Run every live-harness case claimed for the release. Record scores with `evals/RESULTS-TEMPLATE.md`. No case may score below 8/10, and no gate invariant may score zero.
-8. Inspect `git diff --check`, the full diff, new reference routes, and the inherited Unicode baseline. A baseline update is allowed only for a reviewed mechanical move of existing source text.
+6. Inspect `git diff --check` and the full diff.
 
-Do not publish a release candidate with a skipped official validator, failing deterministic check, unresolved dogfood failure, or unsupported live-harness claim.
+## Publish
 
-## Publish after evidence passes
-
-Publication is a maintainer action, separate from release preparation:
+`main` is protected: changes land through a pull request once the `meta-linter` check passes.
 
 ```bash
-VERSION=1.2.0
-git add -A
-git commit -m "v$VERSION: prepare release"
-git push origin HEAD
-git tag "v$VERSION"
+VERSION=2.0.0
+git switch -c "release/v$VERSION"
+git commit -am "release: prepare arc-ready v$VERSION"
+git push -u origin "release/v$VERSION"
+gh pr create --fill
+```
+
+After the pull request merges:
+
+```bash
+git switch main
+git pull --ff-only
+git tag -a "v$VERSION" -m "arc-ready v$VERSION"
 git push origin "v$VERSION"
-gh release create "v$VERSION" --title "v$VERSION" --notes-from-tag
+awk '/^## \[/{n++} n==1' CHANGELOG.md > /tmp/arc-ready-notes.md
+gh release create "v$VERSION" --title "v$VERSION" --notes-file /tmp/arc-ready-notes.md
 ```
 
-Never bypass hooks. If CI fails after a tag is published, fix forward with a new patch version. Do not move a published tag.
-
-## Validation commands
-
-```bash
-bash -n scripts/*.sh
-bash scripts/lint.sh --all --verbose
-bash scripts/dogfood-smoke.sh --verbose
-bash scripts/eval.sh --verbose
-SKILLS_REF_BIN="$PWD/.venv-skills-ref/bin/skills-ref" bash scripts/lint.sh official-validator --verbose
-bash scripts/lint.sh tag-release-parity --verbose
-```
-
-`scripts/release-check.sh` runs all of these evidence surfaces. Tag-release parity is read-only and requires an authenticated GitHub CLI.
+Never bypass hooks. If CI fails after a tag is published, fix forward with a new patch version; do not move a published tag.
 
 ## Lint checks
 
 | Check | What it proves |
 |---|---|
-| `unicode-clean` | Load-bearing authored files contain no forbidden dash, arrow, or box characters. |
-| `unicode-baseline` | Existing inherited punctuation and emoji counts did not increase in any tracked text file. Binary assets are skipped: they carry no authored punctuation, and decoding them as UTF-8 is not portable across perl builds. |
-| `frontmatter-version` | `metadata.version` matches the top CHANGELOG entry. |
-| `skill-version-body` | Every embedded progress-schema version matches `metadata.version`. |
+| `punctuation-clean` | No forbidden dash, arrow, or box characters in any authored file (the archival `docs/research/` is exempt). |
+| `emoji-free` | No emoji in any tracked text file. |
+| `version-parity` | `metadata.version`, the top CHANGELOG entry, and `arc-check.sh` agree. |
 | `compatible-with` | Compatibility metadata names the supported standards-level clients. |
-| `standards-shape` | Top-level Agent Skills fields and scalar limits match the current specification. |
-| `skill-size-budget` | `SKILL.md` remains below 500 lines and 5000 words. |
-| `references-exist` | Every direct `SKILL.md` reference exists. |
-| `reference-basenames` | Reference basenames remain globally unique. |
-| `relative-links-resolve` | Markdown links among references resolve from the source file. |
-| `reference-citations` | Tier-agnostic `references/<basename>.md` citations name real files. |
-| `tier-folders-populated` | Every reference tier remains populated. |
-| `shell-syntax` | Every repository Bash script parses under Bash. |
-| `eval-suite` | Deterministic behavioral invariants pass. |
-| `official-validator` | The current official `skills-ref` validator accepts the repository when installed. |
-| `tag-release-parity` | Every existing tag has a matching GitHub Release. Release-only check. |
+| `standards-shape` | Top-level Agent Skills fields and scalar limits match the specification. |
+| `skill-budget` | `SKILL.md` and each guided skeleton stay inside their byte budgets. |
+| `no-default-loads` | `SKILL.md` names no reference outside its guided-mode section, and `references/` holds only the guided pack. |
+| `skill-paths-exist` | Every script and skeleton `SKILL.md` names exists, and every skeleton is listed. |
+| `links-resolve` | Relative markdown links resolve. |
+| `shell-syntax` | Every repository Bash script parses. |
+| `test-suite` | `scripts/test.sh` passes. |
+| `official-validator` | The pinned `skills-ref` validator accepts the repository, when installed. |
+| `tag-release-parity` | Every tag has a matching GitHub Release. Release-only. |
 
-## Inherited Unicode policy
+## Ablation runs
 
-Load-bearing authored surfaces must remain clean. Some references inherited punctuation and emoji from the source suite. `config/unicode-baseline.txt` records per-file counts so CI rejects increases without rewriting faithful copies.
-
-Both the check and the regeneration script skip binary files. A tracked image contains byte sequences that decode as forbidden punctuation, and perl builds disagree about whether to count them or abort, so scanning binaries produced a check that passed on macOS and failed in CI. Baseline entries are for authored text only.
-
-After a reviewed mechanical split or move, regenerate and inspect the baseline:
-
-```bash
-bash scripts/update-unicode-baseline.sh
-git diff -- config/unicode-baseline.txt
-```
-
-Never use baseline regeneration to approve newly authored symbols.
+- The default matrix is four tasks across the none, lean, and full arms on Claude Sonnet 5 and Claude Haiku 4.5, plus guided mode on Haiku, repeated twice. `evals/results/` records the cost of the latest run.
+- The harness starts each contestant with a minimal environment, so settings inherited from the session that launches it (an effort level, host integrations) do not skew the runs.
+- Run output lives outside the repository, under `$TMPDIR/arc-ready-ablation/` by default. Commit only the summary and the results table.
+- The skill copies inside the run output are read-only. Run `chmod -R u+w` on the output before deleting it.
 
 ## Tag-release parity
 
-Every tag must have a matching GitHub Release. Scheduled and manually dispatched CI runs the read-only parity check. If a tag lacks a release, investigate the tag and evidence before creating the missing release.
+Every tag must have a matching GitHub Release. Scheduled CI runs the read-only parity check. If a tag lacks a release, investigate before creating one.
 
-## Predecessor and downstream coordination
+## Predecessor
 
-The eleven-skill hannsxpeter/ready-suite remains available. When a defect affects both products, repair arc-ready first and port the smallest relevant change to the predecessor. If canonical artifact paths, Pillars behavior, or orchestration semantics change, coordinate the dogfood example and downstream orchestrators before a major release.
+hannsxpeter/ready-suite remains available. arc-ready 1.2.1 is the frozen full-library edition.

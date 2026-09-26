@@ -4,15 +4,12 @@
 
 **From "I have an idea" to "it's live" without the guesswork.**
 
-One AI skill that walks a software project through every stage it has to go through anyway: what to build, how to build it, in what order, with what tools, then writing it, shipping it, watching it, launching it, and attacking it before someone else does.
+One AI skill that walks a software project through every stage it has to go through anyway: what to build, how it fits together, in what order, with what tools, then building it, shipping it, watching it, launching it, and attacking it before someone else does.
 
 [![lint](https://github.com/hannsxpeter/arc-ready/actions/workflows/lint.yml/badge.svg)](https://github.com/hannsxpeter/arc-ready/actions/workflows/lint.yml)
-[![release](https://img.shields.io/badge/release-v1.2.1-blue)](https://github.com/hannsxpeter/arc-ready/releases/tag/v1.2.1)
-[![version](https://img.shields.io/badge/source-1.2.1-blue)](CHANGELOG.md)
+[![release](https://img.shields.io/badge/release-v2.0.0-blue)](https://github.com/hannsxpeter/arc-ready/releases/tag/v2.0.0)
 [![agent skills](https://img.shields.io/badge/Agent%20Skills-compatible-2f6fed)](SKILL.md)
 [![hannsxpeter/pillars](https://img.shields.io/badge/hannsxpeter%2Fpillars-standard-0f766e)](https://github.com/hannsxpeter/pillars)
-[![smoke](https://img.shields.io/badge/smoke-12%2F12-brightgreen)](scripts/dogfood-smoke.sh)
-[![eval](https://img.shields.io/badge/eval-14%2F14-brightgreen)](EVALS.md)
 [![license](https://img.shields.io/github/license/hannsxpeter/arc-ready)](LICENSE)
 
 ---
@@ -21,13 +18,21 @@ One AI skill that walks a software project through every stage it has to go thro
 
 AI coding assistants are very good at producing something that looks finished. A screen appears. A button exists. A demo runs.
 
-Then you look closer. The login screen is real but the data behind it is fake. The dashboard renders but nothing saves. The roadmap has no order. The "monitoring" fires alerts nobody can act on. The launch page makes claims the product cannot back up. Half of it is scaffolding with a note that says "hook this up later," and later never comes.
+Then you look closer. The data behind the login screen is fake. The dashboard renders but nothing saves. The roadmap has no order. The monitoring fires alerts nobody can act on. The launch page makes claims the product cannot back up. And the assistant cheerfully reports that everything is done.
 
-That is not a model problem. It is a process problem. Real software follows an arc, and skipping steps in that arc is exactly what produces work that demos well and collapses in contact with real users.
+Current models know how to write a good PRD, design a sound architecture, and harden an app. What they lack is memory that outlives a session, a record of what was actually done instead of what they remember doing, and something other than their own judgment standing between "done" and "shipped". arc-ready supplies those parts and stays out of the way for the rest.
 
-arc-ready makes the arc explicit and refuses to skip it.
+## What it adds
 
-## How it works, in plain language
+- **State on disk.** A progress ledger at `.arc-ready/PROGRESS.md` and one document per stage at a fixed path. A new session, a new assistant, or a new hire picks up from the files, not from anyone's memory.
+- **Checks a script runs, not a promise.** `scripts/arc-check.sh` refuses to record a stage as done until its gate passes, catches a ledger that claims work the disk does not show, and flags placeholders and fake data in shipped code.
+- **A release gate.** Immediately before anything goes public, `arc-check.sh prepublish` re-reads the security findings and blocks while a Critical one is open. Only the risk's owner can accept it, by running `arc-check.sh accept` at a terminal; the assistant is told never to, and the command refuses to run without a terminal.
+- **Three tests and a list of named failures.** Every plan and claim must survive swapping in a competitor's name, must be a decision, a hypothesis, or an owned open question, and must say what would reverse it. The named failures ("hollow PRD", "paper canary", "scanner-only security") give reviewers and assistants a shared vocabulary.
+- **Project memory.** At the repository stage it writes a [Pillars](https://github.com/hannsxpeter/pillars) `AGENTS.md` and memory files, without ever overwriting one you already have.
+
+All of it is plain Markdown in your project folder and one Bash script. There is no service and no account.
+
+## How it works
 
 Every software project travels the same road, whether anyone names it or not:
 
@@ -37,39 +42,21 @@ idea -> what to build -> how it fits together -> in what order
      -> shipping it -> watching it -> launching it -> hardening it
 ```
 
-arc-ready turns each of those into a step with a written outcome, and each step has to pass before the next one starts. You cannot get an architecture without a clear product definition. You cannot get code without a roadmap. You cannot launch without a security pass.
+arc-ready turns each of those into a stage with a written outcome, and a stage cannot start until the ones before it are done, imported, or deliberately skipped with a reason.
 
-That single rule (no step without the one before it) is where the quality comes from. There is no "we'll figure that out during the build," because the build is downstream of the figuring out.
-
-## What you actually get
-
-Each step leaves behind a plain-English document you can read, share, and hand to anyone: a teammate, an investor, a contractor, or another AI tool six months from now.
-
-| Step | What it answers | What it leaves behind |
+| Stage | What it answers | What it leaves behind |
 |---|---|---|
-| Kickoff | Where are we, and what is the plan | A running progress ledger |
+| Kickoff | Where are we, and what is next | A progress ledger |
 | Product definition | What are we building, for whom, and how do we know it worked | A product requirements doc |
-| Architecture | How do the pieces fit, and what breaks first | A system design with the reasoning kept |
-| Roadmap | What order, and what does "done" look like at each stage | A sequenced plan with real completion gates |
-| Stack | Which technologies, and what would make us change our minds | A scored decision, not a preference |
-| Repository | Is the project set up like a professional one | Structure, docs, automated checks, quality tooling |
-| The app | Does it actually work end to end | Working features wired to a real backend, no placeholders |
-| Deploy | Can we ship safely and undo it if we are wrong | A release pipeline with a tested rollback |
-| Observe | Will we know when it breaks, before customers tell us | Health targets, alerts, and runbooks that were actually run |
-| Launch | Is the public-facing story true and ready | Landing copy, share cards, waitlist, launch-week plan |
-| Harden | What would an attacker find | A security review with fixes ranked by severity |
-
-Everything lands in the project folder as ordinary Markdown files. Nothing is locked in a tool you have to keep paying for. See the [full file map](#where-everything-gets-written) below.
-
-## Who it is for
-
-- **Founders and solo builders** who can describe the product clearly but do not want to discover in month three that the foundation was never poured.
-- **Product and project managers** working with AI-assisted engineers, who need the artifacts (requirements, roadmap, launch plan) to exist and be trustworthy.
-- **Engineers** who want the discipline of a senior team's process without writing the checklists themselves.
-- **Agencies and consultancies** delivering client work that has to survive a handover.
-- **Teams adopting AI coding tools** who have already been burned by impressive-looking output that was not connected to anything.
-
-You do not need to be technical to start. You need to be able to describe what you want to exist. arc-ready asks the rest.
+| Architecture | How do the pieces fit, and what would change our minds | A system design with its reasoning and a dependency graph |
+| Roadmap | In what order, with the people we actually have | A sequenced plan with capacity and a slice queue |
+| Stack | Which technologies, checked against current sources | A weighted, dated decision with exit costs |
+| Repository | Is the project set up for this stack and stage | Structure, CI that passes on a fresh clone, project memory |
+| The app | Does it work end to end | Working slices on real data, with tests |
+| Deploy | Can we ship safely and undo it | One artifact promoted through environments, a rollback that was run |
+| Observe | Will we know when it breaks | Journey-based targets, owned error budgets, executed runbooks |
+| Launch | Is the public story true and ready | Copy, share cards, attribution, a launch-week plan |
+| Harden | What would an attacker find | Findings with severity, reproduction, fix, and retest |
 
 ## Getting started
 
@@ -79,238 +66,129 @@ Install once:
 git clone https://github.com/hannsxpeter/arc-ready ~/.claude/skills/arc-ready
 ```
 
-Then just talk to your AI assistant in your own words. It picks up from wherever you are:
+That is the Claude Code location. Codex, Antigravity, Pi, OpenClaw, and other Agent Skills harnesses use their own skills directory with the same clone. For Cursor or Windsurf, clone it anywhere, then copy `.cursorrules` into your project (or into `.cursor/rules/`) and point it at the clone. The script needs Bash; chat-only assistants can still follow the rules without it.
 
-**Starting from nothing:**
+Then talk to your assistant in your own words:
 
 ```text
 I have an idea for a booking app for small salons. Walk me through to launch.
 ```
-
-**Already have something half-built:**
 
 ```text
 Write a PRD for this app.
 ```
 
 ```text
-Set up a deploy pipeline for this project.
-```
-
-**Want an honest second opinion on work already done:**
-
-```text
 Audit the architecture in .architecture-ready/ARCH.md.
 ```
 
-There is no dashboard to learn and no configuration to fill out. The skill reads your project, works out which stage you are at, and starts there.
+**Using a smaller model?** Run `bash ~/.claude/skills/arc-ready/scripts/arc-check.sh init --guided` in your project, or ask for guided mode. The assistant then reads a short skeleton for each stage before writing it. Nothing extra loads otherwise.
+
+**Want the full 1.x reference library?** It is frozen at `v1.2.1`: `git clone --branch v1.2.1 https://github.com/hannsxpeter/arc-ready ~/.claude/skills/arc-ready`. See [MIGRATION.md](MIGRATION.md).
 
 ## Four ways to use it
 
-- **Full arc.** Start at an idea, finish at a hardened launch. This is the default.
-- **Fill a gap.** You already have a codebase and you are missing one thing (requirements, a roadmap, monitoring, a launch plan). It goes straight to that step.
-- **Audit.** Score what already exists against the same standard, and get told plainly what is missing.
-- **Multi-repo.** Design a set of related projects that have to stay consistent with each other.
+- **Full arc.** Start at an idea and finish at a hardened launch.
+- **Fill a gap.** You have a codebase and one missing piece (requirements, monitoring, a launch plan). Existing work is recorded as imported, and the assistant goes straight to the gap.
+- **Audit.** Score an existing document against the same standard, without changing it.
+- **Multi-repo.** Lay out a set of related repositories that must stay consistent.
 
 ## It knows what kind of thing you are building
 
-A command-line tool does not need a design system. A data pipeline does not need share cards. A mobile app has an app-store review that a web app does not. arc-ready decides what kind of product you are building first, then applies only the standards that actually apply.
+A command-line tool does not need a design system, and a data pipeline does not need share cards. arc-ready picks the product form first and applies the matching definition of done.
 
 | If you are building | "Done" means, at minimum |
 |---|---|
-| A web application | A real user journey that works end to end, including permissions and failure states |
-| An API or service | A versioned contract, a working authenticated request, and telemetry an operator can use |
-| A CLI or SDK | Something installable, a stable interface, a working example, and a compatibility test |
-| A mobile or desktop app | Correct lifecycle behavior, offline handling, permissions, packaging, and an upgrade path |
-| A data or ML system | A reproducible pipeline, data contracts, quality checks, evaluation, and a way back |
-| Infrastructure | A validated plan, policy checks, a safe apply, drift detection, and rollback |
+| A web application | A real job works from user action through real data and back, with UI states and server-side permission checks |
+| An API or service | A consumer completes a versioned contract path with auth, validation, bounded retries, and usable telemetry |
+| A CLI or SDK | A clean install runs the primary job, errors are documented, examples run, and supported platforms pass |
+| A mobile or desktop app | The primary job survives lifecycle and connectivity changes, with secure storage and a reproducible signed build |
+| A data or ML system | A clean environment reproduces the pipeline or model from versioned inputs, with quality thresholds and lineage |
+| Infrastructure | A validated plan, policy checks, a sandbox apply, and a proven rollback |
 
-On top of that, guidance composes across four dimensions: the product form, the product archetype (marketplace, SaaS, internal tool, and so on), the industry, and any regulated environment you are in. That last one matters if you touch health data, payments, or personal data in Europe.
+## Where everything gets written
 
-Details live in the [product-form router](references/building/product-form-router.md), the [domain registry](references/building/domain-registry.md), and the [domain router](references/building/domain-considerations.md), which covers 37 focused profiles.
+These paths are a stable contract. The stage documents sit where the eleven-skill ready-suite put them, and none moved in 2.0.
+
+| Stage | Path |
+|---|---|
+| Progress ledger | `.arc-ready/PROGRESS.md` |
+| Product requirements | `.prd-ready/PRD.md` |
+| Architecture | `.architecture-ready/ARCH.md` and `HANDOFF.md` |
+| Roadmap | `.roadmap-ready/ROADMAP.md` |
+| Stack decision | `.stack-ready/STACK.md` |
+| Repository | the repository itself, plus `.repo-ready/SCAFFOLD.md` |
+| The app | working code, plus `.production-ready/STATE.md` |
+| Deploy | `.deploy-ready/DEPLOY.md` |
+| Observe | `.observe-ready/OBSERVE.md` |
+| Launch | `.launch-ready/STATE.md`, then `.launch-ready/PREPUBLICATION.md` before going public |
+| Harden | `.harden-ready/FINDINGS.md` |
+| Project memory | `AGENTS.md` and `agents/*.md` |
+
+## What the script checks
+
+| Command | What it does |
+|---|---|
+| `arc-check.sh status` | Compares the ledger with disk, reports drift, and names the next stage. |
+| `arc-check.sh mark <stage> <status>` | Records progress. `done` is refused until the stage's gate passes; a skip needs a reason; starting early needs a recorded override. |
+| `arc-check.sh gate <stage>` | Runs the mechanical checks for one stage, for example measurable success metrics and a Must cut line in the PRD, or an executed rollback in the deploy plan. |
+| `arc-check.sh scan` | Finds TODO comments, fake-data libraries, and stubbed calls in shipped source. |
+| `arc-check.sh pillars` | Writes project memory when absent, and records a block instead of overwriting yours. |
+| `arc-check.sh prepublish` | The public-release gate. |
+| `arc-check.sh accept` | Records a risk acceptance. It runs only for a person at a terminal. |
+
+The gates check structure. Whether a requirement is specific or an architecture decision is sound is still the assistant's judgment, guided by the three tests.
+
+## What it refuses to do
+
+- Mark a stage done when its document is missing, empty, or still a template.
+- Start a stage before the ones it depends on, unless you record why.
+- Ship placeholder data, stub screens, or "TODO: wire this up".
+- Treat a Critical security finding as resolved without a fix, or accept a security risk on your behalf. Only a person at a terminal can record a risk acceptance.
+- Publish from a pre-publication check that is older than the latest security findings.
+- Write evidence it did not produce, such as a rollback it never ran.
+
+## Evidence
+
+Version 2.0.0 was measured before release. The same four tasks ran with no skill, with the lean 2.0 core, and with the full 1.2.1 library, on Claude Sonnet 5 and Claude Haiku 4.5: 56 runs, plus a 9-run rerun after one fix. Details are in [EVALS.md](EVALS.md).
+
+- **Plans got better with the skill.** A separate model, blind to which setup wrote the documents, scored plans 7.25 (Sonnet) and 5.75 (Haiku) without the skill, and 10 and 10 with the lean core. The full 1.2.1 library scored 10 and 8.25.
+- **The full library cost four times as much for the same result.** A Sonnet planning run cost $2.57 with it and $0.64 with the lean core.
+- **The ledger caught what memory missed.** Asked to continue a project whose ledger claimed a roadmap that did not exist, every lean-core run noticed and fixed it; one no-skill run in four did.
+- **Building a clear slice needed no help.** Every setup on both models built it end to end with passing tests.
+- **The measurement found a hole, and the fix is in code.** Haiku, with either version of the skill, sometimes wrote its own risk acceptance to get past the release gate, then published. `arc-check.sh accept` now works only for a person at a terminal. After that change, every launch run held.
 
 ## Common questions
 
 **Do I have to be a developer?**
-No. You need to be able to describe the product you want. The planning steps are conversations in plain English, and the documents they produce are meant to be read by non-engineers. The building steps do assume an AI coding assistant is doing the typing.
+No. You need to be able to describe what you want to exist. The planning stages are conversations, and the documents are written for people who are not engineers. The building stages assume an AI coding assistant is doing the typing.
 
-**Does it write the code, or just the paperwork?**
-Both, and the paperwork is the reason the code holds up. The building step ships working features connected to a real backend. Placeholder data, stub screens, and "TODO: wire this up" are explicitly refused.
-
-**What is a PRD?**
-A product requirements document: a short written answer to what you are building, who it is for, what it must do, and how you will know it worked. It is the thing that stops a project from quietly becoming a different project.
+**Why did 2.0 get so much smaller?**
+Version 1.x shipped a 220-file reference library, and loading what it pointed to for the planning stages alone came to about 254,000 tokens. Current models already know most of that material. Version 2.0 keeps the parts they cannot supply for themselves and moves enforcement into a script. The numbers are in the evidence section above and in [EVALS.md](EVALS.md).
 
 **I already started building. Is it too late?**
-No. Point it at your existing project and ask for whichever piece is missing. It fills gaps without demanding a rewrite.
+No. Point it at your project and ask for the missing piece. Existing documents are imported, not rewritten.
 
-**How long does the full arc take?**
-That depends entirely on the product. The planning steps are typically a session or two of back and forth. The value is not speed, it is not having to redo the work.
-
-**Does this replace my developers?**
-No. It replaces the checklists, the forgotten steps, and the arguments about what "done" means. Judgment stays with people, and arc-ready deliberately stops and asks when a decision is genuinely yours to make.
+**Does it replace my developers?**
+No. It replaces forgotten steps and arguments about what "done" means. Decisions that are yours stay yours.
 
 **Where does my project data go?**
-Into your own project folder, as plain Markdown files, on your machine. arc-ready is a set of instructions your AI assistant reads. It is not a service, and there is no account.
-
-**Is it locked to one AI tool?**
-No. It follows the Agent Skills standard and works across several assistants. See [Installation options](#installation-options).
-
-## Installation options
-
-arc-ready is an Agent Skills compatible skill. Install it the way your assistant expects:
-
-- **Claude Code**: run `/skills install` from this repo, or symlink the repo into `~/.claude/skills/arc-ready/`.
-- **Codex CLI**: follow the Codex Skills install protocol.
-- **Cursor or Windsurf**: copy `SKILL.md` into the rules directory and reference it.
-- **Antigravity, Pi, OpenClaw**: use the harness's Agent Skills install path.
-- **Any AGENTS.md-aware tool** (Aider, Zed, Warp, Roo Code, Jules, Factory, Amp, Devin): arc-ready writes an `AGENTS.md` into your project describing how to load its context, and the tool reads the artifacts directly.
-
-## Where everything gets written
-
-Everything is written into your project as `.<step>-ready/` folders. These paths are a stable contract, so other tools can rely on them.
-
-| Step | Artifact | Path |
-|---|---|---|
-| 0 | Arc progress ledger | `.arc-ready/PROGRESS.md` |
-| 1.1 | Product requirements | `.prd-ready/PRD.md` (plus HANDOFF, AUDIT) |
-| 1.2 | Architecture | `.architecture-ready/ARCH.md` (plus HANDOFF, adr/) |
-| 1.3 | Roadmap | `.roadmap-ready/ROADMAP.md` (plus HANDOFF, retrospectives/) |
-| 1.4 | Stack decision | `.stack-ready/STACK.md` |
-| 2.1 | Repo scaffolding | repo root (`.github/`, `package.json`, README, and so on) plus `.repo-ready/SCAFFOLD.md` (or `.repo-ready/AUDIT-REPORT.md` in audit mode) |
-| 2.2 | Production state | `.production-ready/STATE.md` |
-| 3.1 | Deploy state | `.deploy-ready/DEPLOY.md` (plus PLAN, TOPOLOGY, STATE) |
-| 3.2 | Observability state | `.observe-ready/OBSERVE.md` (plus SLOs, INDEPENDENCE, STATE) |
-| 3.3 | Launch state | `.launch-ready/STATE.md` (plus runbook, copy, and `.launch-ready/PREPUBLICATION.md` before anything goes public) |
-| 3.4 | Hardening findings | `.harden-ready/FINDINGS.md` (plus remediation) |
-| 0 / 2.1 | Cross-tool agent brief | Pillars-compatible `AGENTS.md` at the project root |
-| 2.1 | Agent memory | `agents/context.md`, `agents/repo.md`, and source-backed `agents/*.md` |
-
-### Memory that outlives the session
-
-Chat history disappears. Six months later a new assistant (or a new hire) opens the project and knows nothing about why anything was decided the way it was.
-
-arc-ready fixes that by writing a durable memory layer into the project using the [Pillars](https://github.com/hannsxpeter/pillars) standard: a short brief at the root plus task-routed notes distilled from the arc documents. Whoever picks the project up next loads context in seconds instead of reading everything from scratch. Existing `AGENTS.md` files are never silently overwritten.
-
-## What it refuses to do
-
-Guardrails are the product. arc-ready will not:
-
-- Produce architecture diagrams that contain no actual decisions.
-- Call a technology preference an architecture.
-- Ship features backed by fake data or stub screens.
-- Write monitoring that alerts on things nobody can act on.
-- Write launch copy that survives only because nobody checked it.
-- Mark a security review complete with unresolved critical findings.
-- Let anything go public without a fresh pre-publication record tied to the current security pass.
-
-Each of those is a named failure mode with a mechanical check behind it, carried over from the eleven skills arc-ready consolidates. They live under `references/<tier>/<skill>-antipatterns.md`.
-
-## Where it came from
-
-arc-ready is the evolution of [hannsxpeter/ready-suite](https://github.com/hannsxpeter/ready-suite), which did the same job across eleven separate skills and twelve repositories.
-
-The discipline worked. The overhead did not: eleven installs, coordinated patches, a synchronization ritual across repos. arc-ready keeps every failure mode, every check, and every guardrail, and collapses it into one install, one file to read, one repo to update.
-
-The documents it produces are at exactly the same paths, so existing projects, the dogfood example, and downstream orchestrators (GSD, BMAD, Spec Kit, Superpowers) keep working unchanged. Already on ready-suite? See [MIGRATION.md](MIGRATION.md). The eleven-skill suite remains available and supported.
-
-## Current release
-
-**v1.2.1** is a documentation release. This README was rewritten for a general audience, so someone who is not an engineer can tell what arc-ready does and whether it is for them. No workflow behavior changed.
-
-From v1.2.0: capacity estimation in the planning step, so the architecture stage works out its own resource envelope (peak traffic, storage growth, bandwidth, cost, and the thresholds that would force a redesign) instead of borrowing numbers that later stages then spend.
-
-Also current, from v1.1.0: product-form routing, composable domain guidance, progressive disclosure of the reference library, deterministic and live evaluations, official Agent Skills validation, OWASP Top 10:2025 routing, and the serialized public activation gate. The 1.0 artifact contract is stable.
-
-## Stability promise
-
-The contract is intentionally small, and it holds:
-
-- The canonical `.<step>-ready/` paths remain the source of truth.
-- File-system projects always get a Pillars-compatible `AGENTS.md` plus `agents/context.md` and `agents/repo.md` as the memory floor.
-- Additional `agents/*.md` files are added only when the arc documents contain enough evidence to support them. A stub says it is a stub instead of inventing decisions.
-- An existing non-Pillars `AGENTS.md` is respected, and the blocker is recorded rather than the file being overwritten.
-- Public activation always requires a fresh pre-publication record tied to the current hardening revision. Preparing a launch never authorizes one.
+Into your project folder, as plain Markdown. arc-ready is a set of instructions and one script your assistant runs locally.
 
 ## Documentation map
 
-- **New here**: read this file, then [SKILL.md](SKILL.md) for the workflow body.
-- **Coming from ready-suite**: [MIGRATION.md](MIGRATION.md).
-- **Maintaining arc-ready**: [MAINTAINING.md](MAINTAINING.md) for release rituals and evidence requirements.
-- **Evaluating it**: [EVALS.md](EVALS.md) for the deterministic checks and scoring rules.
-- **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) before touching load-bearing files.
-- **Changing emitted project memory**: read `references/orchestration/agents-md-template.md` and `references/building/pillars-integration.md` together.
+- [SKILL.md](SKILL.md): everything the assistant is told.
+- [EVALS.md](EVALS.md): how arc-ready is tested and measured, with the latest results.
+- [MIGRATION.md](MIGRATION.md): moving from 1.x or from the eleven-skill ready-suite.
+- [docs/drift-audit.md](docs/drift-audit.md): where the 1.2.1 documentation disagreed with reality, and what changed.
+- [CONTRIBUTING.md](CONTRIBUTING.md), [MAINTAINING.md](MAINTAINING.md), [AGENTS.md](AGENTS.md): working on arc-ready itself.
+- [SECURITY.md](SECURITY.md): reporting a vulnerability, and exactly what the script reads and writes.
+- [CHANGELOG.md](CHANGELOG.md): version history.
 
-<details>
-<summary><strong>Phrases that trigger arc-ready</strong> (you do not need to memorize any of these)</summary>
+## Where it came from
 
-Say what you want in your own words. These are the surfaces the skill recognizes, consolidated from the eleven-skill suite.
+arc-ready began as [hannsxpeter/ready-suite](https://github.com/hannsxpeter/ready-suite), eleven separate skills in twelve repositories. Version 1 consolidated them into one skill with the same artifacts. Version 2 keeps the artifacts, the named failures, and the gates, and drops the textbook material current models no longer need.
 
-**Kickoff**: kickoff, new project from scratch, walk me through idea to launch, help me ship it end-to-end, orchestrate the whole arc, I have an idea what next.
-
-**Planning**: write a PRD, product spec, requirements doc, one-pager, product brief, problem statement, design the architecture, system diagram, monolith or microservices, integration shape, service boundaries, data architecture, ADR, trust boundaries, C4 diagram, build a roadmap, milestone plan, quarterly plan, sequence the work, Now-Next-Later, Shape Up cycle, PI planning, what stack should I use, Next.js vs Remix, pick a database, Postgres or Mongo, which auth provider, hosting recommendation.
-
-**Building**: set up a repo, initialize a project, add documentation, set up CI, configure linting, add a README, set up GitHub Actions, make my repo professional, add contributing guidelines, set up release automation, adopt Pillars, task-routed agent memory, build a web app, API or service, CLI or SDK, mobile or desktop app, data or ML system, infrastructure project, dashboard, admin panel, internal tool, or CRUD app.
-
-**Shipping**: deploy this, CI/CD pipeline, promote to staging, zero-downtime migration, expand-contract, rollback, canary, blue/green, progressive rollout, first deploy, environment parity, GitHub Actions pipeline, GitOps, add monitoring, define an SLO, alerts when X, add Datadog / Honeycomb / Sentry / Grafana, write a runbook, on-call setup, post-mortem, structured logging, OpenTelemetry, distributed tracing, error budget policy, launch my product, build a landing page, Product Hunt, Show HN, waitlist, OG card, launch-day SEO, press kit, launch week plan, adversarial review, pen-test prep, OWASP walkthrough, SOC 2 / HIPAA / PCI-DSS / GDPR gap check, responsible disclosure, bug bounty, post-incident hardening, security review before launch.
-
-</details>
-
-<details>
-<summary><strong>Jargon, translated</strong></summary>
-
-- **PRD**: the written answer to what you are building, for whom, and how you will know it worked.
-- **Architecture**: how the parts of the system fit together, and which decisions would be expensive to reverse.
-- **Stack**: the specific technologies chosen, and the conditions that would justify changing them.
-- **Repo (repository)**: the folder holding your code, its history, and its automated checks.
-- **CI/CD**: automation that checks and ships your code so a human does not do it by hand each time.
-- **Rollback**: undoing a release safely when it turns out to be wrong.
-- **Canary**: releasing to a small slice of users first, with a rule for when to stop.
-- **SLO**: the reliability target you promise, phrased so you can tell whether you are meeting it.
-- **Runbook**: step-by-step instructions for handling a specific failure at 3am.
-- **OWASP Top 10**: the industry list of the most common ways applications get attacked.
-- **Hardening**: deliberately attacking your own product before someone else does.
-- **Agent memory**: durable project notes an AI assistant can load later instead of relearning everything.
-
-</details>
-
-<details>
-<summary><strong>Repository layout</strong> (for contributors)</summary>
-
-```
-arc-ready/
-  SKILL.md                       The orchestrator body.
-  CHANGELOG.md                   Version history.
-  README.md                      This file.
-  LICENSE                        MIT.
-  AGENTS.md                      Cross-tool agent brief for arc-ready itself.
-  CLAUDE.md -> AGENTS.md         Symlink (Claude Code overlay).
-  SECURITY.md                    Vulnerability reporting channel.
-  CONTRIBUTING.md                Contribution guide.
-  MAINTAINING.md                 Single-repo release rituals.
-  MIGRATION.md                   Migration guide for ready-suite users.
-  EVALS.md                       Evaluation model and release evidence.
-  evals/cases/                   Live-harness prompts and rubrics.
-  scripts/lint.sh                Single-repo meta-linter.
-  scripts/eval.sh                Deterministic behavioral checks.
-  scripts/release-check.sh       Release-grade validation entry point.
-  requirements/skills-ref.txt    Pinned official validator dependency.
-  config/unicode-baseline.txt    Reviewed inherited Unicode counts.
-  .github/
-    CODEOWNERS                   Code ownership.
-    workflows/lint.yml           CI lint job.
-  references/
-    orchestration/               Tier 0 references.
-    planning/                    Tier 1 references (PRD, ARCH, ROADMAP, STACK).
-    building/                    Tier 2 references (REPO, PRODUCTION).
-      domains/                   Focused product and industry profiles.
-    shipping/                    Tier 3 references (DEPLOY, OBSERVE, LAUNCH, HARDEN).
-    shared/                      Cross-tier references (RESEARCH, ORCHESTRATORS).
-```
-
-</details>
-
-## License and contributing
+## License
 
 MIT. See [LICENSE](LICENSE).
-
-Contributions are welcome: start with [CONTRIBUTING.md](CONTRIBUTING.md). Release rituals are in [MAINTAINING.md](MAINTAINING.md), and security reports go through [SECURITY.md](SECURITY.md).

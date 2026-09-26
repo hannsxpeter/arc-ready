@@ -1,30 +1,29 @@
 name: Feature request or improvement
-description: Suggest a refinement to existing arc-ready content.
+description: Suggest a change to arc-ready.
 title: "[feature] "
 labels: [enhancement]
 body:
   - type: markdown
     attributes:
       value: |
-        arc-ready is faithful consolidation of the eleven-skill hannsxpeter/ready-suite, not a v2.
-        Net-new failure-mode patterns and discipline rules will be rejected.
-        Refinements within the established pattern catalog (clarifications, references for new
-        ecosystem developments, lint improvements that catch documented modes) are welcome.
+        arc-ready 2.x keeps the default context small on purpose. A proposal is strongest when it shows
+        that current models fail without the change (an ablation result or a reproducible transcript),
+        or when it moves a rule out of prose and into scripts/arc-check.sh where it is enforced.
 
-        For taxonomy questions (a behavior that feels like a failure but does not map to a
-        named pattern), use the "taxonomy question" template instead.
+        For a behavior that feels like a failure but matches no named have-not, use the
+        "taxonomy question" template instead.
   - type: textarea
     id: problem
     attributes:
       label: What problem does this solve?
-      description: Concrete user-facing problem, not "it would be nice if".
+      description: A concrete failure you observed, with the model and harness, not "it would be nice if".
     validations:
       required: true
   - type: textarea
     id: proposal
     attributes:
       label: Proposed change
-      description: What specifically would change in SKILL.md, references, lint, or workflow?
+      description: What would change in SKILL.md, arc-check.sh, the guided pack, or the evaluations?
     validations:
       required: true
   - type: dropdown
@@ -43,22 +42,18 @@ body:
     validations:
       required: true
   - type: textarea
-    id: domain
-    attributes:
-      label: Domain or regulatory impact
-      description: Name any product archetype, industry overlay, regulatory overlay, or registry mapping affected.
-  - type: textarea
     id: evaluation
     attributes:
-      label: Evaluation evidence
-      description: Name the deterministic invariant or live-harness case that should prove the change.
+      label: Evidence
+      description: The test in scripts/test.sh or the ablation task that would prove the change works.
   - type: dropdown
     id: scope
     attributes:
-      label: Scope
+      label: Where it belongs
       options:
-        - "Within scope: refinement of existing pattern, lint improvement, ecosystem update"
-        - "Possibly out of scope: net-new pattern (please justify)"
+        - "Script enforcement (arc-check.sh)"
+        - "SKILL.md (always-loaded context)"
+        - "Guided pack (opt-in, smaller models)"
         - "Unsure"
     validations:
       required: true

@@ -1,11 +1,10 @@
 <!--
-Thanks for contributing to arc-ready.
+Thanks for contributing to arc-ready. See CONTRIBUTING.md.
 
-arc-ready is faithful consolidation of the eleven-skill hannsxpeter/ready-suite. Net-new
-failure-mode patterns and net-new discipline rules will be rejected; refinements
-within the established pattern catalog are welcome. See CONTRIBUTING.md.
-
-Please cover the items below in your description. Lint must pass before merge.
+arc-ready 2.x keeps the default context small. Content earns its place by a
+measured effect in the ablation harness, or by being something a model cannot
+know (a format, a contract, a gate). Enforcement belongs in scripts/arc-check.sh
+rather than in prose. Cover the items below. Lint must pass before merge.
 -->
 
 ## What this changes
@@ -14,44 +13,27 @@ Please cover the items below in your description. Lint must pass before merge.
 
 ## Type of change
 
-- [ ] Bug fix (lint, broken cross-reference, typo)
-- [ ] Reference update (ecosystem change: deprecated tool, new compliance version, new vendor)
-- [ ] Worked-example refinement (EXAMPLE-PRD.md, EXAMPLE-ARCH.md, etc.)
-- [ ] Cross-tier consistency fix
-- [ ] Lint or CI improvement
-- [ ] Product-form or domain-routing refinement
-- [ ] Evaluation case or rubric
-- [ ] Documentation (README, AGENTS.md, MAINTAINING.md, MIGRATION.md, CONTRIBUTING.md, SECURITY.md)
+- [ ] Bug fix (script, lint, typo)
+- [ ] arc-check.sh behavior (ledger, gate, prepublish, pillars, scan)
+- [ ] SKILL.md content
+- [ ] Guided pack skeleton
+- [ ] Evaluation (tests or ablation harness)
+- [ ] Documentation
 - [ ] Other (please describe)
 
-## Discipline check
+## Evidence
 
-- [ ] No net-new failure-mode patterns introduced.
-- [ ] No collapsed references that have load-on-demand value.
-- [ ] No em-dashes, en-dashes, arrows, or box-drawing characters in load-bearing files.
-- [ ] No emojis.
+- [ ] `bash scripts/test.sh` passes, and new script behavior has a test.
+- [ ] `bash scripts/lint.sh --all` passes (budgets, no default loads, punctuation, links).
+- [ ] Changes to SKILL.md or the guided pack include an ablation result (see EVALS.md), or say why none is needed.
+- [ ] No em dashes, en dashes, arrows, or emoji.
 
 ## Versioning
 
-- [ ] SKILL.md `metadata.version` bumped (X.Y.Z) - patch / minor / major rationale stated below.
-- [ ] CHANGELOG.md top entry added with the same version and a "Why a patch / minor / major" paragraph.
-- [ ] If minor or major: MIGRATION.md updated if the artifact contract or workflow shape changed.
+- [ ] `metadata.version` in SKILL.md, `ARC_CHECK_VERSION` in scripts/arc-check.sh, and the top CHANGELOG entry agree.
+- [ ] MIGRATION.md is updated if the artifact paths, the ledger format, or the workflow shape changed.
 
 **Version bump rationale**: <!-- patch / minor / major and why -->
-
-## Lint
-
-- [ ] `bash scripts/lint.sh --all` passes locally.
-- [ ] `bash scripts/dogfood-smoke.sh --verbose` passes locally.
-- [ ] `bash scripts/eval.sh --verbose` passes locally.
-- [ ] Official `skills-ref validate` passes against the absolute repository path.
-
-## Cross-references
-
-- [ ] Any new direct workflow references are routed from SKILL.md or a focused router.
-- [ ] Cross-references between reference files use tier-relative paths (same-tier as `bar.md`, cross-tier as `../<other-tier>/bar.md`).
-- [ ] Artifact paths (`.<tier>-ready/<ARTIFACT>.md`) preserved.
-- [ ] Product form, domain composition, and public activation behavior remain covered by evaluations.
 
 ## Related issues
 
