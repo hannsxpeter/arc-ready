@@ -54,8 +54,9 @@ n=0
 while [ "$n" -lt "$JUDGE_SAMPLES" ]; do
   n=$((n + 1))
   out="$dir/judge-$n.json"
-  (cd "$dir" && env -i HOME="$HOME" PATH="$PATH" USER="${USER:-}" LOGNAME="${LOGNAME:-}" SHELL="${SHELL:-/bin/bash}" TMPDIR="${TMPDIR:-/tmp}" LANG="${LANG:-en_US.UTF-8}" TERM=dumb \
-    claude -p "$prompt" --model "$JUDGE_MODEL" --output-format json \
+  # The prompt goes over stdin: document sets can exceed the per-argument limit.
+  printf '%s' "$prompt" | (cd "$dir" && env -i HOME="$HOME" PATH="$PATH" USER="${USER:-}" LOGNAME="${LOGNAME:-}" SHELL="${SHELL:-/bin/bash}" TMPDIR="${TMPDIR:-/tmp}" LANG="${LANG:-en_US.UTF-8}" TERM=dumb \
+    claude -p --model "$JUDGE_MODEL" --output-format json \
     --disallowedTools "Bash Read Write Edit Glob Grep Skill Agent Task WebFetch WebSearch NotebookEdit" \
     --disable-slash-commands --strict-mcp-config --mcp-config '{"mcpServers":{}}' \
     --setting-sources project,local --no-session-persistence --max-budget-usd 2) > "$out" 2> "$dir/judge-$n.err"

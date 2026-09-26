@@ -43,3 +43,18 @@ jobs:
         run: bash scripts/lint.sh tag-release-parity --verbose
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bash32:
+    name: macos-bash-3.2
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Run arc-check tests under the system Bash 3.2 and BSD tools
+        run: |
+          /bin/bash --version | head -1
+          mkdir -p "$RUNNER_TEMP/bash32" && ln -sf /bin/bash "$RUNNER_TEMP/bash32/bash"
+          PATH="$RUNNER_TEMP/bash32:$PATH" /bin/bash scripts/test.sh --verbose

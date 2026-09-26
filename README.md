@@ -26,7 +26,7 @@ Current models know how to write a good PRD, design a sound architecture, and ha
 
 - **State on disk.** A progress ledger at `.arc-ready/PROGRESS.md` and one document per stage at a fixed path. A new session, a new assistant, or a new hire picks up from the files, not from anyone's memory.
 - **Checks a script runs, not a promise.** `scripts/arc-check.sh` refuses to record a stage as done until its gate passes, catches a ledger that claims work the disk does not show, and flags placeholders and fake data in shipped code.
-- **A release gate.** Immediately before anything goes public, `arc-check.sh prepublish` re-reads the security findings and blocks while a Critical one is open. Only the risk's owner can accept it, by running `arc-check.sh accept` at a terminal; the assistant cannot record an acceptance for you.
+- **A release gate.** Immediately before anything goes public, `arc-check.sh prepublish` re-reads the security findings and blocks while a Critical one is open. Only the risk's owner can accept it, by running `arc-check.sh accept` at a terminal; the assistant is told never to, and the command refuses to run without a terminal.
 - **Three tests and a list of named failures.** Every plan and claim must survive swapping in a competitor's name, must be a decision, a hypothesis, or an owned open question, and must say what would reverse it. The named failures ("hollow PRD", "paper canary", "scanner-only security") give reviewers and assistants a shared vocabulary.
 - **Project memory.** At the repository stage it writes a [Pillars](https://github.com/hannsxpeter/pillars) `AGENTS.md` and memory files, without ever overwriting one you already have.
 

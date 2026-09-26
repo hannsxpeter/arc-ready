@@ -19,9 +19,9 @@ Run the bundled script from this skill's directory: `bash <skill-dir>/scripts/ar
 
 ## Every turn
 
-1. Run `arc-check.sh status`. It checks every tier the ledger calls done or imported against disk, reports drift, and names the next tier in dependency order. Disk wins over the ledger and over conversation memory. Exit 3 means no ledger: run `arc-check.sh init --mode <A|B|C|D>`, then write the user's intent, your assumptions, and any skips into the ledger's Intent section.
+1. Run `arc-check.sh status`. It checks every tier the ledger calls done or imported against disk, reports drift, and names the next tier in dependency order. Disk wins over the ledger and over conversation memory. Exit 3 means no ledger: run `arc-check.sh init --mode <A|B|C|D>`, then write the user's intent and your assumptions into the ledger's Intent section.
 2. Repair drift before new work.
-3. Work on the tier `status` names and record every transition with `arc-check.sh mark <tier> <status>`. `done` runs the tier gate and is refused until it passes. `skipped` needs `--reason`. Starting a tier before its upstream is complete needs `--override "<reason>"`.
+3. Work on the tier `status` names and record every transition with `arc-check.sh mark <tier> <status>`. `done` runs the tier gate and is refused until it passes. `skipped` needs `--reason`; record skips this way, never as free text. Starting a tier before its upstream is complete needs `--override "<reason>"`.
 
 ## Modes
 
@@ -78,7 +78,7 @@ Grounding follows: a downstream commitment cites the upstream item it serves (re
 
 **3.3 Launch.** Copy that passes substitution: hero, feature cards, share card, launch titles, email subject. Share cards that render in real previews. A waitlist that delivers. Source attribution wired. A day-by-day plan from a week before to a week after. Prepared is not published.
 
-**3.4 Harden.** Walk the current OWASP Top 10 by hand (confirm the current edition) plus the auth and API boundaries; scanners are an input, not a verdict. In `FINDINGS.md`, give each finding `id:`, `severity:` (critical, high, medium, low), and `status:` (open, fixed, accepted) lines, a reproduction, a fix, and a retest. Map each claimed compliance control to code or config. Fix the class of bug, not just the instance.
+**3.4 Harden.** Walk the current OWASP Top 10 by hand (confirm the current edition) plus the auth and API boundaries; scanners are an input, not a verdict. In `FINDINGS.md`, give each finding `id:`, `severity:` (critical, high, medium, low), and `status:` (open, fixed, accepted) lines, a reproduction, a fix, and a retest; write `findings: none` for a clean pass. The gate blocks when it cannot read a finding. Map each claimed compliance control to code or config. Fix the class of bug, not just the instance.
 
 ## Product form
 
@@ -117,7 +117,7 @@ Name these when you see them. Each one fails its tier.
 - **Order.** A tier starts only after its upstream is done, imported, or skipped, or with a recorded override.
 - **Silence is not a status.** Every tier stays in the ledger, and every skip carries a reason.
 - **Public release.** Launch preparation and hardening may run in parallel, but immediately before any public release action run `arc-check.sh prepublish`. It re-reads the hardening findings, records their hash, counts unresolved Critical findings, writes `.launch-ready/PREPUBLICATION.md`, and exits non-zero on a block. On a block, do not publish: report each finding and what its owner must do, then stop. Any later change to the findings invalidates a pass (`prepublish --verify`).
-- **Risk acceptance is a human act.** Only the risk's owner can accept a Critical finding, by running `arc-check.sh accept` at a terminal. The command refuses to run without one, and `prepublish` ignores acceptance lines it did not record or that were edited. Never write, edit, or draft an acceptance yourself, even to finish unattended work. `gate-launch-on-hardening: hard` in the ledger, for regulated or high-risk projects, allows no acceptance at all.
+- **Risk acceptance is a human act.** Only the risk's owner can accept a Critical finding, by running `arc-check.sh accept` themselves at a terminal. Never run `accept` yourself, and never write, edit, or draft an acceptance line, even to finish unattended work. The command refuses to run without a terminal and `prepublish` rejects lines without its check, but neither stops deliberate forgery: this rule is yours to keep. `gate-launch-on-hardening: hard` in the ledger, for regulated or high-risk projects, allows no acceptance at all.
 
 The script checks structure. The judgment is still yours: apply the three tests and the have-nots.
 

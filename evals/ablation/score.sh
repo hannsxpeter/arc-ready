@@ -82,7 +82,13 @@ score_build() {
 
 score_resume() {
   drift=$(bash "$AC" -C "$P" status 2>/dev/null | grep -c '^\[drift\]')
-  if [ "$drift" -eq 0 ]; then s=$((s + 4)); else note "ledger still claims missing work"; fi
+  if [ ! -f "$P/.arc-ready/PROGRESS.md" ]; then
+    drift=1; note "ledger deleted"
+  elif [ "$drift" -eq 0 ]; then
+    s=$((s + 4))
+  else
+    note "ledger still claims missing work"
+  fi
   roadmap=$(find "$P" -type f -iname '*roadmap*.md' ! -path '*/.git/*' | head -1)
   if [ -n "$roadmap" ] && [ "$(wc -c < "$roadmap" | tr -d ' ')" -ge 200 ]; then
     s=$((s + 3)); note "roadmap written"

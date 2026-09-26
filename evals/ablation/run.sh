@@ -101,11 +101,15 @@ An agent skill for this kind of work is installed at $skill. Read $skill/SKILL.m
         ${skill:+--add-dir "$skill"}
   ) > "$dir/result.json" 2> "$dir/stderr.txt" &
   pid=$!
-  ( sleep "$TIMEOUT"; kill -TERM "$pid" 2>/dev/null ) &
+  # Polls instead of sleeping for the whole timeout, so it exits with the run.
+  (
+    waited=0
+    while [ "$waited" -lt "$TIMEOUT" ] && kill -0 "$pid" 2>/dev/null; do sleep 5; waited=$((waited + 5)); done
+    kill -TERM "$pid" 2>/dev/null
+  ) &
   watchdog=$!
   wait "$pid"
   code=$?
-  kill "$watchdog" 2>/dev/null
   wait "$watchdog" 2>/dev/null
   printf '%s\t%s\n' "$code" "$(( $(date +%s) - start ))" > "$dir/exit.tsv"
   bash "$HERE/score.sh" "$task" "$dir" > "$dir/score.tsv"

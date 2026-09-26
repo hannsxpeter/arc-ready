@@ -91,23 +91,27 @@ text_files() {
 check_punctuation_clean() {
   printf '== punctuation-clean ==\n'
   local_fail=0
-  for file in $(text_files | grep -Ev "$ARCHIVAL"); do
+  while IFS= read -r file; do
     count=$(perl -CSD -ne 'while (/[\x{2010}-\x{2015}\x{2190}-\x{21FF}\x{2500}-\x{257F}\x{2212}]/g) {$n++} END {print $n || 0}' "$REPO_DIR/$file" 2>/dev/null || printf '0')
     if [ "$count" -gt 0 ]; then
       printf '  [fail] %s has %s forbidden dash, arrow, or box characters\n' "$file" "$count"
       local_fail=1
     fi
-  done
+  done <<EOF
+$(text_files | grep -Ev "$ARCHIVAL")
+EOF
   report punctuation-clean "$local_fail"
 }
 
 check_emoji_free() {
   printf '== emoji-free ==\n'
   local_fail=0
-  for file in $(text_files); do
+  while IFS= read -r file; do
     count=$(perl -CSD -ne 'while (/\p{Extended_Pictographic}/g) {$n++} END {print $n || 0}' "$REPO_DIR/$file" 2>/dev/null || printf '0')
     if [ "$count" -gt 0 ]; then printf '  [fail] %s has %s emoji\n' "$file" "$count"; local_fail=1; fi
-  done
+  done <<EOF
+$(text_files)
+EOF
   report emoji-free "$local_fail"
 }
 
@@ -230,14 +234,17 @@ check_links_resolve() {
   printf '== links-resolve ==\n'
   cd "$REPO_DIR"
   local_fail=0
-  for file in $(text_files | grep -E '\.md$' | grep -Ev "$ARCHIVAL"); do
+  while IFS= read -r file; do
+    [ -n "$file" ] || continue
     dir=$(dirname "$file")
     for target in $(grep -oE '\]\([^)[:space:]]+\)' "$file" | sed -E 's/^\]\(//; s/\)$//; s/#.*$//'); do
       [ -n "$target" ] || continue
       case "$target" in http://*|https://*|mailto:*) continue ;; esac
       if [ ! -e "$dir/$target" ]; then printf '  [fail] %s links missing %s\n' "$file" "$target"; local_fail=1; fi
     done
-  done
+  done <<EOF
+$(text_files | grep -E '\.md$' | grep -Ev "$ARCHIVAL")
+EOF
   report links-resolve "$local_fail"
 }
 
