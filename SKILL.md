@@ -78,7 +78,7 @@ Grounding follows: a downstream commitment cites the upstream item it serves (re
 
 **3.3 Launch.** Copy that passes substitution: hero, feature cards, share card, launch titles, email subject. Share cards that render in real previews. A waitlist that delivers. Source attribution wired. A day-by-day plan from a week before to a week after. Prepared is not published.
 
-**3.4 Harden.** Walk the current OWASP Top 10 by hand (confirm the current edition) plus the auth and API boundaries; scanners are an input, not a verdict. In `FINDINGS.md`, give each finding `id:`, `severity:` (critical, high, medium, low), and `status:` (open, fixed, accepted) lines, a reproduction, a fix, and a retest; write `findings: none` for a clean pass. The gate blocks when it cannot read a finding. Map each claimed compliance control to code or config. Fix the class of bug, not just the instance.
+**3.4 Harden.** Walk the current OWASP Top 10 by hand (confirm the current edition) plus the auth and API boundaries; scanners are an input, not a verdict. In `FINDINGS.md`, give each finding `id:`, `severity:` (critical, high, medium, low), and `status:` (open, fixed, accepted) lines, a reproduction, a fix, and a retest; write `findings: none` for a clean pass. The gate blocks when it cannot read a finding or sees Critical mentioned outside one; write `critical findings: none` when there are none. Map each claimed compliance control to code or config. Fix the class of bug, not just the instance.
 
 ## Product form
 

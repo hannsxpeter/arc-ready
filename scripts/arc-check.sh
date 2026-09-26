@@ -20,7 +20,7 @@ RESOLVED="fixed resolved closed verified mitigated remediated false-positive dup
 FLIP_RE='flip point|would (flip|reverse|revisit)|revisit (if|when)|reverse (if|when)|reversal|re-?evaluate (if|when)'
 SCAN_RE='(#|//|/\*|<!--|--|\*|;)[[:space:]]*(TODO|FIXME|XXX|HACK)([^A-Za-z]|$)|[Ll]orem [Ii]psum|faker\.|fake_data|fakeData|mock_data|mockData|hardcoded_response|NotImplementedError|[Nn]ot yet implemented|unimplemented!\(|todo!\('
 MARKER_RE='^[[:space:]>*+-]*(TODO|FIXME)([^A-Za-z]|$)|(TODO|FIXME)[[:space:]]*[:(]|[Ll]orem [Ii]psum'
-CODE_EXT='py|js|jsx|mjs|cjs|ts|tsx|go|rs|rb|java|kt|kts|swift|c|cc|cpp|h|hpp|cs|php|ex|exs|scala|vue|svelte|dart|lua|sh|sql|tf'
+CODE_EXT='py|js|jsx|mjs|cjs|ts|tsx|go|rs|rb|java|kt|kts|swift|c|cc|cpp|h|hpp|cs|php|ex|exs|scala|vue|svelte|dart|lua|sh|sql|tf|html|htm|css|scss|sass|less|erb|ejs|hbs|njk|twig|liquid|astro'
 SCAN_EXCLUDE='(^|/)(tests?|__tests__|spec|specs|fixtures?|__mocks__|mocks?|examples?|docs?|vendor|node_modules|dist|build|coverage)/|(^|/)\.[A-Za-z0-9_-]+/|(_test|\.test|\.spec|_spec|\.stories)\.[A-Za-z]+$|(^|/)test_[^/]*$|(^|/)conftest\.py$'
 TIERS_HEADING='^##[ \t]+(tiers|tier ledger|step ledger)([ \t(:]|$)'
 NL='
@@ -123,6 +123,19 @@ tier_upstream() {
 is_complete() { case "$1" in done|imported|skipped) return 0 ;; esac; return 1; }
 valid_status() { case " $STATUSES " in *" $1 "*) return 0 ;; esac; return 1; }
 is_resolved() { case " $RESOLVED " in *" $1 "*) return 0 ;; esac; return 1; }
+
+# True when $1 is a real calendar date in YYYY-MM-DD form.
+valid_date() {
+  case "$1" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) return 1 ;; esac
+  printf '%s\n' "$1" | awk -F- '{
+    y = $1 + 0; m = $2 + 0; d = $3 + 0
+    if (m < 1 || m > 12 || d < 1) exit 1
+    split("31 28 31 30 31 30 31 31 30 31 30 31", len, " ")
+    max = len[m]
+    if (m == 2 && ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)) max = 29
+    exit (d <= max) ? 0 : 1
+  }'
+}
 
 # Rejects text that would break a ledger line.
 check_text() {
@@ -375,7 +388,7 @@ scan_files() {
 # Prints matches and returns 1 when shipped source holds placeholders or fake data.
 run_scan() {
   list=$(scan_files "$@")
-  if [ -z "$list" ]; then echo "  [warn] no source files found to scan"; return 0; fi
+  if [ -z "$list" ]; then echo "  [warn] no source files found to scan"; return 2; fi
   count=$(printf '%s\n' "$list" | wc -l | tr -d ' ')
   hits=$(printf '%s\n' "$list" | while IFS= read -r file; do
       [ -f "$file" ] || continue
@@ -473,6 +486,54 @@ parse_findings() {
     END { emit() }' "$1"
 }
 
+# Prints the line numbers of Critical mentions that no readable finding
+# explains. Explained: a severity line, a row of a findings table, a heading
+# whose section holds a severity line, an explicit "critical findings: none",
+# or a one-line "No critical findings." statement.
+critical_mentions() {
+  awk '
+    function clean(s) { sub(/\r$/, "", s); gsub(/\*\*|__|`/, "", s); return tolower(s) }
+    function mentions(s) { return s ~ /(^|[^a-z-])critical([^a-z-]|$)/ }
+    function mark_seen(   i) { for (i = 1; i <= nh; i++) hseen[i] = 1 }
+    function close_to(level,   i) {
+      for (i = nh; i >= 1; i--) {
+        if (hlev[i] < level) break
+        if (!hseen[i]) print hline[i]
+        nh--
+      }
+    }
+    {
+      low = clean($0)
+      if (low ~ /^[ \t]*\|/) {
+        nc = split(low, c, "|")
+        if (!intable) {
+          sevc = 0; stc = 0
+          for (i = 2; i <= nc; i++) { h = c[i]; gsub(/^[ \t]+|[ \t]+$/, "", h); if (h ~ /^severity/) sevc = i; else if (h ~ /^(status|state)/) stc = i }
+          intable = (sevc && stc) ? 1 : 2
+          if (intable == 2 && mentions(low)) print FNR
+          next
+        }
+        if (intable == 1) { mark_seen(); next }
+        if (mentions(low)) print FNR
+        next
+      }
+      intable = 0
+      if (low ~ /^#+[ \t]/) {
+        match(low, /^#+/); lv = RLENGTH
+        close_to(lv)
+        if (mentions(low)) { nh++; hlev[nh] = lv; hline[nh] = FNR; hseen[nh] = 0 }
+        next
+      }
+      kv = low; sub(/^[ \t>]*/, "", kv); sub(/^([-*+]|[0-9]+[.)])[ \t]+/, "", kv); sub(/^\[[ x]\][ \t]+/, "", kv)
+      if (kv ~ /^severity[ \t]*(\([^)]*\))?[ \t]*:/) { mark_seen(); next }
+      if (!mentions(low)) next
+      if (kv ~ /critical([ \t]+(findings?|issues?|risks?|vulnerabilities))?[ \t]*:[ \t]*(none|0|zero)([^a-z0-9]|$)/) next
+      if (kv ~ /^(there (are|were) )?(no|0|zero) (open |unresolved |remaining )?critical (findings?|issues?|risks?|vulnerabilities)( (remain|remaining|open|found))?[ \t]*\.?[ \t]*$/) next
+      print FNR
+    }
+    END { close_to(0) }' "$1"
+}
+
 findings_none_declared() {
   grep -Eiq '^[[:space:]>*_-]*findings[*_]*[[:space:]]*:[[:space:]]*[*_]*none([^a-z]|$)' "$1"
 }
@@ -484,6 +545,14 @@ acceptance_check() { hash_text "$(lower "$1")|$2|$3|$4|$5|$6"; }
 acceptance_rows() {
   [ -f "$LEDGER" ] || return 0
   awk -v today="$(today)" '
+    function valid(s,   p, y, m, d, len, max) {
+      if (s !~ /^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/) return 0
+      split(s, p, "-"); y = p[1] + 0; m = p[2] + 0; d = p[3] + 0
+      if (m < 1 || m > 12 || d < 1) return 0
+      split("31 28 31 30 31 30 31 31 30 31 30 31", len, " "); max = len[m]
+      if (m == 2 && ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)) max = 29
+      return d <= max
+    }
     { line = $0; sub(/\r$/, "", line) }
     tolower(line) ~ /finding:/ {
       n = split(line, f, "|"); id = ""; sev = ""; owner = ""; just = ""; acc = ""; expd = ""; chk = ""
@@ -496,7 +565,7 @@ acceptance_rows() {
         else if (k == "justification") just = v; else if (k == "accepted") acc = v
         else if (k == "expires") expd = v; else if (k == "check") chk = v
       }
-      fresh = (expd ~ /^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$/ && expd >= today) ? 1 : 0
+      fresh = (valid(expd) && expd >= today) ? 1 : 0
       if (id != "") print id "|" sev "|" owner "|" acc "|" expd "|" just "|" chk "|" fresh
     }' "$LEDGER"
 }
@@ -580,9 +649,11 @@ evaluate_prepublish() {
       done <<EOF
 $pp_rows
 EOF
-      if [ "$PP_TOTAL" -eq 0 ] && grep -Eiq '(^|[^a-z])critical([^a-z]|$)' "$FINDINGS"; then
-        pp_reason "warning: $FINDINGS mentions Critical, but no Critical finding could be read; check that each finding has id:, severity:, and status: lines"
-      fi
+    fi
+    pp_lines=$(critical_mentions "$FINDINGS" | head -5 | tr '\n' ' ')
+    if [ -n "$pp_lines" ]; then
+      pp_reason "$FINDINGS mentions Critical outside a readable finding (line ${pp_lines% }); give it id:, severity:, and status: lines, or write critical findings: none"
+      PP_UNRESOLVED=$((PP_UNRESOLVED + 1))
     fi
     pp_h=$(pair_status "$(ledger_pairs)" 3.4)
     case "$pp_h" in
@@ -734,7 +805,8 @@ gate_build() {
   out=$(run_scan)
   code=$?
   printf '%s\n' "$out"
-  if [ "$code" -ne 0 ]; then g_fail "placeholders or fake data in shipped source (see hits)"; fi
+  if [ "$code" -eq 1 ]; then g_fail "placeholders or fake data in shipped source (see hits)"; fi
+  if [ "$code" -eq 2 ]; then g_fail "no shipped source files found to check"; fi
   tests=$(project_files \
     | grep -E '(^|/)(tests?|__tests__|spec)/[^/]+\.[A-Za-z]+$|(_test|\.test|\.spec|_spec)\.[A-Za-z]+$|(^|/)test_[^/]*$' \
     | grep -Ev '(^|/)(__init__|conftest)\.py$|\.(md|txt|json|ya?ml|snap|lock)$' | wc -l | tr -d ' ')
@@ -815,6 +887,8 @@ gate_harden() {
 $rows
 EOF
   if [ "$n" -gt 0 ] && [ "$GATE_FAILS" -eq "$before" ]; then g_ok "$n findings with severity and status"; fi
+  unexplained=$(critical_mentions "$f" | head -5 | tr '\n' ' ')
+  [ -z "$unexplained" ] || g_fail "Critical is mentioned outside a readable finding (line ${unexplained% }); give it id:, severity:, and status: lines, or write critical findings: none"
   cats=$(grep -Eo 'A(0[1-9]|10)(:20[0-9][0-9])?' "$f" | cut -c1-3 | sort -u | wc -l | tr -d ' ')
   if [ "$cats" -ge 10 ]; then g_ok "OWASP Top 10 verdicts for all categories"; else g_warn "OWASP verdicts cover $cats of 10 categories (required for web apps and APIs)"; fi
   if grep -Eiq 'reproduc' "$f" && grep -Eiq 'retest|re-test|verified' "$f"; then g_ok "findings carry reproduction and retest"; else g_warn "findings lack reproduction or retest steps"; fi
@@ -1061,7 +1135,9 @@ cmd_gate() {
 cmd_scan() {
   echo "scan: placeholders and fake data in shipped source"
   run_scan "$@"
-  exit $?
+  code=$?
+  [ "$code" -eq 2 ] && exit 0
+  exit "$code"
 }
 
 cmd_pillars() {
@@ -1209,7 +1285,7 @@ cmd_accept() {
   [ -n "$owner" ] && [ -n "$expd" ] && [ -n "$just" ] || die "accept needs --owner, --expires, and --justification"
   check_text "$owner" "--owner"
   check_text "$just" "--justification"
-  case "$expd" in [0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]) ;; *) die "--expires must be YYYY-MM-DD" ;; esac
+  valid_date "$expd" || die "--expires must be a real date in YYYY-MM-DD form"
   [ "$(printf '%s\n%s\n' "$(today)" "$expd" | sort | tail -1)" = "$expd" ] || die "--expires is in the past" 1
   matches=$(parse_findings "$FINDINGS" | AC_ID="$(lower "$want")" awk -F'\t' 'tolower($1) == ENVIRON["AC_ID"]')
   [ -n "$matches" ] || die "no finding with id $want in $FINDINGS" 1

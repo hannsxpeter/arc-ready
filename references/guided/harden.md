@@ -22,6 +22,8 @@ retest: {{how it was verified, and when}}
 
 Accepting a risk is the finding owner's decision, not yours. The owner runs `arc-check.sh accept <id> --owner <name> --expires <YYYY-MM-DD> --justification <why>` at a terminal. Never write or edit an acceptance line yourself. If a Critical finding is open, report it and what its owner must do, then stop.
 
+If there are no Critical findings, say so with the line `critical findings: none`; any other mention of Critical outside a finding blocks the release gate.
+
 Checklist:
 
 1. Walk every category by hand. A scanner result is evidence, not a verdict.

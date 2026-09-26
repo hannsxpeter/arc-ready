@@ -526,6 +526,59 @@ bash "$AC" -C "$P" prepublish >/dev/null
 grep -v '^- finding: C-1' "$P/.arc-ready/PROGRESS.md" > "$P/l.tmp" && mv "$P/l.tmp" "$P/.arc-ready/PROGRESS.md"
 expect 1 'stale' "removing an acceptance invalidates an earlier pass" ac prepublish --verify
 
+section "review regressions: pull request review"
+gate_case mixed 'id: L-1
+severity: low
+status: fixed
+
+Critical: remote code execution in the upload handler, still open.' 1 'mentions Critical outside a readable finding' "an unstructured Critical next to a valid finding blocks"
+gate_case critical-heading '## Critical findings
+
+### C-1: Backups were public
+
+id: C-1
+severity: critical
+status: fixed' 0 'prepublish: pass' "a Critical section heading over structured findings does not block"
+gate_case unstructured-heading '### L-1: Verbose errors
+
+id: L-1
+severity: low
+status: fixed
+
+### C-9: Critical RCE in the upload handler
+
+The handler runs uploaded files.' 1 'line 7' "a Critical finding heading with no severity line blocks"
+gate_case declared-none 'id: L-1
+severity: low
+status: fixed
+
+Critical findings: none' 0 'prepublish: pass' "critical findings: none is an explicit statement"
+gate_case sentence 'id: L-1
+severity: low
+status: fixed
+
+No critical findings remain.' 0 'prepublish: pass' "a one-line no-critical-findings sentence passes"
+gate_case compound 'id: L-1
+severity: low
+status: fixed
+
+The login flow is business-critical, so it was reviewed twice.' 0 'prepublish: pass' "a hyphenated compound is not a Critical finding"
+P="$WORK/rr-baddate"; mkdir -p "$P"; bash "$AC" -C "$P" init --mode A >/dev/null; findings_open "$P"
+recorded_acceptance C-1 critical Dana 2026-09-26 2026-19-39 "impossible date" >> "$P/.arc-ready/PROGRESS.md"
+expect 1 'prepublish: block' "an acceptance with an impossible expiry is never current" ac prepublish
+expect 2 'real date' "accept rejects an impossible month and day" ac accept C-1 --owner Dana --expires 2026-19-39 --justification "n/a"
+expect 2 'real date' "accept rejects February 29 outside a leap year" ac accept C-1 --owner Dana --expires 2027-02-29 --justification "n/a"
+P="$WORK/rr-web"; mkdir -p "$P/site"
+printf '<main>\n<!-- TODO: real copy -->\n</main>\n' > "$P/site/index.html"
+expect 1 'index\.html:2' "an HTML comment TODO is scanned" ac scan
+printf '<p>Lorem ipsum dolor sit amet.</p>\n' > "$P/site/index.html"
+printf '.hero { color: red; } /* FIXME: brand color */\n' > "$P/site/app.css"
+expect 1 'app\.css:1' "a CSS comment FIXME is scanned" ac scan
+expect 1 'index\.html:1' "lorem ipsum in HTML is scanned" ac scan
+P="$WORK/rr-nosource"; mkdir -p "$P/.production-ready"
+printf '# Production state\n\nSlice 1 shipped: the add and report commands round-trip through SQLite and the unit tests pass with 6 tests. Next: CSV export (R-03).\n' > "$P/.production-ready/STATE.md"
+expect 1 'no shipped source files' "the build gate fails when there is no source to check" ac gate 2.2
+
 section "review regressions: ledger, writes, and scanning"
 P="$WORK/rr-intent"; mkdir -p "$P"; bash "$AC" -C "$P" init --mode A >/dev/null
 sed 's/^Replace this line with the request.*/- 1.2: skipped, noted during kickoff/' "$P/.arc-ready/PROGRESS.md" > "$P/l.tmp" && mv "$P/l.tmp" "$P/.arc-ready/PROGRESS.md"
