@@ -1,31 +1,18 @@
 # arc-ready (Cursor adaptation)
 #
-# This file is a slim Cursor-rule version of arc-ready's activation surface.
-# It keeps routing concise and sends execution to the full skill.
-#
-# For the full skill body, load arc-ready/SKILL.md.
+# Cursor has no Agent Skills loader. This file points it at the skill body,
+# which is self-contained: nothing else loads by default.
 
-When the user asks to do any of:
+When the user asks to take a software project from idea to launch, or for any one
+stage of it (write a PRD, design the architecture, sequence a roadmap, choose a stack,
+scaffold a repo, build a slice, deploy with rollback, add SLOs and alerts, prepare a
+launch, or run an OWASP or compliance review), read `arc-ready/SKILL.md` and follow it.
 
-- write a PRD, product spec, requirements doc, problem statement
-- design the architecture, system diagram, ADR, trust boundaries, C4 diagram
-- build a roadmap, milestone plan, sequence the work, Now-Next-Later, Shape Up
-- pick a stack, choose a database, frontend or backend framework decision
-- set up a repo, add CI, GitHub Actions, configure linting, README, license
-- Pillars, task-routed agent memory, steer future agent outputs
-- build a web app, API or service, CLI or SDK, mobile or desktop app, data or ML system, or infrastructure project
-- select product form, product archetype, industry overlay, or regulatory overlay
-- deploy, CI/CD pipeline, promote to staging, expand-contract, canary, rollback
-- add monitoring, define an SLO, alerts, write a runbook, error budget policy
-- launch, build a landing page, Product Hunt, Show HN, waitlist, OG card
-- adversarial review, pen-test prep, OWASP walkthrough, SOC 2 / HIPAA / PCI / GDPR check
-- responsible disclosure, bug bounty, post-incident hardening
-- kickoff, walk me through idea to launch, orchestrate the whole arc
+Run `bash arc-ready/scripts/arc-check.sh status` at the start of every turn. It checks
+the progress ledger in `.arc-ready/PROGRESS.md` against disk and names the next tier.
+Record transitions with `arc-check.sh mark <tier> <status>`; `done` is refused until the
+tier gate passes. Immediately before any public release, run `arc-check.sh prepublish`
+and never publish on a block.
 
-Load `arc-ready/SKILL.md` and follow the tier-routed workflow.
-
-Modes: A (full arc, greenfield), B (specific tier, existing codebase), C (retroactive audit), D (multi-repo suite layout).
-
-Artifacts: written to canonical .{tier}-ready/{ARTIFACT}.md paths. File-system projects also get Pillars-compatible AGENTS.md plus agents/*.md memory. Public activation requires a fresh hardening recheck in .launch-ready/PREPUBLICATION.md. Refuses scope leak, AI-slop output, hollow output, paper SLOs, paper canaries, scanner-only security.
-
-Faithful consolidation of the eleven-skill hannsxpeter/ready-suite into one repo. See arc-ready/MIGRATION.md.
+Artifacts live at stable `.<tier>-ready/` paths (`.prd-ready/PRD.md`,
+`.architecture-ready/ARCH.md`, and so on). Write only evidence you actually produced.

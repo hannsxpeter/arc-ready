@@ -1,202 +1,78 @@
-# Migration: from hannsxpeter/ready-suite to arc-ready
+# Migration
 
-If you currently use the eleven-skill hannsxpeter/ready-suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready) and want to switch to arc-ready, this guide covers the install change, trigger surface, where each former skill's content now lives, and the artifact contract.
+Two paths lead here: from arc-ready 1.x, and from the eleven-skill hannsxpeter/ready-suite.
 
-The TL;DR: same content, same discipline, same artifacts, one install. The eleven-skill suite remains available; arc-ready is the recommended starting point for new projects.
+## From arc-ready 1.x to 2.0
 
-## What changes in arc-ready 1.1
+### What changes
 
-The 1.1 source layout and routing are additive:
+- **One file of instructions.** `SKILL.md` now carries everything an agent is told, in about 3,700 tokens, and loads nothing else by default. In 1.x it routed each tier to reference files; loading what the four planning tiers named came to about 254,000 tokens.
+- **A script instead of self-grading.** `scripts/arc-check.sh` keeps the ledger, verifies claimed progress against disk, runs a gate before a tier can be recorded as done, writes Pillars memory, and runs the pre-publication gate. Agents call it; it does not call a model.
+- **The reference library is frozen.** The 220-file library (tier references, 37 domain profiles, worked examples, antipattern catalogs) stays available at the `v1.2.1` tag and is not part of 2.0. The have-not names and the three tests moved into `SKILL.md`, and the source citations moved to `docs/research/`.
+- **Guided mode for smaller models.** Ten short skeletons in `references/guided/` load only when the ledger says `guided: true` (from `arc-check.sh init --guided`) or the user asks for guided mode.
+- **Lookups instead of frozen data.** Pre-scored stack bundles, vendor landscapes, and dated survey statistics are gone. `SKILL.md` tells agents to check current sources and record the date.
+- **An evidence rule.** Agents write only evidence they produced, and stop at any tier that needs access they do not have.
+- **Removed:** the plugin packaging under `plugins/` (it could not install; see `docs/drift-audit.md`), the Unicode baseline, the 1.x string-matching evaluations and manual live cases, and the four-axis domain composition router. The product-form table remains, plus a rule to verify industry and regulatory obligations when the project shows them.
 
-- `SKILL.md` is now a concise activation and routing surface. Detailed tier procedures, schemas, examples, and grep tests live in focused references and load only when needed.
-- Project routing selects a primary form before domain guidance: web application, API or service, CLI or SDK, mobile or desktop, data or ML, or infrastructure or IaC.
-- Domain guidance composes project form, product archetype, industry overlay, and regulatory overlay. The split domain catalog preserves the inherited guidance while reducing per-task context load.
-- Public launch preparation can overlap hardening, but public activation requires a fresh `.launch-ready/PREPUBLICATION.md` tied to the latest hardening revision.
-- Repository releases now include deterministic evaluations and official Agent Skills validation.
+### What does not change
 
-No existing project artifact must move. The frontmatter metadata change and progressive-disclosure refactor affect skill maintainers, not consumer project state.
+- Every canonical artifact path: `.arc-ready/PROGRESS.md`, `.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, `.roadmap-ready/ROADMAP.md`, `.stack-ready/STACK.md`, `.repo-ready/SCAFFOLD.md` (or `AUDIT-REPORT.md`), `.production-ready/STATE.md`, `.deploy-ready/DEPLOY.md`, `.observe-ready/OBSERVE.md`, `.launch-ready/STATE.md` with `PREPUBLICATION.md`, and `.harden-ready/FINDINGS.md`.
+- Modes A to D, the tier order, the status vocabulary, the Pillars floor (`AGENTS.md`, `agents/context.md`, `agents/repo.md`), and the rule that public activation needs a fresh pre-publication pass tied to the current hardening state.
 
-## Install change
+### Existing projects
 
-Before:
+No project file needs to move. `arc-check.sh` reads 1.x ledgers in all three documented shapes (list lines, `- prd-ready: done` lines, and the step table).
+
+1. Install 2.0 (below).
+2. Run `bash <skill-dir>/scripts/arc-check.sh -C <project> status`. It reports any tier whose claimed artifact is missing.
+3. The first `mark` for a tier writes that tier's line in the 2.x format, which then takes precedence over the old row. Nothing else in the ledger changes.
+4. Findings: `prepublish` reads `severity:` and `status:` lines, including the 1.x flat format. Give each finding an `id:` line so that a risk acceptance can name it.
+5. Risk acceptances are recorded by the risk's owner at a terminal: `arc-check.sh accept <id> --owner <name> --expires <YYYY-MM-DD> --justification <why>`. Hand-written lines are ignored, including every 1.x acceptance, so the owner must re-record any that should still count (see entry 10 of `docs/drift-audit.md` and `evals/results/2026-09-26-ablation.md`).
+
+### Staying on 1.2.1
+
+If you want the full library, for example to give a smaller model long worked examples, install the tag:
 
 ```bash
-# Eleven separate skills, each in its own repo.
-git clone https://github.com/hannsxpeter/kickoff-ready ~/.claude/skills/kickoff-ready
-git clone https://github.com/hannsxpeter/prd-ready ~/.claude/skills/prd-ready
-git clone https://github.com/hannsxpeter/architecture-ready ~/.claude/skills/architecture-ready
-git clone https://github.com/hannsxpeter/roadmap-ready ~/.claude/skills/roadmap-ready
-git clone https://github.com/hannsxpeter/stack-ready ~/.claude/skills/stack-ready
-git clone https://github.com/hannsxpeter/repo-ready ~/.claude/skills/repo-ready
-git clone https://github.com/hannsxpeter/production-ready ~/.claude/skills/production-ready
-git clone https://github.com/hannsxpeter/deploy-ready ~/.claude/skills/deploy-ready
-git clone https://github.com/hannsxpeter/observe-ready ~/.claude/skills/observe-ready
-git clone https://github.com/hannsxpeter/launch-ready ~/.claude/skills/launch-ready
-git clone https://github.com/hannsxpeter/harden-ready ~/.claude/skills/harden-ready
+git clone --branch v1.2.1 https://github.com/hannsxpeter/arc-ready ~/.claude/skills/arc-ready
 ```
 
-After:
+1.2.1 receives no further changes. Do not install 1.2.1 and 2.0 side by side under the same skill name.
+
+### Install 2.0
 
 ```bash
-# One skill.
 git clone https://github.com/hannsxpeter/arc-ready ~/.claude/skills/arc-ready
 ```
 
-For other harnesses (Codex, Cursor, Windsurf, Antigravity, Pi, OpenClaw), install per the harness's Agent Skills standard install path.
+To update an existing clone, run `git -C ~/.claude/skills/arc-ready pull`.
 
-## Trigger surface
+## From hannsxpeter/ready-suite
 
-The eleven-skill suite had per-skill triggers ("write a PRD" routed to prd-ready; "deploy this" routed to deploy-ready). arc-ready inherits the union of every named trigger and routes internally to the right tier sub-step.
+The eleven-skill suite (kickoff-ready, prd-ready, architecture-ready, roadmap-ready, stack-ready, repo-ready, production-ready, deploy-ready, observe-ready, launch-ready, harden-ready) wrote the same artifact paths arc-ready uses, so projects move without file changes.
 
-| Trigger phrase | Former skill | Now in arc-ready |
-|---|---|---|
-| kickoff, walk me through idea to launch, orchestrate the whole arc | kickoff-ready | Tier 0 + full Mode A dispatch |
-| write a PRD, product spec, requirements doc | prd-ready | Tier 1.1 |
-| design the architecture, system diagram, ADR | architecture-ready | Tier 1.2 |
-| build a roadmap, milestone plan, Now-Next-Later | roadmap-ready | Tier 1.3 |
-| what stack should I use, pick a database | stack-ready | Tier 1.4 |
-| set up a repo, add CI, GitHub Actions | repo-ready | Tier 2.1 |
-| dashboard, admin panel, internal tool | production-ready | Tier 2.2 |
-| deploy this, CI/CD pipeline, expand-contract | deploy-ready | Tier 3.1 |
-| add monitoring, define an SLO, write a runbook | observe-ready | Tier 3.2 |
-| launch my product, build a landing page, Product Hunt | launch-ready | Tier 3.3 |
-| adversarial review, pen-test prep, OWASP walkthrough | harden-ready | Tier 3.4 |
+### Install change
 
-The activation summary is in the `SKILL.md` description; expanded examples are in `README.md`.
+Remove the eleven skill directories, for example `~/.claude/skills/prd-ready`, so their triggers do not collide with arc-ready. Then clone arc-ready once, as above.
 
-## Where former skill content lives now
+### Where each skill went
 
-Each former skill's content is preserved in arc-ready under the corresponding tier folder.
-
-### kickoff-ready
-
-| Former path | New path |
+| Former skill | arc-ready 2.0 |
 |---|---|
-| `kickoff-ready/SKILL.md` | Routed by `SKILL.md`; detailed Tier 0 procedures live in focused `references/orchestration/` files |
-| `kickoff-ready/references/kickoff-antipatterns.md` | `references/orchestration/kickoff-antipatterns.md` |
-| `kickoff-ready/references/sequencing-rules.md` | `references/orchestration/sequencing-rules.md` |
-| `kickoff-ready/references/handoff-protocols.md` | `references/orchestration/handoff-protocols.md` |
-| `kickoff-ready/references/progress-tracking.md` | `references/orchestration/progress-tracking.md` |
-| `kickoff-ready/references/scope-fence.md` | `references/orchestration/scope-fence.md` |
-| `kickoff-ready/references/agents-md-template.md` | `references/orchestration/agents-md-template.md` |
-| `kickoff-ready/references/RESEARCH-2026-04.md` | `references/shared/RESEARCH-2026-04.md` (consolidated) |
+| kickoff-ready | Tier 0: the ledger and `arc-check.sh status` |
+| prd-ready | Tier 1.1 |
+| architecture-ready | Tier 1.2 |
+| roadmap-ready | Tier 1.3 |
+| stack-ready | Tier 1.4 |
+| repo-ready | Tier 2.1 and `arc-check.sh pillars` |
+| production-ready | Tier 2.2 and `arc-check.sh scan` |
+| deploy-ready | Tier 3.1 |
+| observe-ready | Tier 3.2 |
+| launch-ready | Tier 3.3 and `arc-check.sh prepublish` |
+| harden-ready | Tier 3.4 |
 
-### prd-ready, architecture-ready, roadmap-ready, stack-ready
+Each skill's full reference set, antipattern catalog, and worked examples are preserved under `references/<tier>/` at the arc-ready `v1.2.1` tag, and in the original repositories.
 
-| Former path pattern | New path pattern |
-|---|---|
-| `<planning-skill>/SKILL.md` | Routed by `SKILL.md`; detailed procedures live in `references/planning/planning-workflow.md` |
-| `<planning-skill>/references/*.md` | `references/planning/*.md` (filenames preserved) |
-| `<planning-skill>/references/RESEARCH-2026-04.md` | `references/shared/RESEARCH-2026-04.md` (consolidated) |
-| `<planning-skill>/references/EXAMPLE-*.md` | `references/planning/EXAMPLE-*.md` |
+### Running both
 
-### repo-ready, production-ready
-
-| Former path pattern | New path pattern |
-|---|---|
-| `<building-skill>/SKILL.md` | Routed by `SKILL.md`; detailed procedures live in `references/building/building-workflow.md` |
-| `<building-skill>/references/*.md` | `references/building/*.md` (filenames preserved) |
-| `production-ready/ORCHESTRATORS.md` | `references/shared/ORCHESTRATORS.md` |
-
-### deploy-ready, observe-ready, launch-ready, harden-ready
-
-| Former path pattern | New path pattern |
-|---|---|
-| `<shipping-skill>/SKILL.md` | Routed by `SKILL.md`; detailed procedures live in `references/shipping/shipping-workflow.md` |
-| `<shipping-skill>/references/*.md` | `references/shipping/*.md` (filenames preserved) |
-| `<shipping-skill>/references/RESEARCH-2026-04.md` | `references/shared/RESEARCH-2026-04.md` (consolidated) |
-
-### Hub (hannsxpeter/ready-suite)
-
-| Former path | New equivalent |
-|---|---|
-| `ready-suite/SUITE.md` | Removed. arc-ready is one repo; the byte-identical SUITE.md ritual does not apply. |
-| `ready-suite/ORCHESTRATORS.md` | `references/shared/ORCHESTRATORS.md` |
-| `ready-suite/MAINTAINING.md` | `MAINTAINING.md` (rewritten for single-repo rituals; the v2.5.12 precedent recovery story and multi-repo coordinated-patch matrix are removed). |
-| `ready-suite/scripts/lint.sh` | `scripts/lint.sh` (rewritten for single-repo checks; suite-md-sync removed; trigger-overlap removed). |
-| `ready-suite/references/TRIGGER-DISAMBIGUATION.md` | Folded into `SKILL.md` mode-detection and tier-dispatch sections; retained as `references/orchestration/trigger-disambiguation.md`. |
-| `ready-suite/install.sh`, `uninstall.sh` | Not needed. Standard Agent Skills install applies. |
-
-## Artifact contract: unchanged
-
-The most important property of the migration is that artifact paths are identical. Downstream consumers (orchestrators like GSD, BMAD, Spec Kit, Superpowers; the dogfood at `hannsxpeter/ready-suite-example`) consume artifacts at:
-
-- `.prd-ready/PRD.md`
-- `.architecture-ready/ARCH.md`
-- `.roadmap-ready/ROADMAP.md`
-- `.stack-ready/STACK.md`
-- `.repo-ready/SCAFFOLD.md` (or `.repo-ready/AUDIT-REPORT.md` for Mode B audits)
-- `.production-ready/STATE.md`
-- `.deploy-ready/DEPLOY.md`
-- `.observe-ready/OBSERVE.md`
-- `.launch-ready/STATE.md`
-- `.launch-ready/PREPUBLICATION.md` (required companion only when public activation is in scope)
-- `.harden-ready/FINDINGS.md`
-
-These paths are stable across the eleven-skill suite and arc-ready. arc-ready also writes its own `.arc-ready/PROGRESS.md` for the cross-tier ledger.
-
-arc-ready file-system projects also get Pillars-compatible agent memory:
-
-- `AGENTS.md` with the Pillars loading protocol and an arc-ready artifact map.
-- `agents/context.md` and `agents/repo.md` as mandatory floor pillars.
-- Additional source-backed `agents/*.md` files when the relevant arc artifacts exist.
-
-The arc artifacts remain authoritative. Pillars is the project-memory layer for future agent work.
-
-### Pillars adoption during migration
-
-For projects created under the eleven-skill suite, the migration path is additive:
-
-1. Keep every existing `.<tier>-ready/` artifact in place.
-2. Add `.arc-ready/PROGRESS.md` to record imported tier state.
-3. If `AGENTS.md` is absent, emit the Pillars-compatible loader and the `agents/context.md` and `agents/repo.md` floor pillars.
-4. If `AGENTS.md` already exists and is Pillars-compatible, preserve it and add missing arc-ready artifact-map context only where it fits cleanly.
-5. If `AGENTS.md` exists and conflicts with Pillars, leave it untouched and record `pillars: adoption-blocked-existing-agents` in `.arc-ready/PROGRESS.md`.
-
-Do not rewrite old arc artifacts into Pillars. Pillars points future agents toward the right decisions; the artifact files remain the decision record.
-
-## Discipline: unchanged
-
-Every named failure mode, every grep test, every workflow guard from the source eleven skills is preserved in arc-ready. The full per-tier catalogs (with citations, severity, remediation) are at:
-
-- `references/orchestration/kickoff-antipatterns.md`
-- `references/planning/prd-antipatterns.md`
-- `references/planning/architecture-antipatterns.md`
-- `references/planning/roadmap-antipatterns.md`
-- `references/planning/stack-antipatterns.md`
-- `references/building/repo-antipatterns.md`
-- `references/building/production-antipatterns.md`
-- `references/shipping/deploy-antipatterns.md`
-- `references/shipping/observe-antipatterns.md`
-- `references/shipping/launch-antipatterns.md`
-- `references/shipping/harden-antipatterns.md`
-
-The load-bearing pattern catalog and grep tests remain available through `references/orchestration/failure-mode-catalog.md` and `references/orchestration/verification-grep-tests.md`, with per-tier antipattern references preserving each inherited pattern.
-
-## Running both
-
-The eleven-skill suite and arc-ready can coexist on the same machine. The trigger surface overlaps; the harness will route to whichever skill matches first. To prefer arc-ready on a project, ensure arc-ready is installed and the per-skill suite repos are not installed for that project.
-
-There is no harm in keeping both around during a transition period. The artifact contracts are the same, so a project kicked off under the eleven-skill suite is fully consumable by arc-ready (Mode A or B with imports), and vice versa.
-
-## When to switch
-
-Switch when:
-
-- You are starting a new project (the install footprint difference is most visible here).
-- You are onboarding a new team member (one skill to install instead of eleven).
-- You are integrating with an orchestrator (downstream consumer needs only one trigger to route).
-
-Stay on the eleven-skill suite when:
-
-- You have customized one or more individual skills' references and the per-skill repo is your version-control surface.
-- You are running a CI lint that depends on the byte-identical SUITE.md ritual across suite repos.
-- You prefer the per-skill changelog granularity (eleven CHANGELOG.md files, each tracking one skill's evolution).
-
-Both are valid. arc-ready is the recommended path; the eleven-skill suite is the supported alternative.
-
-## Open questions
-
-- **Trigger collision**: if both arc-ready and the eleven-skill suite are installed, the harness may route ambiguously. Recommended posture: install one or the other, not both, on a given machine.
-- **Dogfood maintenance**: `hannsxpeter/ready-suite-example` continues to dogfood the eleven-skill suite. arc-ready's dogfood acceptance test is that the same artifacts (at the same paths) are reproducible from arc-ready. If they diverge, the dogfood is the authority.
-- **Pillars adoption for imported projects**: a project started under the eleven-skill suite may not have `agents/*.md`. When arc-ready imports it, Tier 2.1 should add the Pillars memory layer unless an existing `AGENTS.md` blocks adoption.
+Do not install the suite and arc-ready together. Their triggers overlap, and the harness routes to whichever matches first. The artifacts are compatible in both directions, so switching is safe at any point.

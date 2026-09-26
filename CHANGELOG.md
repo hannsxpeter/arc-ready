@@ -4,6 +4,50 @@ All notable changes to arc-ready are documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows semantic versioning per `MAINTAINING.md`.
 
+## [2.0.0] - 2026-09-26
+
+Major release. arc-ready becomes a lean core: a self-contained `SKILL.md` that loads nothing else by default, a script that enforces the ledger and the gates, and an opt-in guided pack for smaller models. The 1.x reference library is frozen at `v1.2.1`. The decision rests on a with-and-without-skill ablation recorded in `evals/results/2026-09-26-ablation.md`. The canonical artifact paths do not change.
+
+### Why
+
+- Loading what 1.2.1 routed for the four planning tiers came to about 254,000 tokens, mostly material current models already know.
+- In the ablation, the lean core raised blinded planning scores from 7.25 to 10 on Claude Sonnet 5 and from 5.75 to 10 on Claude Haiku 4.5. The full library matched it on Sonnet at about four times the planning cost ($2.57 against $0.64 per run) and trailed it on Haiku (8.25).
+
+### Added
+
+- `scripts/arc-check.sh`, the runtime script agents run (Bash 3.2): `init`, `status`, `mark`, `gate`, `pillars`, `prepublish`, `accept`, and `scan`. `mark ... done` is refused until the tier gate passes, starting a tier early needs a recorded override, a skip needs a reason, and `status` reports ledger drift against disk.
+- Human-only risk acceptance. `accept` records an acceptance only for a person at an interactive terminal, each recorded line carries a `check:` digest, and `prepublish` ignores lines written or edited by hand and tells agents to stop on a block. Added after the ablation showed agents writing their own acceptances to get past the gate.
+- An evidence rule in `SKILL.md`: write only evidence you produced, and stop at any tier that needs access you do not have.
+- `references/guided/`: ten opt-in skeletons, loaded only after `init --guided` or on request. A contract test fills each one and runs its tier gate.
+- `scripts/test.sh`: 99 behavioral assertions against the shipped script, replacing `scripts/eval.sh` and `scripts/dogfood-smoke.sh`.
+- `evals/ablation/`: the with-and-without-skill harness (fixtures, scorer, blinded judge, and report) and its first record under `evals/results/`.
+- `docs/drift-audit.md`: twenty places where the 1.2.1 documentation disagreed with reality, and the fix for each.
+
+### Changed
+
+- `SKILL.md` is self-contained (14,961 bytes, about 3,700 tokens). It carries the artifact contract, the three tests, the tier definitions, the product forms, the have-not names, and the gates.
+- Stack and vendor choices are looked up at decision time and dated instead of read from frozen catalogs.
+- The ledger has one format, and `arc-check.sh` still reads all three 1.x shapes.
+- `scripts/lint.sh` checks punctuation and emoji in every authored file, version parity across `SKILL.md`, `CHANGELOG.md`, and `arc-check.sh`, the byte budgets, that `SKILL.md` routes nowhere outside guided mode, paths, links, shell syntax, and the tests.
+- CI pins `actions/checkout` v7.0.1 and `actions/setup-python` v7.0.0 by commit SHA and runs the tests.
+- Rewritten: `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, `MAINTAINING.md`, `MIGRATION.md`, `EVALS.md`, `SECURITY.md`, `.cursorrules`, and the issue and pull request templates. `CODEOWNERS` names `@hannsxpeter`.
+- `references/shared/RESEARCH-2026-04.md` moved to `docs/research/` as archival provenance.
+
+### Removed
+
+- The other 219 reference files (tier references, 37 domain profiles, worked examples, and antipattern catalogs), preserved at `v1.2.1`.
+- `plugins/`, which could not install: the repository had no marketplace manifest, and the plugin's skill files were symlinks outside the plugin root.
+- The Unicode baseline (`config/` and `scripts/update-unicode-baseline.sh`); every authored file is now clean.
+- `evals/cases/` and `evals/RESULTS-TEMPLATE.md`, the manual compliance cases, preserved at `v1.2.1`.
+
+### Migration
+
+See `MIGRATION.md`. Project files do not move. Risk acceptances must be re-recorded by their owners with `arc-check.sh accept`.
+
+### Why a major, not a minor
+
+The workflow shape changes: transitions are script-enforced, `SKILL.md` no longer routes to references, and risk acceptance became a human-only act, so acceptances written in the 1.x format no longer count. The artifact paths are unchanged.
+
 ## [1.2.1] - 2026-08-04
 
 Patch release. Rewrites `README.md` for a general audience, adds a project banner, and fixes the Unicode baseline check so a tracked binary asset does not produce a platform-dependent verdict. No workflow capability, no reference content, and no artifact-contract change.
@@ -308,6 +352,7 @@ The discipline of arc-ready is the discipline the eleven-skill suite produced. S
 - Compatible with: claude-code, codex, cursor, windsurf, antigravity, pi, openclaw, any-agentskills-compatible-harness.
 - Artifact paths (`.prd-ready/PRD.md`, `.architecture-ready/ARCH.md`, etc.) are unchanged from the eleven-skill suite. The hannsxpeter/ready-suite-example dogfood verifies cleanly against arc-ready's tier dispatch.
 
+[2.0.0]: https://github.com/hannsxpeter/arc-ready/releases/tag/v2.0.0
 [1.2.1]: https://github.com/hannsxpeter/arc-ready/releases/tag/v1.2.1
 [1.2.0]: https://github.com/hannsxpeter/arc-ready/releases/tag/v1.2.0
 [1.1.0]: https://github.com/hannsxpeter/arc-ready/releases/tag/v1.1.0
