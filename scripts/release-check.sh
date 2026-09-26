@@ -25,11 +25,10 @@ if ! command -v gh >/dev/null 2>&1 || ! gh auth status >/dev/null 2>&1; then
 fi
 
 cd "$REPO_DIR"
-bash -n scripts/*.sh
+for f in scripts/*.sh evals/ablation/*.sh; do bash -n "$f"; done
+bash scripts/test.sh --verbose
 SKILLS_REF_BIN="$VALIDATOR" bash scripts/lint.sh --all --verbose
-bash scripts/dogfood-smoke.sh --verbose
-bash scripts/eval.sh --verbose
 "$VALIDATOR" validate "$REPO_DIR"
 bash scripts/lint.sh tag-release-parity --verbose
 printf '%s\n' "== local release checks passed =="
-printf '%s\n' "Live-harness scores remain separately required by EVALS.md."
+printf '%s\n' "Content changes to SKILL.md or the guided pack also need an ablation run (EVALS.md)."
