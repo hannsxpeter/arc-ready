@@ -38,7 +38,7 @@ Recorded 2026-09-26 while preparing arc-ready 2.0.0. Each entry is a place where
 
 **14. Downstream consumers.** The README said downstream orchestrators (GSD, BMAD, Spec Kit, Superpowers) "keep working unchanged", and `artifact-contract.md` said they "consume these artifacts directly". No integration or test with any of them exists. The artifact paths stay stable; the documentation no longer claims consumers.
 
-**15. A code owner account.** `.github/CODEOWNERS` assigned every path to `@aihxp`. That account does not exist (GitHub API 404), so no owner was ever requested. Now `@hannsxpeter`.
+**15. A code owner account.** `.github/CODEOWNERS` assigned every path to the former handle. GitHub returned 404 for that account, so no owner was ever requested. Now `@hannsxpeter`.
 
 ## Repository hygiene
 
